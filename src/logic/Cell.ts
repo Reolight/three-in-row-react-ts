@@ -18,11 +18,13 @@ export default class Cell implements Tile {
     }
 
     getBackground(isSelected: boolean): string {
-        return `sources\backs\${isSelected?"sel":"def"}`
+        const file = require(`../sources/backs/${isSelected?"sel.png":"def.png"}`)
+        return file
     }
 
     getSprite(): string {
-        return this.sprite? `sources\sprites\${this.sprite.sprite}` : ""
+        const file = this.sprite? require(`../sources/sprites/${this.sprite.sprite}`): ""
+        return file
     }
 
     isEmpty(): boolean{

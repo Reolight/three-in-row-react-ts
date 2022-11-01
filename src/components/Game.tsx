@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import Cell from "../logic/Cell";
+import React, { useState } from "react";
 import Field from "../logic/Field";
 import CellView from "./CellView";
 
@@ -9,29 +8,25 @@ interface gameInfoProps{
 }
 
 export default function Game(props : gameInfoProps){
-    const [field, setField] = useState({} as Field)
-    let stage : Field = {} as Field
+    let stage : Field = Field.getStage(props.stage)
+    const [field, setField] = useState(stage)
 
-    function init(){
-        stage = Field.getStage(props.stage)
-        setField(stage)
-    }
-
-    useEffect(init, [props.stage]);
-
-    function renderCell(){
-
-    }
-
+    console.log(stage)
     return(
         !stage? <p>Wait please...</p> :
-        (<div>
-            <table>
+        (<div className="Game-container">
+            <h1>Table</h1>
+            <table className="Game-table">
+                <tbody>
                 {field.cells.map((row, y) =>
-                    <tr>
-                        <td>{ row.map((cell, x) => cell.isExist && <CellView cell={cell} /> )}</td>
+                    <tr key={y}>
+                        { row.map((cell, x) => cell.isExist?
+                            <td className="Cell" key={x + y/100}>
+                                <CellView cell={cell} />
+                            </td> : <td key={x + y/100} ></td>)}
                     </tr>
                 )}
+                </tbody>
             </table>
         </div>)
     )

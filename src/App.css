@@ -36,3 +36,38 @@
     transform: rotate(360deg);
   }
 }
+
+.Game-container{
+  margin-left: auto;
+  margin-right: auto;
+  background: url(./sources/wall/back.bmp);
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+.Game-table{
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.Cell{
+  background: url(./sources/backs/def.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+  width: 64px;
+  height: 64px;
+}
+
+.Cell:hover{
+  background: url(./sources/backs/sel.png);
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+.Img.cell{
+  display: block;
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: auto;
+  margin-left: auto;
+}
