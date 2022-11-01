@@ -1,4 +1,3 @@
-import Field from "../../logic/Field";
 import Goal from "../../logic/interfaces/Goal";
 
 interface FieldParams{
