@@ -2,22 +2,22 @@ import Sprite from "../../logic/interfaces/Sprite"
 
 const sprites: Sprite[] = [
     {
-        sprite: `sources\sprites\diamond.png`,
-        type: "diamond",
+        sprite: `diamond.png`,
+        name: "diamond",
         onDestroyEffect: undefined
     },
     {
-        sprite: `sources\sprites\gold.png`,
-        type: "gold",
+        sprite: `gold.png`,
+        name: "gold",
         onDestroyEffect: undefined
     },
     {
-        sprite: `sources\sprites\iron.png`,
-        type: "iron",
+        sprite: `iron.png`,
+        name: "iron",
         onDestroyEffect: undefined
     }
 ]
 
 export default function retrieveSprite(t: string): Sprite | undefined {
-    return sprites.find(s => s.type === t)
+    return sprites.find(s => s.name === t)
 }
