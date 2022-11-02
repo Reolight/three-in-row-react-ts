@@ -58,7 +58,7 @@
   height: 64px;
 }
 
-.Cell:hover{
+.Cell-marked{
   background: url(./sources/backs/sel.png);
   background-size: cover;
   background-repeat: no-repeat;

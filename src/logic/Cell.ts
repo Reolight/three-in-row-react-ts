@@ -5,6 +5,7 @@ import Tile from "./interfaces/Tile";
 
 export default class Cell implements Tile {
     sprite: Sprite = {} as Sprite
+    markedForDelete : boolean = false
 
     pos: Position
     isExist : boolean

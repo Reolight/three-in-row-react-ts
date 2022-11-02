@@ -1,6 +1,7 @@
 import retrieveStage from "../sources/data/Scenes"
 import retrieveSprite from "../sources/data/Sprites"
 import Cell from "./Cell"
+import Chain from "./Chain"
 import Goal from "./interfaces/Goal"
 import Position from "./interfaces/Position"
 import Sprite from "./interfaces/Sprite"
@@ -44,5 +45,56 @@ export default class Field {
 
             this.cells.push(row)
         }
+    }
+
+    //===========================[LOGIC]===================================
+
+    private static MatchRow(cells: Cell[]){
+        for (let x = cells.length - 2; x > 0; x--){
+            if (!Chain.isOpened){
+                if (cells[x-1].sprite.name === cells[x].sprite.name
+                    && cells[x].sprite.name === cells[x+1].sprite.name)
+                {
+                    Chain.open([ cells[x-1], cells[x], cells[x+1] ])
+                }
+            }
+            else if (cells[x].sprite.name === cells[x-1].sprite.name){
+                Chain.add(cells[x-1])
+            } else if (Chain.isOpened) {
+                Chain.close()
+            }
+        }
+    }
+
+    static MatchAll(f: Field): Field{         
+        Chain.sizePrepare(f.cells.length)
+        Field.StringField(f)
+        for (let y = f.cells.length - 1; y >= 0; y--){
+            Field.MatchRow(f.cells[y])
+        }
+
+        for (let x = 0; x < f.cells[0].length; x++){
+            let column: Cell[] = []
+            f.cells.forEach(row => column.push(row[x]))
+            Field.MatchRow(column)
+        }
+
+        const recollection : Chain[] = Chain.releaseRecollection()
+        recollection.forEach(chain => chain.cells.forEach(cell => 
+            f.cells[cell.pos.y][cell.pos.x].markedForDelete = true
+        ))
+
+        return f
+    }
+
+    private static StringField(f: Field){
+        let s : string[] = []
+        f.cells.forEach(row => {
+            let r: string = ""
+            row.forEach(cell => r += cell.sprite.name[0])
+            s.push(r)
+        });
+
+        console.log(s);
     }
 }
