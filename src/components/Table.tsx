@@ -11,20 +11,16 @@ interface gameInfoProps{
 //повторяется каждый раз после клика или  генерации новой карты. Делай. Досвидания.
 
 export default function Table(props : gameInfoProps){
-    let stage : Field = Field.getStage(props.stage)
-    const [field, setField] = useState(stage)
-
-    console.log(stage)
+    const [field, setField] = useState<Field>()
 
     function InitialCycle(){
-        let f = field
-        //console.debug(`After match: ${JSON.stringify(f)}`)
-        setField(Field.MatchAll(f))
+        const stage : Field = Field.getStage(props.stage)
+        setField(Field.MatchAll(stage))
     }
 
-    useEffect(InitialCycle, [])
+    useEffect(InitialCycle, [props.stage])
 
-    return(!stage? <p>Wait please...</p> :
+    return(!field? <p>Wait please...</p> :
         <table className="Game-table">
             <tbody>
             {field.cells.map((row, y) =>

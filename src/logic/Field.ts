@@ -66,7 +66,8 @@ export default class Field {
         }
     }
 
-    static MatchAll(f: Field): Field{         
+    static MatchAll(old: Field): Field{         
+        let f: Field = old
         Chain.sizePrepare(f.cells.length)
         Field.StringField(f)
         for (let y = f.cells.length - 1; y >= 0; y--){
