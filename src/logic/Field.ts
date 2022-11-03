@@ -60,9 +60,7 @@ export default class Field {
             }
             else if (cells[x].sprite.name === cells[x-1].sprite.name){
                 Chain.add(cells[x-1])
-            } else if (Chain.isOpened) {
-                Chain.close()
-            }
+            } else Chain.isOpened && Chain.close()
         }
     }
 
@@ -70,13 +68,13 @@ export default class Field {
         let f: Field = old
         Chain.sizePrepare(f.cells.length)
         Field.StringField(f)
-        for (let y = f.cells.length - 1; y >= 0; y--){
-            Field.MatchRow(f.cells[y])
+        for (let iy = f.cells.length - 1; iy >= 0; iy--){
+            Field.MatchRow(f.cells[iy])
         }
 
-        for (let x = 0; x < f.cells[0].length; x++){
+        for (let ix = 0; ix < f.cells[0].length; ix++){
             let column: Cell[] = []
-            f.cells.forEach(row => column.push(row[x]))
+            f.cells.forEach(row => column.push(row[ix]))
             Field.MatchRow(column)
         }
 
