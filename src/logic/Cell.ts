@@ -9,6 +9,8 @@ export default class Cell implements Tile {
 
     pos: Position
     isExist : boolean
+    isBlocked : boolean = false //items can not be placed here
+    isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
 
     constructor(exist: boolean, position: Position, initialEffects: Effect[]){
@@ -18,17 +20,31 @@ export default class Cell implements Tile {
         this.effects = initialEffects
     }
 
+    isAvailableForFall(){
+        return (this.isExist && !this.isBlocked && !this.isFrozen && !this.sprite.sprite)
+    }
+
     getBackground(isSelected: boolean): string {
         const file = require(`../sources/backs/${isSelected?"sel.png":"def.png"}`)
         return file
     }
 
     getSprite(): string {
-        const file = this.sprite? require(`../sources/sprites/${this.sprite.sprite}`): ""
+        const file = this.sprite.sprite? require(`../sources/sprites/${this.sprite.sprite}`): ""
         return file
     }
 
     isEmpty(): boolean{
         return this.sprite? false: true
+    }
+
+    swap(cell: Cell, isAdjacentOnly: boolean = true){
+        const sprite: Sprite = this.sprite
+        this.sprite = cell.sprite
+        cell.sprite = sprite
+    }
+
+    posToString(){
+        return `${this.pos.y}:${this.pos.x}`
     }
 }

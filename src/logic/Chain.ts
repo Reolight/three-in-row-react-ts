@@ -1,5 +1,4 @@
 import Cell from "./Cell";
-import Position from "./interfaces/Position";
 
 interface ChainCascade{
     direction: Cell[]

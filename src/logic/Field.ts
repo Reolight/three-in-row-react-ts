@@ -13,6 +13,8 @@ export default class Field {
     name: string
     allowedSprites: Sprite[] = []
     goal: Goal
+    chains: Chain[] = []
+
     constructor(name: string, x: number, y: number, allowedSprites: string[], goal: Goal){
         this.name = name;
         this.size = {x, y}
@@ -51,7 +53,7 @@ export default class Field {
 
     private static MatchRow(cells: Cell[]){
         for (let x = cells.length - 2; x > 0; x--){
-            if (!Chain.isOpened){
+            if (!Chain.isOpened && cells[x].sprite.name){
                 if (cells[x-1].sprite.name === cells[x].sprite.name
                     && cells[x].sprite.name === cells[x+1].sprite.name)
                 {
@@ -78,19 +80,70 @@ export default class Field {
             Field.MatchRow(column)
         }
 
-        const recollection : Chain[] = Chain.releaseRecollection()
-        recollection.forEach(chain => chain.cells.forEach(cell => 
+        f.chains = Chain.releaseRecollection()
+        f.chains.forEach(chain => chain.cells.forEach(cell => 
             f.cells[cell.pos.y][cell.pos.x].markedForDelete = true
         ))
 
         return f
     }
 
+    static DestroyChains(old: Field): Field{
+        let f : Field = old
+        
+        f.chains.forEach(chain => {
+            chain.cells.forEach(cell => {
+                //cell.sprite.onDestroyEffect
+                cell.sprite = {} as Sprite // "destroyed". Also points should be applied. But there is no player yet
+                cell.markedForDelete = false
+            });
+        })
+
+        f.chains = []
+
+        return f
+    }
+
+    static Fall(old: Field): [field:Field, changes: number] {
+        let f : Field = old
+        let changes: number = 0
+
+        Field.StringField(f)
+        for (let row = f.cells.length - 2; row >= 0; row--){
+            console.debug(`Checking row ${row}`)
+            for (let x = 0; x < f.cells.length ; x++){
+
+                if (!f.cells[row][x].isFrozen && f.cells[row][x].sprite.sprite){ //current is NOT empty and not blocked
+
+                    if (f.cells[row + 1][x].isAvailableForFall()) { //cell in row below is empty, not blocked and not frozen
+                        console.debug(`${f.cells[row + 1][x].posToString()} is empty`)
+                        f.cells[row][x].swap(f.cells[row + 1][x])
+                        changes++
+                    }
+                        //if there is no empty cell below, check sides
+                    else if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForFall()){
+                        console.debug(`${f.cells[row + 1][x - 1].posToString()} is empty`)
+                        f.cells[row][x].swap(f.cells[row + 1][x - 1])
+                        changes++
+
+                    } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForFall()){
+                        console.debug(`${f.cells[row + 1][x + 1].posToString()} is empty`)
+                        f.cells[row][x].swap(f.cells[row + 1][x + 1])
+                        changes++
+                    }
+                }
+            }
+        }
+
+        Field.StringField(f)
+        return [f, changes]
+    }
+
     private static StringField(f: Field){
         let s : string[] = []
         f.cells.forEach(row => {
             let r: string = ""
-            row.forEach(cell => r += cell.sprite.name[0])
+            row.forEach(cell => r += cell.sprite.name ? cell.sprite.name[0]: "-")
             s.push(r)
         });
 
