@@ -27,7 +27,7 @@ export default class Chain{
     }
 
     private static merge(base: Chain){
-        console.debug(`merging chains`)
+        console.debug(`merging chains ${base.id} << ${Chain.activeChain!.id}`)
         Chain.unic = false
         let m = Chain.activeChain!
         Chain.activeChain = base
@@ -88,6 +88,7 @@ export default class Chain{
         Chain.mapped = []
         Chain.count = 0;
         Chain.chains.forEach(chain => chain.cells.forEach(cell => cell.markedForDelete = true))
+        console.debug(recollection)
         return recollection
     }
 }
