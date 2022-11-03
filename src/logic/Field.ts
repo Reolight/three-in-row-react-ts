@@ -93,20 +93,21 @@ export default class Field {
         return f
     }
 
-    static DestroyChains(old: Field): Field{
+    static DestroyChains(old: Field): [field: Field, money: number]{
         let f : Field = old
-        
+        let money : number = 0
         f.chains.forEach(chain => {
             chain.cells.forEach(cell => {
                 //cell.sprite.onDestroyEffect
                 cell.sprite = {} as Sprite // "destroyed". Also points should be applied. But there is no player yet
                 cell.markedForDelete = false
+                money++
             });
         })
 
         f.chains = []
 
-        return f
+        return [f, money]
     }
 
     private static Generate(field : Field): number{
