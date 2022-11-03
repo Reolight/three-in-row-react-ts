@@ -1,13 +1,18 @@
-export default class Score{
-    score: number
-    destroyed: number[] = []
-    collectedItems: number[] = []
+interface keyval{
+    name: string
+    value: number
+}
 
-    constructor(tilesCount: number, itemNumber: number){
-        this.score = 0
-        for (let i = 0; i < tilesCount; i++)
-            this.destroyed.push(0)
-        for (let j = 0; j < itemNumber; j++)
-            this.collectedItems.push(0)
+export default class Score{
+    score: number = 0
+    step: number = 0
+    destroyed: keyval[] = []
+
+    constructor(allowedSprites: string[]){
+        allowedSprites.forEach(sprite => this.destroyed.push({name: sprite, value: 0}))
+    }
+
+    countDestroyed(sprite: string, add: number){
+        this.destroyed.find(i => i.name == sprite)!.value += add
     }
 }

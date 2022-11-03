@@ -6,6 +6,7 @@ import Goal from "./interfaces/Goal"
 import Position from "./interfaces/Position"
 import Sprite from "./interfaces/Sprite"
 import randomInt from "./RandomInt"
+import Score from "./Score"
 
 export default class Field {
     size: Position
@@ -14,6 +15,8 @@ export default class Field {
     allowedSprites: Sprite[] = []
     goal: Goal
     chains: Chain[] = []
+
+    score: Score = {} as Score
 
     constructor(name: string, x: number, y: number, allowedSprites: string[], goal: Goal){
         this.name = name;
@@ -24,8 +27,9 @@ export default class Field {
         })
 
         this.allowedSprites.forEach(sprite => console.debug(`[${sprite.name}: ${sprite.sprite}]`))
-        this.goal = goal
+        this.goal = Goal.init(goal, this.score)
         this.initialGeneration()
+        this.score = new Score(allowedSprites)
     }
 
     static getStage(name: string): Field{
@@ -43,7 +47,7 @@ export default class Field {
         for (let igrek = 0; igrek < this.size.y; igrek++){
             let row: Cell[] = []
             for (let ix = 0; ix < this.size.x; ix++){
-                let c = new Cell(true, {x:ix, y: igrek}, [])
+                let c = new Cell(true, {x: ix, y: igrek}, [])
                 c.sprite = this.getRandomSprite()
                 row.push(c)
             }
@@ -97,6 +101,7 @@ export default class Field {
         let f : Field = old
         let money : number = 0
         f.chains.forEach(chain => {
+            f.score.countDestroyed(chain.type, chain.cells.length)
             chain.cells.forEach(cell => {
                 //cell.sprite.onDestroyEffect
                 cell.sprite = {} as Sprite // "destroyed". Also points should be applied. But there is no player yet

@@ -1,3 +1,4 @@
+import retrieveSprite from "../sources/data/Sprites";
 import Effect from "./interfaces/Effect";
 import Position from "./interfaces/Position";
 import Sprite from "./interfaces/Sprite";
@@ -33,9 +34,13 @@ export default class Cell implements Tile {
         return file
     }
 
-    getSprite(): string {
-        const file = this.sprite.sprite? require(`../sources/sprites/${this.sprite.sprite}`): ""
+    static getSprite(sprite: Sprite): string {
+        const file = sprite.sprite? require(`../sources/sprites/${sprite.sprite}`): ""
         return file
+    }
+
+    static getSpriteByName(name: string): string {
+        return Cell.getSprite(retrieveSprite(name))
     }
 
     isEmpty(): boolean{

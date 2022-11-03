@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import Field from "../logic/Field";
 import Position from "../logic/interfaces/Position";
 import Player from "../logic/Player";
+import Score from "../logic/Score";
 import CellView from "./CellView";
 import UITable from "./UITable";
 
@@ -22,6 +23,8 @@ export default function Table(props : gameInfoProps){
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
     const [player, setPlayer] = useState(props.player)
+    const [score, setScore] = useState()
+    const [completed, setCompleted] = useState(false)
 
     useEffect(stateHub, [state])
     useEffect(InitialCycle, [props.stage])
@@ -41,7 +44,8 @@ export default function Table(props : gameInfoProps){
     function Destroy() {
         swapped = []
         const [f, money] = Field.DestroyChains(field!)
-        setPlayer({...player, money: player.money + money})
+        player.addScore(money)
+        setPlayer(player)
         setField(f)
         setState(FALL)
     }
@@ -61,12 +65,18 @@ export default function Table(props : gameInfoProps){
 
     function InitialCycle(){
         const stage : Field = Field.getStage(props.stage)
+        player.score = stage!.score //ref to score
         setField(stage)
         console.debug(`state set to MATCH`)
         setState(MATCH)
     }
 
     function Free(){
+        player.score!.step++
+        if (field!.goal.isAchieved() || field!.goal.isDefeated()) {
+            console.warn(field!.goal.isAchieved()? "You won" : field!.goal.isDefeated()? "You lost" : "")
+            setCompleted(true)
+        }
         if (swapped.length == 2) {
             swap(true)
         }
@@ -111,7 +121,7 @@ export default function Table(props : gameInfoProps){
 
     return(!field? <p>Wait please...</p> :
         <>
-        <UITable player={player} />
+        <UITable player={player} goal={field!.goal} completed={completed}/>
         <div className="Game-container">
             <h1>{field.name}</h1>
             <table className="Game-table">
@@ -120,7 +130,10 @@ export default function Table(props : gameInfoProps){
                     <tr key={y}>
                         {row.map((cell, x) => cell.isExist?
                             <td className={cell.markedForDelete? "Cell-marked" : "Cell"} key={x + y/100}>
-                                <CellView cell={cell} clicked={onClicked} />
+                                <CellView 
+                                    cell={cell}
+                                    clicked={onClicked}
+                                />
                             </td> : <td key={x + y/100} ></td>
                         )}
                     </tr>

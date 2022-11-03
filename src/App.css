@@ -58,10 +58,31 @@
   height: 64px;
 }
 
+.Item{
+  transition: all
+}
+
+.Item-selected{
+  transform: scale(0.8);
+}
+
 .Cell-marked{
   background: url(./sources/backs/sel.png);
   background-size: cover;
   background-repeat: no-repeat;
+}
+
+@keyframes pulse {
+  from{
+    transform: scale(1);
+  }
+  to{
+    transform: scale(1.2);
+  }
+}
+
+.Item:hover{
+  animation: pulse 1s ease-in-out infinite alternate;
 }
 
 .Img.cell{
@@ -70,4 +91,11 @@
   margin-bottom: auto;
   margin-right: auto;
   margin-left: auto;
+}
+
+.Icon{
+  margin-left: 8px;
+  margin-right: 4px;
+  width: 18px;
+  height: 18px;
 }

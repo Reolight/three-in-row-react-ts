@@ -1,23 +1,36 @@
 import React, { useEffect, useState } from "react";
+import Cell from "../logic/Cell";
+import Goal from "../logic/interfaces/Goal";
 import Player from "../logic/Player";
 
 interface UITableProps {
     player: Player
+    goal: Goal
+    completed: boolean
 }
 
 export default function UITable(props: UITableProps){
-    const [money, setMoney] = useState(props.player.money)
+    const [player, setPlayer] = useState(props.player)
 
-    function moneyChanged(){
-        setMoney(money)
+    function onChanged(){
+        setPlayer(player)
     }
 
-    useEffect(moneyChanged, [props.player])
+    useEffect(onChanged, [props.player])
 
     return(
-        <div>
-            <p><>Name: {props.player.name}</></p>
-            <em><>Money: {props.player.money}</></em>
+        <div className="flex flex-row">
+            <p><>Name: {props.player.name} Money: {props.player.money}.</></p>
+            <em><b>Step: </b>{player.score?.step} Score: {player.score?.score}</em>
+            <em>{player.score!.destroyed.map((kv) => 
+                <>
+                    <img key={kv.name} className="Icon" src={Cell.getSpriteByName(kv.name)}/>
+                    {kv.value}
+                </>)}
+            </em>
+            <p><b>Goal:</b> {props.goal.toString()} 
+                {props.goal.isDefeated()? <em><b>(LOST)</b></em> : props.goal.isAchieved() && <em><b>(STAGE COMPLETED)</b></em>}
+            </p>
         </div>
     )
 }

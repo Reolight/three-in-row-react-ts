@@ -6,7 +6,7 @@ import Player from './logic/Player';
 function App() {
   return (
     <div className="App">
-      <Game stage="test2" player={{name: "Reolight", money: 0}} />
+      <Game stage="test2" player={new Player("Reolight", 0)} />
     </div>
   );
 }

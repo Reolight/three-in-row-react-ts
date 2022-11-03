@@ -13,8 +13,8 @@ export default function CellView(props: CellProps){
     return(
         <>
             {!c.isEmpty() && <img
-                className="cell"
-                src={c.getSprite()}
+                className={"Item" } 
+                src={Cell.getSprite(c.sprite)}
                 alt={c.sprite.name} 
                 onClick={() => props.clicked(c.pos)}
             />}

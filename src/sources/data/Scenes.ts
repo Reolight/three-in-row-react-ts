@@ -15,14 +15,20 @@ const scenes : FieldParams[] =
             x: 8,
             y: 8, 
             allowedSpites: ["diamond", "gold", "iron"], 
-            goal: { isAchieved: () => false }
+            goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
         },
         {
             name: "test2",
             x:16,
             y:12,
             allowedSpites: ["square", "circle", "rumb", "triangle"],
-            goal: { isAchieved: () => false }
+            goal: {
+                isAchieved(): boolean{ return this.score!.score > 1000 },
+                isDefeated(): boolean{ return this.score!.step > 20},
+                toString(): string {
+                    return "score more than 1000 less then 20 steps"
+                },
+        } as Goal
         }
     ]
 
