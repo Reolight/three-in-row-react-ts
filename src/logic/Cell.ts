@@ -20,8 +20,12 @@ export default class Cell implements Tile {
         this.effects = initialEffects
     }
 
-    isAvailableForFall(){
+    isAvailableForPlace(){
         return (this.isExist && !this.isBlocked && !this.isFrozen && !this.sprite.sprite)
+    }
+
+    isAvailableForInitialPlace(){
+        return (this.isExist && !this.isBlocked && !this.sprite.sprite)
     }
 
     getBackground(isSelected: boolean): string {

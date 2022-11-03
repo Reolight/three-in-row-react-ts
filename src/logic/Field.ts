@@ -34,14 +34,17 @@ export default class Field {
         return new Field(stage!.name, stage!.x, stage!.y, stage!.allowedSpites, stage!.goal);        
     }
 
+    private getRandomSprite(): Sprite {
+        return this.allowedSprites[randomInt(this.allowedSprites.length)]
+    }
+
     private initialGeneration(){
         console.debug(`generation of ${this.size.x}x${this.size.y}`)
         for (let igrek = 0; igrek < this.size.y; igrek++){
             let row: Cell[] = []
             for (let ix = 0; ix < this.size.x; ix++){
                 let c = new Cell(true, {x:ix, y: igrek}, [])
-                const spriteId : number = randomInt(this.allowedSprites.length)
-                c.sprite = this.allowedSprites[spriteId]
+                c.sprite = this.getRandomSprite()
                 row.push(c)
             }
 
@@ -106,29 +109,40 @@ export default class Field {
         return f
     }
 
+    private static Generate(field : Field): number{
+        let generated: number = 0
+        field.cells[0].forEach(cell => {
+            if (cell.isAvailableForPlace()){
+                cell.sprite = field.getRandomSprite()
+                generated++
+            }
+        });
+        
+        return generated
+    }
+
     static Fall(old: Field): [field:Field, changes: number] {
         let f : Field = old
         let changes: number = 0
 
-        Field.StringField(f)
         for (let row = f.cells.length - 2; row >= 0; row--){
             console.debug(`Checking row ${row}`)
             for (let x = 0; x < f.cells.length ; x++){
 
                 if (!f.cells[row][x].isFrozen && f.cells[row][x].sprite.sprite){ //current is NOT empty and not blocked
 
-                    if (f.cells[row + 1][x].isAvailableForFall()) { //cell in row below is empty, not blocked and not frozen
+                    if (f.cells[row + 1][x].isAvailableForPlace()) { //cell in row below is empty, not blocked and not frozen
                         console.debug(`${f.cells[row + 1][x].pos.toString()} is empty`)
                         f.cells[row][x].swap(f.cells[row + 1][x], false)
                         changes++
                     }
                         //if there is no empty cell below, check sides
-                    else if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForFall()){
+                    else if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForPlace()){
                         console.debug(`${f.cells[row + 1][x - 1].pos.toString()} is empty`)
                         f.cells[row][x].swap(f.cells[row + 1][x - 1], false)
                         changes++
 
-                    } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForFall()){
+                    } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForPlace()){
                         console.debug(`${f.cells[row + 1][x + 1].pos.toString()} is empty`)
                         f.cells[row][x].swap(f.cells[row + 1][x + 1], false)
                         changes++
@@ -137,6 +151,7 @@ export default class Field {
             }
         }
 
+        changes += Field.Generate(f)
         Field.StringField(f)
         return [f, changes]
     }
