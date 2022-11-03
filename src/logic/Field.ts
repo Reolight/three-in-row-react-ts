@@ -127,7 +127,7 @@ export default class Field {
 
         for (let row = f.cells.length - 2; row >= 0; row--){
             console.debug(`Checking row ${row}`)
-            for (let x = 0; x < f.cells.length ; x++){
+            for (let x = 0; x < f.cells[row].length ; x++){
 
                 if (!f.cells[row][x].isFrozen && f.cells[row][x].sprite.sprite){ //current is NOT empty and not blocked
 

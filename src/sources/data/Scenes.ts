@@ -16,6 +16,13 @@ const scenes : FieldParams[] =
             y: 8, 
             allowedSpites: ["diamond", "gold", "iron"], 
             goal: { isAchieved: () => false }
+        },
+        {
+            name: "test2",
+            x:16,
+            y:12,
+            allowedSpites: ["square", "circle", "rumb", "triangle"],
+            goal: { isAchieved: () => false }
         }
     ]
 

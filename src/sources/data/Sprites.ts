@@ -1,23 +1,19 @@
 import Sprite from "../../logic/interfaces/Sprite"
 
 const sprites: Sprite[] = [
-    {
-        sprite: `diamond.png`,
-        name: "diamond",
-        onDestroyEffect: undefined
-    },
-    {
-        sprite: `gold.png`,
-        name: "gold",
-        onDestroyEffect: undefined
-    },
-    {
-        sprite: `iron.png`,
-        name: "iron",
-        onDestroyEffect: undefined
-    }
+    
 ]
 
+    ///returns sprite defined in sprites[] or creates new default sprite to get rid of defining defaults
 export default function retrieveSprite(t: string): Sprite | undefined {
-    return sprites.find(s => s.name === t)
+    let sprite = sprites.find(s => s.name === t)
+    if (!sprite){
+        sprite = {
+            sprite: `${t}.png`,
+            name: t,
+            onDestroyEffect: undefined
+        }
+    }
+
+    return sprite
 }
