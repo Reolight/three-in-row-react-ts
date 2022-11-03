@@ -18,7 +18,7 @@ export default function Table(props : gameInfoProps){
     const MATCH = 0
     const DESTROY = 1;
     const FALL = 2
-    const FREE = 3
+    const FREE = 3 //maybe I should make state COMPLETED?
 
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
@@ -73,10 +73,6 @@ export default function Table(props : gameInfoProps){
 
     function Free(){
         player.score!.step++
-        if (field!.goal.isAchieved() || field!.goal.isDefeated()) {
-            console.warn(field!.goal.isAchieved()? "You won" : field!.goal.isDefeated()? "You lost" : "")
-            setCompleted(true)
-        }
         if (swapped.length == 2) {
             swap(true)
         }

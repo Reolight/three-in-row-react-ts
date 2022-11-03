@@ -23,8 +23,8 @@ const scenes : FieldParams[] =
             y:12,
             allowedSpites: ["square", "circle", "rumb", "triangle"],
             goal: {
-                isAchieved(): boolean{ return this.score!.score > 1000 },
-                isDefeated(): boolean{ return this.score!.step > 20},
+                isAchieved(score): boolean{ return score!.score > 1000 },
+                isDefeated(score): boolean{ return score!.step > 20},
                 toString(): string {
                     return "score more than 1000 less then 20 steps"
                 },

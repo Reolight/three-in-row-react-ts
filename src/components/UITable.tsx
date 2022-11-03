@@ -29,7 +29,7 @@ export default function UITable(props: UITableProps){
                 </>)}
             </em>
             <p><b>Goal:</b> {props.goal.toString()} 
-                {props.goal.isDefeated()? <em><b>(LOST)</b></em> : props.goal.isAchieved() && <em><b>(STAGE COMPLETED)</b></em>}
+                {props.goal.isDefeated(props.player.score!)? <em><b>(LOST)</b></em> : props.goal.isAchieved(props.player.score!) && <em><b>(STAGE COMPLETED)</b></em>}
             </p>
         </div>
     )

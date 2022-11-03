@@ -27,7 +27,7 @@ export default class Field {
         })
 
         this.allowedSprites.forEach(sprite => console.debug(`[${sprite.name}: ${sprite.sprite}]`))
-        this.goal = Goal.init(goal, this.score)
+        this.goal = goal
         this.initialGeneration()
         this.score = new Score(allowedSprites)
     }
