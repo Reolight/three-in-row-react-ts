@@ -38,13 +38,15 @@ export default class Cell implements Tile {
         return this.sprite? false: true
     }
 
-    swap(cell: Cell, isAdjacentOnly: boolean = true){
+    swap(cell: Cell, isAdjacentOnly: boolean = true): boolean {
+        if (!Position.isAdjacent(this.pos, cell.pos) && isAdjacentOnly){
+            console.warn(`${this.pos.toString()} and ${cell.pos.toString()} not adjacent`)
+            return false
+        }
+
         const sprite: Sprite = this.sprite
         this.sprite = cell.sprite
         cell.sprite = sprite
-    }
-
-    posToString(){
-        return `${this.pos.y}:${this.pos.x}`
+        return true
     }
 }

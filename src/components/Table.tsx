@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Field from "../logic/Field";
+import Position from "../logic/interfaces/Position";
 import CellView from "./CellView";
 
 interface gameInfoProps{
@@ -35,6 +36,7 @@ export default function Table(props : gameInfoProps){
     }
 
     function Destroy() {
+        swapped = []
         setField(Field.DestroyChains(field!))
         setState(FALL)
     }
@@ -59,6 +61,12 @@ export default function Table(props : gameInfoProps){
         setState(MATCH)
     }
 
+    function Free(){
+        if (swapped.length == 2) {
+            swap(true)
+        }
+    }
+
     function stateHub(){
         console.debug(`current state: ${state}`)
         switch (Math.floor(state!)) {
@@ -71,8 +79,28 @@ export default function Table(props : gameInfoProps){
             case FALL:
                 Fall()
                 break
-            case FREE: break
+            case FREE:
+                Free()
+                break
             default: console.debug("nothing launched")
+        }
+    }
+
+    let swapped: Position[] = []
+    function swap(revert: boolean = false){
+        const f = field!
+        if (f.cells[swapped[0].y][swapped[0].x].swap(f.cells[swapped[1].y][swapped[1].x])) {
+            if (revert) swapped = []
+            setField(f)
+            setState(MATCH)
+        } else swapped = []
+    }
+
+    function onClicked(pos: Position){
+        console.debug(`Clicked : ${pos.toString()}`)
+        swapped.push(pos)
+        if (swapped.length == 2){
+            swap()
         }
     }
 
@@ -83,7 +111,7 @@ export default function Table(props : gameInfoProps){
                 <tr key={y}>
                     {row.map((cell, x) => cell.isExist?
                         <td className={cell.markedForDelete? "Cell-marked" : "Cell"} key={x + y/100}>
-                            <CellView cell={cell} />
+                            <CellView cell={cell} clicked={onClicked} />
                         </td> : <td key={x + y/100} ></td>
                     )}
                 </tr>

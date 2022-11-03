@@ -1,8 +1,10 @@
 import React, { useState } from "react";
 import Cell from "../logic/Cell";
+import Position from "../logic/interfaces/Position";
 
 interface CellProps{
     cell: Cell
+    clicked: (pos: Position) => void
 }
 
 export default function CellView(props: CellProps){
@@ -10,7 +12,12 @@ export default function CellView(props: CellProps){
 
     return(
         <>
-            {!c.isEmpty() && <img className="cell" src={c.getSprite()} alt={c.sprite.name} />}
+            {!c.isEmpty() && <img
+                className="cell"
+                src={c.getSprite()}
+                alt={c.sprite.name} 
+                onClick={() => props.clicked(c.pos)}
+            />}
         </>
     )
 }

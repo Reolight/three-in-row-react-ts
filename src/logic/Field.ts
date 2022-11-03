@@ -53,11 +53,13 @@ export default class Field {
 
     private static MatchRow(cells: Cell[]){
         for (let x = cells.length - 2; x > 0; x--){
-            if (!Chain.isOpened && cells[x].sprite.name){
-                if (cells[x-1].sprite.name === cells[x].sprite.name
-                    && cells[x].sprite.name === cells[x+1].sprite.name)
-                {
-                    Chain.open([ cells[x-1], cells[x], cells[x+1] ])
+            if (!Chain.isOpened) {
+                    if (cells[x].sprite.name){
+                        if (cells[x-1].sprite.name === cells[x].sprite.name
+                            && cells[x].sprite.name === cells[x+1].sprite.name)
+                        {
+                            Chain.open([ cells[x-1], cells[x], cells[x+1] ])
+                        }
                 }
             }
             else if (cells[x].sprite.name === cells[x-1].sprite.name){
@@ -116,19 +118,19 @@ export default class Field {
                 if (!f.cells[row][x].isFrozen && f.cells[row][x].sprite.sprite){ //current is NOT empty and not blocked
 
                     if (f.cells[row + 1][x].isAvailableForFall()) { //cell in row below is empty, not blocked and not frozen
-                        console.debug(`${f.cells[row + 1][x].posToString()} is empty`)
-                        f.cells[row][x].swap(f.cells[row + 1][x])
+                        console.debug(`${f.cells[row + 1][x].pos.toString()} is empty`)
+                        f.cells[row][x].swap(f.cells[row + 1][x], false)
                         changes++
                     }
                         //if there is no empty cell below, check sides
                     else if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForFall()){
-                        console.debug(`${f.cells[row + 1][x - 1].posToString()} is empty`)
-                        f.cells[row][x].swap(f.cells[row + 1][x - 1])
+                        console.debug(`${f.cells[row + 1][x - 1].pos.toString()} is empty`)
+                        f.cells[row][x].swap(f.cells[row + 1][x - 1], false)
                         changes++
 
                     } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForFall()){
-                        console.debug(`${f.cells[row + 1][x + 1].posToString()} is empty`)
-                        f.cells[row][x].swap(f.cells[row + 1][x + 1])
+                        console.debug(`${f.cells[row + 1][x + 1].pos.toString()} is empty`)
+                        f.cells[row][x].swap(f.cells[row + 1][x + 1], false)
                         changes++
                     }
                 }
