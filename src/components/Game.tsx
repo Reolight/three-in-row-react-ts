@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import Field from "../logic/Field";
 import Table from "./Table"
 
 interface gameInfoProps{
