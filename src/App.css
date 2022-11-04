@@ -37,7 +37,80 @@
   }
 }
 
+.Panel{
+  font-family: 'Courier New', Courier, monospace;
+  color: #282c34;
+  margin: 24px;
+  padding: 24px;
+  width: fit-content;
+  margin-right: auto;
+  margin-left: auto;
+  margin-inline-end: 24px;
+  border: #282c34 1px solid;
+  border-radius: 4px;
+  box-shadow: #282c34 12px 12px;
+  transition: all 1s;
+}
+
+.Panel-dark{
+  font-family: 'Courier New', Courier, monospace;
+  color: lightblue;
+  background: #282c34;
+  margin: 12px;
+  padding: 24px;
+  width: fit-content;
+  border: #282c34 1px solid;
+  border-radius: 4px;
+  transition: all 1s;
+}
+
+.Panel-inactive{
+  opacity: 0%;
+  transition: all 1s;
+}
+
+.List-div{
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+  flex: content; 
+}
+
+.Panel-button{
+  display: flex;
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: none;
+  padding: 4px;
+  padding-left: 36px;
+  padding-right: 36px;
+  margin: 16px;
+  width: 100%;
+  border: #282c34 1px solid;
+  border-radius: 4px;
+  box-shadow: #282c34 4px 4px;
+  color: #282c34;
+  transition: all 0.2s
+}
+
+.Panel-button:hover{
+  background: #282c34;
+  color: white;
+  border-color: black;
+  transform: translateX(4px) translateY(4px);
+  box-shadow: none;
+}
+
+.Panel-button:disabled{
+  background: #33373f;
+  color: rgb(120, 121, 138);
+  border-color: black;
+  transform: translateX(4px) translateY(4px);
+  box-shadow: none;
+}
+
 .Game-container{
+  display: flex;
+  width:100%;
   margin-left: auto;
   margin-right: auto;
   background: url(./sources/wall/back.bmp);
@@ -45,7 +118,36 @@
   background-size: cover;
 }
 
+.Menu-row{
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 24px;
+}
+
+.Game-container container{
+  flex-direction: block;
+  margin: auto;
+  text-align: center;
+}
+
+.Game-container sidebar{
+  position: absolute;
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  height: initial;
+  width: 200px;
+  left: 0px;
+  top: 0px;
+  padding-top: 40px;
+}
+
 .Game-table{
+  display: flex;
   margin-left: auto;
   margin-right: auto;
 }

@@ -108,33 +108,38 @@ export default function Table(props : gameInfoProps){
 
     function onClicked(pos: Position){
         console.debug(`Clicked : ${pos.toString()}`)
-        swapped.push(pos)
+        if (swapped.length == 1 &&
+            !Position.isAdjacent(swapped[0], pos))
+            swapped[0] = pos
+        else swapped.push(pos)
+        
+        if (swapped.length == 0) swapped.push(pos)
+
         if (swapped.length == 2){
             swap()
         }
     }
 
     return(!field? <p>Wait please...</p> :
-        <>
-        <UITable player={player} goal={field!.goal}/>
         <div className="Game-container">
-            <h1>{field.name}</h1>
-            <table className="Game-table">
-                <tbody>
-                {field.cells.map((row, y) =>
-                    <tr key={y}>
-                        {row.map((cell, x) => cell.isExist?
-                            <td className={cell.markedForDelete? "Cell-marked" : "Cell"} key={x + y/100}>
-                                <CellView 
-                                    cell={cell}
-                                    clicked={onClicked}
-                                />
-                            </td> : <td key={x + y/100} ></td>
-                        )}
-                    </tr>
-                )}
-                </tbody>
-            </table>
-        </div>
-        </>)
+            <UITable player={player} goal={field!.goal}/>
+            <div className="container">
+                <table className="Game-table">
+                    <tbody>
+                    {field.cells.map((row, y) =>
+                        <tr key={y}>
+                            {row.map((cell, x) => cell.isExist?
+                                <td className={cell.markedForDelete? "Cell-marked" : "Cell"} key={x + y/100}>
+                                    <CellView 
+                                        cell={cell}
+                                        clicked={onClicked}
+                                    />
+                                </td> : <td key={x + y/100} ></td>
+                            )}
+                        </tr>
+                    )}
+                    </tbody>
+                </table>
+            </div>
+        </div>)
 }

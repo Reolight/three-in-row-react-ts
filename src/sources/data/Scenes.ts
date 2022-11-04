@@ -2,6 +2,7 @@ import Goal from "../../logic/interfaces/Goal";
 
 interface FieldParams{
     name: string
+    description?: string
     x: number
     y: number
     allowedSpites: string[]
@@ -12,6 +13,7 @@ const scenes : FieldParams[] =
     [
         {
             name: "test stage",
+            description: "This stage is designed for testing game capabilities",
             x: 8,
             y: 8, 
             allowedSpites: ["diamond", "gold", "iron"], 
@@ -34,4 +36,10 @@ const scenes : FieldParams[] =
 
 export default function retrieveStage(name: string): FieldParams | undefined {
     return scenes.find(sc => sc.name == name)
+}
+
+export function getStageNames(): string[]{
+    let stages : string[] = []
+    scenes.forEach(scene => stages.push(scene.name))
+    return stages
 }

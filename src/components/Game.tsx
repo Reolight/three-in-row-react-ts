@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useParams } from "react-router-dom";
 import Player from "../logic/Player";
 import Table from "./Table"
 
@@ -8,9 +9,11 @@ interface gameInfoProps{
 }
 
 export default function Game(props : gameInfoProps){
-    
+    const player = props.player ?? new Player("Reolight", 0)
+    const params = useParams();
+    const stage = props.stage ?? params.stage
     return(
     <div>
-        <Table stage={props.stage} player={props.player}/>
+        <Table stage={stage} player={player}/>
     </div>)
 }

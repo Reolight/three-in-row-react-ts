@@ -18,15 +18,16 @@ export default function UITable(props: UITableProps){
     useEffect(onChanged, [props.player])
 
     return(
-        <div className="flex flex-row">
-            <p><>Name: {props.player.name} Money: {props.player.money}.</></p>
-            <em><b>Step: </b>{player.score?.step} Score: {player.score?.score}</em>
-            <em>{player.score!.destroyed.map((kv) => 
+        <div className="Panel-dark sidebar">
+            <p>Name: {props.player.name} Money: {props.player.money}.</p>
+            <p><em><b>Step: </b>{player.score?.step}</em></p>
+            <p><em><b>Score:</b> {player.score?.score}</em></p>
+            <p><em>{player.score!.destroyed.map((kv) => 
                 <>
                     <img key={kv.name} className="Icon" src={Cell.getSpriteByName(kv.name)}/>
                     {kv.value}
                 </>)}
-            </em>
+            </em></p>
             <p><b>Goal:</b> {props.goal.toString()} 
                 {props.goal.isDefeated(props.player.score!)? <em><b>(LOST)</b></em> : props.goal.isAchieved(props.player.score!) && <em><b>(STAGE COMPLETED)</b></em>}
             </p>
