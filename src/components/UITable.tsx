@@ -6,7 +6,6 @@ import Player from "../logic/Player";
 interface UITableProps {
     player: Player
     goal: Goal
-    completed: boolean
 }
 
 export default function UITable(props: UITableProps){

@@ -23,8 +23,7 @@ export default function Table(props : gameInfoProps){
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
     const [player, setPlayer] = useState(props.player)
-    const [score, setScore] = useState()
-    const [completed, setCompleted] = useState(false)
+    //const [completed, setCompleted] = useState(false)
 
     useEffect(stateHub, [state])
     useEffect(InitialCycle, [props.stage])
@@ -117,7 +116,7 @@ export default function Table(props : gameInfoProps){
 
     return(!field? <p>Wait please...</p> :
         <>
-        <UITable player={player} goal={field!.goal} completed={completed}/>
+        <UITable player={player} goal={field!.goal}/>
         <div className="Game-container">
             <h1>{field.name}</h1>
             <table className="Game-table">
