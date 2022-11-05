@@ -1,9 +1,12 @@
 import React from "react";
 import Score from "../logic/Score";
+import "./styles/result.css"
 
 interface ResultScreenProps{
     isWon: boolean
     score: Score
+    retry: () => void
+    menu: () => void
 }
 
 export default function ResultScreen(props: ResultScreenProps): JSX.Element{
@@ -15,8 +18,8 @@ export default function ResultScreen(props: ResultScreenProps): JSX.Element{
                 <h5>{`Score: ${props.score.score}`}</h5>
                 <h5>{`Steps: ${props.score.step}`}</h5>
                 <div className="flex flex-row">
-                    <button className="flex next">Next</button>
-                    <button className="flex retry">Retry</button>
+                    <button className="flex next" onClick={props.menu}>Continue</button>
+                    <button className="flex retry" onClick={props.retry}>Retry</button>
                 </div>
             </div>
         )
@@ -29,8 +32,8 @@ export default function ResultScreen(props: ResultScreenProps): JSX.Element{
                 <h5>{`Score: ${props.score.score}`}</h5>
                 <h5>{`Steps: ${props.score.step}`}</h5>
                 <div className="flex flex-row">
-                    <button className="flex next">Menu</button>
-                    <button className="flex retry">Retry</button>
+                    <button className="flex next" onClick={props.menu}>Menu</button>
+                    <button className="flex retry" onClick={props.retry} >Retry</button>
                 </div>
             </div>
         )

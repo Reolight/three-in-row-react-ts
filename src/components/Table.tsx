@@ -1,21 +1,21 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
+import { PlayerContext } from "../App";
 import Field from "../logic/Field";
 import Position from "../logic/interfaces/Position";
-import Player from "../logic/Player";
-import Score from "../logic/Score";
 import CellView from "./CellView";
 import UITable from "./UITable";
 
 interface gameInfoProps{
     stage: string
-    player: Player
-    stage_complete_callback: (won: boolean, player: Player) => void
+    stage_complete_callback: (won: boolean) => void
 }
 //Просто куча пометок для меня на русском, потому что я разраб и мне можно
 //Цикл должен строится на следующем: совпадения > разрушение > падение
 //повторяется каждый раз после клика или  генерации новой карты. Делай. Досвидания.
 
 export default function Table(props : gameInfoProps){
+    const {player, setPlayer} = useContext(PlayerContext)
+
     const MATCH = 0
     const DESTROY = 1;
     const FALL = 2
@@ -24,7 +24,7 @@ export default function Table(props : gameInfoProps){
 
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
-    const [player, setPlayer] = useState(props.player)
+    const [swapped, setSwapped] = useState<Position[]>([])
     //const [completed, setCompleted] = useState(false)
 
     useEffect(stateHub, [state])
@@ -34,6 +34,7 @@ export default function Table(props : gameInfoProps){
         setField(Field.MatchAll(field!))
         if (field!.chains.length > 0){
             console.debug(`state set to DESTROY`)
+            console.debug(field!.chains)
             setState(DESTROY)
         }
         else{
@@ -43,9 +44,9 @@ export default function Table(props : gameInfoProps){
     }
 
     function Destroy() {
-        swapped = []
-        const [f, money] = Field.DestroyChains(field!)
-        player.addScore(money)
+        setSwapped([])
+        const [f, points] = Field.DestroyChains(field!)
+        player!.addScore(points)
         setPlayer(player)
         setField(f)
         setState(FALL)
@@ -66,18 +67,19 @@ export default function Table(props : gameInfoProps){
 
     function InitialCycle(){
         const stage : Field = Field.getStage(props.stage)
-        player.score = stage!.score //ref to score
+        player!.score = stage!.score //ref to score
+        player!.score!.step++
         setField(stage)
         console.debug(`state set to MATCH`)
         setState(MATCH)
     }
 
     function Free(){
-        player.score!.step++
+        if (swapped.length == 0) player!.score!.step++
         
-        if (field!.goal.isAchieved(player.score!) || field!.goal.isDefeated(player.score!)){
+        if (field!.goal.isAchieved(player!.score!) || field!.goal.isDefeated(player!.score!)){
             setState(COMPLETED)
-            props.stage_complete_callback(field!.goal.isAchieved(player.score!), player)
+            props.stage_complete_callback(field!.goal.isAchieved(player!.score!))
         }
 
         if (swapped.length == 2) {
@@ -106,24 +108,25 @@ export default function Table(props : gameInfoProps){
         }
     }
 
-    let swapped: Position[] = []
     function swap(revert: boolean = false){
         const f = field!
         if (f.cells[swapped[0].y][swapped[0].x].swap(f.cells[swapped[1].y][swapped[1].x])) {
-            if (revert) swapped = []
+            if (revert) setSwapped([])
             setField(f)
             setState(MATCH)
-        } else swapped = []
+        } else setSwapped([])
     }
 
     function onClicked(pos: Position){
         console.debug(`Clicked : ${pos.toString()}`)
+        let s = swapped
+
         if (swapped.length == 1 &&
-            !Position.isAdjacent(swapped[0], pos))
-            swapped[0] = pos
-        else swapped.push(pos)
-        
-        if (swapped.length == 0) swapped.push(pos)
+            !Position.isAdjacent(swapped[0], pos) || swapped.length == 0){
+            setSwapped([pos])
+        }
+
+        else setSwapped([...swapped, pos])
 
         if (swapped.length == 2){
             swap()
@@ -132,7 +135,7 @@ export default function Table(props : gameInfoProps){
 
     return(!field? <p>Wait please...</p> :
         <div className="Game-container">
-            <UITable player={player} goal={field!.goal}/>
+            <UITable goal={field!.goal}/>
             <div className="container">
                 <table className="Game-table">
                     <tbody>
@@ -143,6 +146,7 @@ export default function Table(props : gameInfoProps){
                                     <CellView 
                                         cell={cell}
                                         clicked={onClicked}
+                                        selected={swapped[0]?.x == cell.pos.x && swapped[0]?.y == cell.pos.y}
                                     />
                                 </td> : <td key={x + y/100} ></td>
                             )}

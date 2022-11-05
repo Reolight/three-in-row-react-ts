@@ -1,28 +1,28 @@
-import React, { useState } from "react";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
-import PlayerData from "../logic/interfaces/PlayerData";
-import Player from "../logic/Player";
-import retrieveStage, { getStageNames, getStageTitles, retrieveStageByTitle } from "../sources/data/Scenes";
+import React, { useContext, useState } from "react";
+import { useLocation, useNavigate } from "react-router-dom";
+import { PlayerContext } from "../App";
+import { getStageTitles } from "../sources/data/Scenes";
 import StageInfo from "./StageInfo";
+import "./styles/panel.css"
 
 export default function Menu(){
     const loc = useLocation()
-    const player: Player = Player.makePlayer(loc.state.player as PlayerData);
+    const {player, setPlayer} = useContext(PlayerContext)
 
     const stages: string[] = getStageTitles()
     const [chosen, setChosen] = useState<number>(-1)
     const navigate = useNavigate()
 
     function launchGame(stage: string){
-        navigate(`Game/${stage}`, {state: {player: player as PlayerData}})
+        navigate(`Game/${stage}`)
     }
 
     return(
         <>
         <div className="Panel">
             <div className="Menu-column">
-                <h3><b>{player.name}</b></h3>
-                <p>Money: ${player.money}</p>
+                <h3><b>{player!.name}</b></h3>
+                <p>Money: ${player!.money}</p>
             </div>
         </div>
 
@@ -46,7 +46,7 @@ export default function Menu(){
                 <StageInfo 
                     name={stages[chosen]}
                     callback={launchGame}
-                    record={player.getRecord(stages[chosen])}
+                    record={player!.getRecord(stages[chosen])}
                 />
             </div>
         </div>

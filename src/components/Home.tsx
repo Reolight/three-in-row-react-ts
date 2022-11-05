@@ -1,10 +1,13 @@
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { PlayerContext } from "../App";
 import PlayerData from "../logic/interfaces/PlayerData";
 import Player from "../logic/Player";
 import DropDown from "./auxillary/DropDown";
+import "./styles/panel.css"
 
 export default function Home() {
+    const {player, setPlayer} = useContext(PlayerContext)
     const [showDropdown, setShowDropdown] = useState(false)
     const [name, setName] = useState("")
     const [names, setNames] = useState<string[]>([""])
@@ -26,9 +29,9 @@ export default function Home() {
 
         if (!names.find(n => n === name))
             localStorage.setItem("players", JSON.stringify([...names, name]))
-        const player : Player = Player.load(name)
+        setPlayer(Player.load(name))
         console.log(player as PlayerData)
-        navigate(`Menu/`, {state: {player: player as PlayerData}})
+        navigate(`Menu/`)
     }
 
     function onChangeInputValidation(e: React.ChangeEvent<HTMLInputElement>){

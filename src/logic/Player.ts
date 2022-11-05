@@ -21,7 +21,6 @@ export default class Player implements PlayerData {
         //score is money and score simultaneously.
         //But in future (maybe) it will be calculated separatly based on skills
     addScore(score: number): void{
-        this.money += score;
         this.score!.score += score
     }
 
@@ -35,6 +34,7 @@ export default class Player implements PlayerData {
             record.score = record.score < score? score : record.score
         }
         
+        this.money += Math.round(score /2)
         this.save()
     }
 
@@ -43,11 +43,13 @@ export default class Player implements PlayerData {
     }
 
     save(){
-        localStorage.setItem(this.name, JSON.stringify(this, (k) => k == "score" && undefined))
+        localStorage.setItem(this.name, JSON.stringify(this))
     }
 
     static load(name: string): Player {
         const playerJson = localStorage.getItem(name)
-        return playerJson? JSON.parse(playerJson) : new Player(name, 0)
+        const player = playerJson? Player.makePlayer(JSON.parse(playerJson)) : new Player(name, 0)
+        player.save()
+        return player
     }
 }

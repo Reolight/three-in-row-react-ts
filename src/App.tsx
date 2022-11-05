@@ -1,18 +1,30 @@
-import React from 'react';
+import React, { createContext, Dispatch, SetStateAction } from 'react';
 import './App.css';
 import AppRoutes from './AppRoutes';
 import { Route, Routes} from 'react-router-dom'
-import Game from './components/Game';
 import Player from './logic/Player';
 
+type TypeSetState<T> = Dispatch<SetStateAction<T>>
+
+interface IContext{
+  player: Player | undefined
+  setPlayer: TypeSetState<Player | undefined>
+}
+
+export const PlayerContext = createContext<IContext>({} as IContext)
+
 function App() {
+  const [player, setPlayer] = React.useState<Player>()
+
   return(
-    <Routes>
-      {AppRoutes.map((route, index) => {
-        const {element, ...rest} = route
-        return <Route key={index} {...rest} element={element} />
-      })}
-    </Routes>
+    <PlayerContext.Provider value={{player, setPlayer}}>
+      <Routes>
+        {AppRoutes.map((route, index) => {
+          const {element, ...rest} = route
+          return <Route key={index} {...rest} element={element} />
+        })}
+      </Routes>
+    </PlayerContext.Provider>
   )
 
   //return (

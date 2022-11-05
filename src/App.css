@@ -72,101 +72,11 @@
   border-bottom: 0 none;
 }
 
-.Panel{
-  position: relative;
-  z-index: 1;
-  font-family: 'Courier New', Courier, monospace;
-  color: #282c34;
-  margin: 15px;
-  padding-left: 18px;
-  padding-right: 18px;
-  width: fit-content;
-  margin-right: auto;
-  margin-left: auto;
-  border: #282c34 1px solid;
-  border-radius: 4px;
-  box-shadow: #282c34 12px 12px;
-  transition: all 1s;
-}
-
-.Panel .margin-inline-end{
-  margin-inline-end: 24px;
-}
-
-.Panel input{
-  font-family: 'Courier New', Courier, monospace;
-  font-weight: bold;
-  font-size: medium;
-  box-shadow: #282c34 4px 4px;
-  transition: all 0.25s;
-}
-
-.Panel input:focus{
-  transform: translateX(4px) translateY(4px);
-  box-shadow: none;
-  outline: #282c34 solid 2px;
-}
-
-.Panel-dark{
-  font-family: 'Courier New', Courier, monospace;
-  color: lightblue;
-  background: #282c34;
-  margin: 12px;
-  padding: 24px;
-  width: fit-content;
-  border: #282c34 1px solid;
-  border-radius: 4px;
-  transition: all 1s;
-}
-
-.Panel-inactive{
-  opacity: 0%;
-  transition: all 1s;
-}
-
 .List-div{
   width: 80%;
   margin-left: auto;
   margin-right: auto;
   flex: content; 
-}
-
-.Panel button{
-  display: flex;
-  font-family: 'Courier New', Courier, monospace;
-  text-decoration: none;
-  padding: 4px;
-  padding-left: 36px;
-  padding-right: 36px;
-  margin: 16px;
-  border: #282c34 1px solid;
-  border-radius: 4px;
-  box-shadow: #282c34 4px 4px;
-  color: #282c34;
-  transition: all 0.2s
-}
-
-.Panel button:focus{
-  background-color: #c6d8fa;
-  outline: #282c34 2px solid;
-  transform: translateX(2px) translateY(2px);
-  box-shadow: #282c34 2px 2px;
-}
-
-.Panel button:hover{
-  background: #282c34;
-  color: white;
-  border-color: black;
-  transform: translateX(4px) translateY(4px);
-  box-shadow: none;
-}
-
-.Panel button:disabled{
-  background-color: #33373f;
-  color: rgb(120, 121, 138);
-  border-color: black;
-  transform: translateX(4px) translateY(4px);
-  box-shadow: none;
 }
 
 .Game-container{
@@ -177,24 +87,6 @@
   background: url(./sources/wall/back.bmp);
   background-repeat: no-repeat;
   background-size: cover;
-}
-
-.Panel .Menu-row{
-  display: flex;
-  flex-direction: row;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 8px;
-}
-
-.Panel .Menu-column{
-  display: flex;
-  flex-direction: column;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  margin-top: 8px;
 }
 
 .align-items-center{
@@ -237,8 +129,18 @@
   transition: all
 }
 
+@keyframes itm-sel {
+  from{
+    scale: 0.8;
+  }
+  to{
+    scale: 0.9;
+  }
+}
+
 .Item-selected{
   transform: scale(0.8);
+  animation: itm-sel 0.25s infinite alternate;
 }
 
 .Cell-marked{
@@ -273,116 +175,6 @@
   margin-right: 4px;
   width: 18px;
   height: 18px;
-}
-
-.result {
-  position: fixed;
-  box-sizing: border-box;
-  inset: 0px;
-  width: 100vw;
-  height: 100vh;
-  background-color: rgba(0, 0, 0, 0.85);
-  font-family: 'Times New Roman', Times, serif;
-  font-size: large;
-  padding: 2rem;
-  line-height: 1.2;
-  white-space: pre-wrap;
-  overflow: auto;
-
-}
-
-.result div {
-  margin: auto;
-  width: fit-content;
-  text-align: center;
-}
-
-.result h1{
-  font: xx-large bolder;
-  font-size: 8vw;
-}
-
-.result h1.defeat{
-  color: red;
-  text-shadow: darkred 4px 4px;
-}
-
-.result h1.win{
-  color: gold;
-  text-shadow: orange 2px 2px;
-}
-
-.result h5{
-  margin-top: 12px;
-  margin-bottom: 12px;
-  color: #c6d8fa;
-  font-size: 2.5vw;
-}
-
-button.retry{
-  display: flex;
-  font-size: 2vw;
-  font-weight: bolder;
-  font-family: 'Courier New', Courier, monospace;
-  text-decoration: none;
-  background-color: red;
-  padding: 12px;
-  padding-left: 48px;
-  padding-right: 48px;
-  margin: 16px;
-  border: #282c34 1px solid;
-  border-radius: 4px;
-  box-shadow: #282c34 4px 4px;
-  color: black;
-  transition: all 0.2s
-}
-
-button.retry:focus{
-  background-color: darkred;
-  outline: #282c34 2px solid;
-  transform: translateX(2px) translateY(2px);
-  box-shadow: #282c34 2px 2px;
-}
-
-button.retry:hover{
-  background: darkred;
-  color: white;
-  border-color: black;
-  transform: translateX(4px) translateY(4px);
-  box-shadow: none;
-}
-
-button.next{
-  display: flex;
-  font-weight: bolder;
-  font-size: 2vw;
-  font-family: 'Courier New', Courier, monospace;
-  text-decoration: none;
-  background-color: greenyellow;
-  padding: 12px;
-  padding-left: 48px;
-  padding-right: 48px;
-  margin: 16px;
-  border: green 1px solid;
-  border-radius: 4px;
-  box-shadow: #282c34 4px 4px;
-  color: black;
-  transition: all 0.2s
-}
-
-button.next:focus{
-  background-color: greenyellow;
-  border: green 3px solid;
-  transform: translateX(2px) translateY(2px);
-  box-shadow: #282c34 2px 2px;
-}
-
-button.next:hover{
-  background: darkgreen;
-  color: #61dafb;
-  border-color: black;
-  transform: translateX(4px) translateY(4px);
-  box-shadow: none;
 }
 
 .w-100{

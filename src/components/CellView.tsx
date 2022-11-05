@@ -5,6 +5,7 @@ import Position from "../logic/interfaces/Position";
 interface CellProps{
     cell: Cell
     clicked: (pos: Position) => void
+    selected: boolean
 }
 
 export default function CellView(props: CellProps){
@@ -13,7 +14,7 @@ export default function CellView(props: CellProps){
     return(
         <>
             {!c.isEmpty() && <img
-                className={"Item" } 
+                className={props.selected? "Item-selected" : "Item"} 
                 src={Cell.getSprite(c.sprite)}
                 alt={c.sprite.name} 
                 onClick={() => props.clicked(c.pos)}
