@@ -1,30 +1,35 @@
 import React from "react";
-import { Link } from "react-router-dom";
 import Cell from "../logic/Cell";
-import retrieveStage from "../sources/data/Scenes";
+import PlayRecord from "../logic/interfaces/PlayRecord";
+import retrieveStage, { retrieveStageByTitle } from "../sources/data/Scenes";
 
 interface StageInfoProps{
     name?: string
+    record?: PlayRecord
+    callback: (nameStage: string) => void; //callback
 }
 
 export default function StageInfo(props: StageInfoProps){
-    const stage = retrieveStage(props.name!) ?? undefined
-
+    const stage = retrieveStageByTitle(props.name!) ?? undefined
+    
     return( !stage ? <div className="Panel-inactive"></div> :
-        <div className="Panel List-div">
-            <h1>{stage.name}</h1>
+        <div className="Panel Menu-column w-50">
+            <h1>{stage.title}</h1>
             <p>{stage.description}</p>
+            <p><b>Goal:</b> {stage.goal.toString()}</p>
+            {props.record && <p>Passed: score  {props.record.score}</p> }
             <em>
                 field size: {stage.x}x{stage.y}. 
                 Tiles: {stage.allowedSpites.map((sprite, index) => 
                     <img key={index} className="Icon" src={Cell.getSpriteByName(sprite)} />
                 )}
             </em>
-
-            <p><b>Goal:</b> {stage.goal.toString()}</p>
-            <Link className="Panel-button" to={`Game/${stage.name}`} >
+            <button
+                className="w-fit-content"
+                onClick={() => props.callback(stage.name!)} 
+            >
                     Start
-            </Link>
+            </button>
         </div>
     )
 }

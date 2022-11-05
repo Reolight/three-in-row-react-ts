@@ -1,19 +1,53 @@
+import PlayerData from "./interfaces/PlayerData"
+import PlayRecord from "./interfaces/PlayRecord"
 import Score from "./Score"
 
-export default class Player {
+export default class Player implements PlayerData {
     name: string
     money: number
     score?: Score
-    
+    records?: PlayRecord[]
+
     constructor(name: string, money: number){
         this.name = name
         this.money = money
     }
 
+    static makePlayer(data: PlayerData): Player {
+        let player = new Player(data.name, data.money)
+        player.records = data.records
+        return player
+    }
         //score is money and score simultaneously.
         //But in future (maybe) it will be calculated separatly based on skills
     addScore(score: number): void{
         this.money += score;
         this.score!.score += score
+    }
+
+    recordPlay(stage: string, score: number){
+        let record: PlayRecord | undefined = this.records?.find(rec => rec.stage == stage)
+        if (!record){
+            record = {stage: stage, score: score}
+            if (!this.records) this.records = []
+            this.records.push(record)
+        } else {
+            record.score = record.score < score? score : record.score
+        }
+        
+        this.save()
+    }
+
+    getRecord(stage: string): PlayRecord | undefined{
+        return this.records?.find(rec => rec.stage === stage)
+    }
+
+    save(){
+        localStorage.setItem(this.name, JSON.stringify(this, (k) => k == "score" && undefined))
+    }
+
+    static load(name: string): Player {
+        const playerJson = localStorage.getItem(name)
+        return playerJson? JSON.parse(playerJson) : new Player(name, 0)
     }
 }

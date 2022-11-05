@@ -9,6 +9,7 @@ import UITable from "./UITable";
 interface gameInfoProps{
     stage: string
     player: Player
+    stage_complete_callback: (won: boolean, player: Player) => void
 }
 //Просто куча пометок для меня на русском, потому что я разраб и мне можно
 //Цикл должен строится на следующем: совпадения > разрушение > падение
@@ -19,6 +20,7 @@ export default function Table(props : gameInfoProps){
     const DESTROY = 1;
     const FALL = 2
     const FREE = 3 //maybe I should make state COMPLETED?
+    const COMPLETED = 4
 
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
@@ -72,6 +74,12 @@ export default function Table(props : gameInfoProps){
 
     function Free(){
         player.score!.step++
+        
+        if (field!.goal.isAchieved(player.score!) || field!.goal.isDefeated(player.score!)){
+            setState(COMPLETED)
+            props.stage_complete_callback(field!.goal.isAchieved(player.score!), player)
+        }
+
         if (swapped.length == 2) {
             swap(true)
         }
@@ -91,6 +99,8 @@ export default function Table(props : gameInfoProps){
                 break
             case FREE:
                 Free()
+                break
+            case COMPLETED:
                 break
             default: console.debug("nothing launched")
         }

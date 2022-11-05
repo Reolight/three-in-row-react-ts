@@ -37,19 +37,74 @@
   }
 }
 
+.relative{
+  position: relative;
+}
+
+.dropdown {
+  position: absolute;
+  background-color: aliceblue;
+  z-index: 3;
+  min-width: 100%;
+  top: 30px;
+  left: 4px;
+  border: #282c34 1px solid;
+  padding: 0;
+  text-align: left;
+  border-radius: 4px;
+  box-shadow: #282c34 4px 4px;
+}
+
+.dropdown > div{
+  font-family: 'Courier New', Courier, monospace;
+  margin: 0;
+  padding: 8px;
+  border-bottom: #282c34 1px solid;
+  transition: all 0.2s;
+}
+
+.dropdown > div:hover{
+  color: lightblue;
+  background-color: #282c34;
+}
+
+.dropdown > div:last-child{
+  border-bottom: 0 none;
+}
+
 .Panel{
+  position: relative;
+  z-index: 1;
   font-family: 'Courier New', Courier, monospace;
   color: #282c34;
-  margin: 24px;
-  padding: 24px;
+  margin: 15px;
+  padding-left: 18px;
+  padding-right: 18px;
   width: fit-content;
   margin-right: auto;
   margin-left: auto;
-  margin-inline-end: 24px;
   border: #282c34 1px solid;
   border-radius: 4px;
   box-shadow: #282c34 12px 12px;
   transition: all 1s;
+}
+
+.Panel .margin-inline-end{
+  margin-inline-end: 24px;
+}
+
+.Panel input{
+  font-family: 'Courier New', Courier, monospace;
+  font-weight: bold;
+  font-size: medium;
+  box-shadow: #282c34 4px 4px;
+  transition: all 0.25s;
+}
+
+.Panel input:focus{
+  transform: translateX(4px) translateY(4px);
+  box-shadow: none;
+  outline: #282c34 solid 2px;
 }
 
 .Panel-dark{
@@ -76,7 +131,7 @@
   flex: content; 
 }
 
-.Panel-button{
+.Panel button{
   display: flex;
   font-family: 'Courier New', Courier, monospace;
   text-decoration: none;
@@ -84,7 +139,6 @@
   padding-left: 36px;
   padding-right: 36px;
   margin: 16px;
-  width: 100%;
   border: #282c34 1px solid;
   border-radius: 4px;
   box-shadow: #282c34 4px 4px;
@@ -92,7 +146,14 @@
   transition: all 0.2s
 }
 
-.Panel-button:hover{
+.Panel button:focus{
+  background-color: #c6d8fa;
+  outline: #282c34 2px solid;
+  transform: translateX(2px) translateY(2px);
+  box-shadow: #282c34 2px 2px;
+}
+
+.Panel button:hover{
   background: #282c34;
   color: white;
   border-color: black;
@@ -100,8 +161,8 @@
   box-shadow: none;
 }
 
-.Panel-button:disabled{
-  background: #33373f;
+.Panel button:disabled{
+  background-color: #33373f;
   color: rgb(120, 121, 138);
   border-color: black;
   transform: translateX(4px) translateY(4px);
@@ -118,23 +179,35 @@
   background-size: cover;
 }
 
-.Menu-row{
+.Panel .Menu-row{
   display: flex;
   flex-direction: row;
-  align-items: center;
   width: fit-content;
   margin-left: auto;
   margin-right: auto;
-  margin-top: 24px;
+  margin-top: 8px;
 }
 
-.Game-container container{
+.Panel .Menu-column{
+  display: flex;
+  flex-direction: column;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 8px;
+}
+
+.align-items-center{
+  align-items: center;
+}
+
+.Game-container .container{
   flex-direction: block;
   margin: auto;
   text-align: center;
 }
 
-.Game-container sidebar{
+.Game-container .sidebar{
   position: absolute;
   display: flex;
   flex-direction: column;
@@ -200,4 +273,147 @@
   margin-right: 4px;
   width: 18px;
   height: 18px;
+}
+
+.result {
+  position: fixed;
+  box-sizing: border-box;
+  inset: 0px;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.85);
+  font-family: 'Times New Roman', Times, serif;
+  font-size: large;
+  padding: 2rem;
+  line-height: 1.2;
+  white-space: pre-wrap;
+  overflow: auto;
+
+}
+
+.result div {
+  margin: auto;
+  width: fit-content;
+  text-align: center;
+}
+
+.result h1{
+  font: xx-large bolder;
+  font-size: 8vw;
+}
+
+.result h1.defeat{
+  color: red;
+}
+
+.result h1.win{
+  color: gold;
+  text-shadow: orange 2px 2px;
+}
+
+.result p{
+  color: #c6d8fa;
+  font-size: 5vm;
+}
+
+button.retry{
+  display: flex;
+  font-size: large;
+  font-weight: bolder;
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: none;
+  background-color: red;
+  padding: 4px;
+  padding-left: 36px;
+  padding-right: 36px;
+  margin: 16px;
+  border: #282c34 1px solid;
+  border-radius: 4px;
+  box-shadow: #282c34 4px 4px;
+  color: black;
+  transition: all 0.2s
+}
+
+button.retry:focus{
+  background-color: darkred;
+  outline: #282c34 2px solid;
+  transform: translateX(2px) translateY(2px);
+  box-shadow: #282c34 2px 2px;
+}
+
+button.retry:hover{
+  background: darkred;
+  color: white;
+  border-color: black;
+  transform: translateX(4px) translateY(4px);
+  box-shadow: none;
+}
+
+button.next{
+  display: flex;
+  font-weight: bolder;
+  font-size: large;
+  font-family: 'Courier New', Courier, monospace;
+  text-decoration: none;
+  background-color: greenyellow;
+  padding: 4px;
+  padding-left: 36px;
+  padding-right: 36px;
+  margin: 16px;
+  border: green 1px solid;
+  border-radius: 4px;
+  box-shadow: #282c34 4px 4px;
+  color: black;
+  transition: all 0.2s
+}
+
+button.next:focus{
+  background-color: greenyellow;
+  border: green 3px solid;
+  transform: translateX(2px) translateY(2px);
+  box-shadow: #282c34 2px 2px;
+}
+
+button.next:hover{
+  background: darkgreen;
+  color: #61dafb;
+  border-color: black;
+  transform: translateX(4px) translateY(4px);
+  box-shadow: none;
+}
+
+.w-100{
+  width: 100%;
+}
+
+.w-75{
+  width: 75%;
+}
+
+.w-50{
+  width: 50%;
+}
+
+.w-25{
+  width: 25%;
+}
+
+.w-fit-content{
+  width: fit-content;
+}
+
+.h-fit-content{
+  height: fit-content;
+}
+
+.flex{
+  display: flex;
+}
+
+.flex-row{
+  flex-direction: row;
+}
+
+.flex-col{
+  flex-direction: column;
 }
