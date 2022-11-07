@@ -1,5 +1,5 @@
-import React, { useContext, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { redirect, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { PlayerContext } from "../App";
 import Player from "../logic/Player";
 import Score from "../logic/Score";
@@ -14,21 +14,41 @@ interface gameInfoProps{
 export default function Game(props : gameInfoProps){
     const navigate = useNavigate()
     const params = useParams()
+    const [stage, setStage] = useState<string>()
     
     const {player, setPlayer } = useContext(PlayerContext)
     const [isCompleted, setCompleted] = useState<"WON" | "LOST" | "PLAY">("PLAY")
-    
-    const stage = props.stage ?? params.stage
+
+
+    useEffect(() => {
+        const parameters = params.stage;
+        if (!parameters) {
+            redirect("/")
+            return
+        }
+
+        const p = parameters.split('&')
+        console.debug(`url: ${parameters}. Splitted in [${p[0]}] and [${p[1]}]`)
+        setStage(p[0])
+        if (!player){
+            if (p[1].length < 4){
+                redirect("/")
+                return
+            }
+
+            setPlayer(Player.load(p[1]))
+        }
+    }, [params])
     
     function Won(){
-        player!.recordPlay(stage, player!.score!.score)
+        player!.recordPlay(stage!, player!.score!.score)
         setCompleted("WON")
     }
 
     function Completed(isWon: boolean): void {
-        setPlayer(player!)
         if (isWon) Won()
         else setCompleted("LOST")
+        setPlayer(player!)
     }
 
     function retry(){
@@ -43,9 +63,12 @@ export default function Game(props : gameInfoProps){
         navigate(-1)
     }
 
-    return(
+    return(!stage? <p>Loading...</p>:
     <div>
-        <Table stage={stage} stage_complete_callback={Completed}/>
+        <Table 
+            stage={stage}
+            stage_complete_callback={Completed}
+        />
         {isCompleted !== "PLAY" && 
             <ResultScreen 
                 isWon={isCompleted === "WON"} 

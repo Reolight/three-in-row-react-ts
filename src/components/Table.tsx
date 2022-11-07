@@ -34,7 +34,6 @@ export default function Table(props : gameInfoProps){
         setField(Field.MatchAll(field!))
         if (field!.chains.length > 0){
             console.debug(`state set to DESTROY`)
-            console.debug(field!.chains)
             setState(DESTROY)
         }
         else{
@@ -64,16 +63,7 @@ export default function Table(props : gameInfoProps){
             setState(MATCH)
        }
     }
-
-    function InitialCycle(){
-        const stage : Field = Field.getStage(props.stage)
-        player!.score = stage!.score //ref to score
-        player!.score!.step++
-        setField(stage)
-        console.debug(`state set to MATCH`)
-        setState(MATCH)
-    }
-
+    
     function Free(){
         if (swapped.length == 0) player!.score!.step++
         
@@ -81,10 +71,19 @@ export default function Table(props : gameInfoProps){
             setState(COMPLETED)
             props.stage_complete_callback(field!.goal.isAchieved(player!.score!))
         }
-
+        
         if (swapped.length == 2) {
             swap(true)
         }
+    }
+    
+    function InitialCycle(){
+        const stage : Field = Field.getStage(props.stage)
+        player!.score = stage!.score //ref to score
+        player!.score!.step++
+        setField(stage)
+        console.debug(`state set to MATCH`)
+        setState(MATCH)
     }
 
     function stateHub(){

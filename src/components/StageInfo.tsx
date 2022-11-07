@@ -1,7 +1,7 @@
 import React from "react";
 import Cell from "../logic/Cell";
 import PlayRecord from "../logic/interfaces/PlayRecord";
-import retrieveStage, { retrieveStageByTitle } from "../sources/data/Scenes";
+import { retrieveStageByTitle } from "../sources/data/Scenes";
 
 interface StageInfoProps{
     name?: string

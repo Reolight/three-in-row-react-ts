@@ -1,12 +1,13 @@
-import React, { useContext, useState } from "react";
-import { useLocation, useNavigate } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { redirect, useLocation, useNavigate, useParams } from "react-router-dom";
 import { PlayerContext } from "../App";
+import Player from "../logic/Player";
 import { getStageTitles } from "../sources/data/Scenes";
 import StageInfo from "./StageInfo";
 import "./styles/panel.css"
 
 export default function Menu(){
-    const loc = useLocation()
+    const params = useParams()
     const {player, setPlayer} = useContext(PlayerContext)
 
     const stages: string[] = getStageTitles()
@@ -14,10 +15,22 @@ export default function Menu(){
     const navigate = useNavigate()
 
     function launchGame(stage: string){
-        navigate(`Game/${stage}`)
+        navigate(`../Game/${stage}&${player!.name}`)
     }
 
-    return(
+    useEffect(()=>{   //in case of reload set player to those, who's name is in Url
+        if (!player){
+            let player_name: string | undefined = params.player
+            if (!player_name || player_name.length < 4) {
+                redirect("/")
+                return
+            }
+
+            setPlayer(Player.load(player_name))
+        }
+    }, [params])
+
+    return(!player? <p>Loading</p>:
         <>
         <div className="Panel">
             <div className="Menu-column">

@@ -31,7 +31,7 @@ export default function Home() {
             localStorage.setItem("players", JSON.stringify([...names, name]))
         setPlayer(Player.load(name))
         console.log(player as PlayerData)
-        navigate(`Menu/`)
+        navigate(`Menu/${player!.name}`)
     }
 
     function onChangeInputValidation(e: React.ChangeEvent<HTMLInputElement>){

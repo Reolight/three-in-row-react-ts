@@ -8,11 +8,11 @@ const AppRoutes = [
         element: <Home />
     },
     {
-        path: '/Menu',
+        path: '/Menu/:player',
         element: <Menu />
     },
     {
-        path: 'Menu/Game/:stage',
+        path: '/Game/:stage',
         element: <Game />
     }
 ]
