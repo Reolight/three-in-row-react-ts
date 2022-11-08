@@ -13,9 +13,11 @@ export default class Cell implements Tile {
     isBlocked : boolean = false //items can not be placed here
     isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
+    dropped: number
 
     constructor(exist: boolean, position: Position, initialEffects: Effect[]){
         this.pos = position
+        this.dropped = 2 // not dropped
         this.isExist = exist;
         if (!this.isExist) return
         this.effects = initialEffects
@@ -56,6 +58,12 @@ export default class Cell implements Tile {
         const sprite: Sprite = this.sprite
         this.sprite = cell.sprite
         cell.sprite = sprite
+        
         return true
+    }
+    
+    drop(cell: Cell){
+        this.dropped = cell.pos.x - this.pos.x
+        return this.swap(cell, false)
     }
 }

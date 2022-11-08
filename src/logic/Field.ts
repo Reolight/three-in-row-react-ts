@@ -85,7 +85,10 @@ export default class Field {
 
         for (let ix = 0; ix < f.cells[0].length; ix++){
             let column: Cell[] = []
-            f.cells.forEach(row => column.push(row[ix]))
+            f.cells.forEach(row => {
+                column.push(row[ix])
+                row[ix].dropped = 2
+            })
             Field.MatchRow(column)
         }
 
@@ -120,6 +123,7 @@ export default class Field {
         field.cells[0].forEach(cell => {
             if (cell.isAvailableForPlace()){
                 cell.sprite = field.getRandomSprite()
+                cell.dropped = 0
                 generated++
             }
         });
@@ -139,18 +143,18 @@ export default class Field {
 
                     if (f.cells[row + 1][x].isAvailableForPlace()) { //cell in row below is empty, not blocked and not frozen
                         console.debug(`${f.cells[row + 1][x].pos.toString()} is empty`)
-                        f.cells[row][x].swap(f.cells[row + 1][x], false)
+                        f.cells[row][x].drop(f.cells[row + 1][x])
                         changes++
                     }
                         //if there is no empty cell below, check sides
                     else if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForPlace()){
                         console.debug(`${f.cells[row + 1][x - 1].pos.toString()} is empty`)
-                        f.cells[row][x].swap(f.cells[row + 1][x - 1], false)
+                        f.cells[row][x].drop(f.cells[row + 1][x - 1])
                         changes++
 
                     } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForPlace()){
                         console.debug(`${f.cells[row + 1][x + 1].pos.toString()} is empty`)
-                        f.cells[row][x].swap(f.cells[row + 1][x + 1], false)
+                        f.cells[row][x].drop(f.cells[row + 1][x + 1])
                         changes++
                     }
                 }

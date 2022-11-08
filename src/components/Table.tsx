@@ -30,6 +30,10 @@ export default function Table(props : gameInfoProps){
     useEffect(stateHub, [state])
     useEffect(InitialCycle, [props.stage])
 
+    function delay(ms: number){
+        return new Promise((res) => setTimeout(res, ms))
+    }
+
     function Match(){
         setField(Field.MatchAll(field!))
         if (field!.chains.length > 0){
@@ -51,8 +55,9 @@ export default function Table(props : gameInfoProps){
         setState(FALL)
     }
 
-    function Fall(){
+    async function Fall(){
         const [f, c] = Field.Fall(field!)
+        await delay(220)
         setField(f)
         if (c > 0) {
             console.debug(`state continued as FALL`)

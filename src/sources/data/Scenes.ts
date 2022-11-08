@@ -34,6 +34,14 @@ const scenes : FieldParams[] =
                     return "score more than 1000 less then 20 steps"
                 },
         } as Goal
+        },
+        {
+            title: "Tiny",
+            name: "tiny",
+            x:4,
+            y:4,
+            allowedSpites:["diamond", "gold", "iron"], 
+            goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
         }
     ]
 

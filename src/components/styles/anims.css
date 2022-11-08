@@ -1,0 +1,38 @@
+@keyframes dropF {
+    from{
+        transform: translate(0px, -100px);
+    }
+    to{
+        transform: translate(0px, 0px);
+    }
+}
+
+@keyframes dropFR {
+    from{
+        transform: translate(-100px, -100px);
+    }
+    to{
+        transform: translate(0px, 0px);
+    }
+}
+
+@keyframes dropFL {
+    from{
+        transform: translate(100px, -100px);
+    }
+    to{
+        transform: translate(0px, 0px);
+    }
+}
+
+.drop-f{
+    animation: dropF 0.2s ease-in-out;
+}
+
+.drop-fl{
+    animation: dropFL 0.2s ease-in-out
+}
+
+.drop-fr{
+    animation: dropFR 0.2s ease-in-out
+}
