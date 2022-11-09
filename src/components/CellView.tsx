@@ -3,30 +3,39 @@ import Cell from "../logic/Cell";
 import Position from "../logic/interfaces/Position";
 import "./styles/anims.css"
 import { motion } from "framer-motion"
+import Sprite from "../logic/Sprite";
 
 interface CellProps{
-    cell: Cell
+    sprite: Sprite
     clicked: (pos: Position) => void
     selected: boolean
 }
 
 export default function CellView(props: CellProps){
-    const [c, setCell] = useState(props.cell)
-
+    const [sprite, setSprite] = useState(props.sprite)
+    
     return(
         <>
-                {!c.isEmpty() && 
+                {sprite && <>
                     <motion.div
-                        animate={{x: []}}
+                        animate={{
+                            x: sprite.position.x * 64,
+                            y: sprite.position.y * 64
+                        }}
+                        initial={{
+                            x: sprite.position.x * 64,
+                            y: sprite.position.y * 64
+                        }}
                     >
                         <img
                             className={props.selected? "Item-selected" : "Item"} 
-                            src={Cell.getSprite(c.sprite)}
-                            alt={c.sprite.name} 
-                            onClick={() => props.clicked(c.pos)}
+                            
+                            src={Cell.getSprite(sprite)}
+                            alt={sprite.name} 
+                            onClick={() => props.clicked(sprite.position)}
                         />
-                    </motion.div>
-                }
+                    </motion.div> 
+                </>}
                 
         </>
     )

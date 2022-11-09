@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { PlayerContext } from "../App";
 import Field from "../logic/Field";
 import Position from "../logic/interfaces/Position";
@@ -14,7 +14,10 @@ interface gameInfoProps{
 //повторяется каждый раз после клика или  генерации новой карты. Делай. Досвидания.
 
 export default function Table(props : gameInfoProps){
+    const GameContainer = useRef<HTMLDivElement>(null)
     const {player, setPlayer} = useContext(PlayerContext)
+
+    const DELAY = 30
 
     const MATCH = 0
     const DESTROY = 1;
@@ -58,7 +61,7 @@ export default function Table(props : gameInfoProps){
 
     async function Fall(){
         const [f, c] = Field.Fall(field!)
-        await delay(220)
+        await delay(DELAY)
         setField(f)
         if (c > 0) {
             console.debug(`state continued as FALL`)
@@ -71,6 +74,7 @@ export default function Table(props : gameInfoProps){
     }
     
     function Free(){
+        console.debug(field?.sprites)
         if (swapped.length == 0) player!.score!.step++
         
         if (field!.goal.isAchieved(player!.score!) || field!.goal.isDefeated(player!.score!)){
@@ -139,26 +143,45 @@ export default function Table(props : gameInfoProps){
     }
 
     return(!field? <p>Wait please...</p> :
-        <div className="Game-container">
+        <div className="Game-container" ref={GameContainer}>
             <UITable goal={field!.goal}/>
-            <div className="container">
-                <table className="Game-table">
+            <div className="container"  style={GameContainer.current ? {
+                marginTop: GameContainer.current!.offsetHeight / 2 - field.cells.length*64 / 2,
+                marginLeft: GameContainer.current!.offsetWidth / 2 - field.cells[0].length*64/2
+            } : {margin: 0}}>
+                <>
+                <table className="Game-table" cellSpacing={0} >
                     <tbody>
                     {field.cells.map((row, y) =>
                         <tr key={y}>
                             {row.map((cell, x) => cell.isExist?
-                                <td className={cell.markedForDelete? "Cell-marked" : "Cell"} key={x + y/100}>
-                                    <CellView 
-                                        cell={cell}
-                                        clicked={onClicked}
-                                        selected={swapped[0]?.x == cell.pos.x && swapped[0]?.y == cell.pos.y}
-                                    />
+                                <td className={
+                                    cell.markedForDelete? "Cell-marked" : "Cell"} 
+                                    key={x + y/100}
+                                    style={{
+                                        marginTop: y * 64,
+                                        marginLeft: x * 64,
+                                        padding: 0,
+                                        border: 'none'}}
+                                >
+                                    
                                 </td> : <td key={x + y/100} ></td>
                             )}
                         </tr>
                     )}
                     </tbody>
                 </table>
+                <div className="items">
+                {field.sprites.map((sprite, x) => sprite &&
+                            <CellView 
+                                key={sprite.id}
+                                sprite={sprite}
+                                clicked={onClicked}
+                                selected={swapped[0]?.x == sprite.position.x && swapped[0]?.y == sprite.position.y}
+                            />
+                )}
+                </div>
+                </>
             </div>
         </div>)
 }
