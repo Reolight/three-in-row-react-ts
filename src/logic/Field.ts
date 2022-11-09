@@ -4,17 +4,20 @@ import Cell from "./Cell"
 import Chain from "./Chain"
 import Goal from "./interfaces/Goal"
 import Position from "./interfaces/Position"
-import Sprite from "./interfaces/Sprite"
+import Sprite from "./Sprite"
 import randomInt from "./RandomInt"
 import Score from "./Score"
+import SpriteInt from "./interfaces/SpriteInt"
 
 export default class Field {
     size: Position
     cells: Cell[][] = []
     name: string
-    allowedSprites: Sprite[] = []
+    allowedSprites: SpriteInt[] = []
     goal: Goal
     chains: Chain[] = []
+
+    sprites: Sprite[] = []
 
     score: Score = {} as Score
 
@@ -32,13 +35,31 @@ export default class Field {
         this.score = new Score(allowedSprites)
     }
 
+    addSprite(sprite: SpriteInt, pos: Position) {
+        const s : Sprite = new Sprite(sprite, pos)
+        this.sprites.push(s)
+        this.cells[pos.y][pos.x].sprite = s
+    }
+
+    destroySprite(id: number){
+        const index = this.sprites.findIndex(s => s.id == id)
+        if (index == -1){
+            console.warn(`Sprite with id ${id} seems already have been deleted`)
+            return
+        }
+
+        console.debug(`trying delete with id ${id}: index - ${index}`, this.sprites[index])
+        this.cells[this.sprites[index].position.y][this.sprites[index].position.x].sprite = {} as Sprite
+        this.sprites.splice(index, 1)
+    }
+
     static getStage(name: string): Field{
         const stage = retrieveStage(name)
         if (!stage) console.error(`Stage ${name} doesn't exist`);
         return new Field(stage!.name, stage!.x, stage!.y, stage!.allowedSpites, stage!.goal);        
     }
 
-    private getRandomSprite(): Sprite {
+    private getRandomSprite(): SpriteInt {
         return this.allowedSprites[randomInt(this.allowedSprites.length)]
     }
 
@@ -48,7 +69,9 @@ export default class Field {
             let row: Cell[] = []
             for (let ix = 0; ix < this.size.x; ix++){
                 let c = new Cell(true, {x: ix, y: igrek}, [])
-                c.sprite = this.getRandomSprite()
+                const s : Sprite = new Sprite(this.getRandomSprite(), c.pos)
+                this.sprites.push(s)
+                c.sprite = s
                 row.push(c)
             }
 
@@ -87,7 +110,6 @@ export default class Field {
             let column: Cell[] = []
             f.cells.forEach(row => {
                 column.push(row[ix])
-                row[ix].dropped = 2
             })
             Field.MatchRow(column)
         }
@@ -106,8 +128,7 @@ export default class Field {
         f.chains.forEach(chain => {
             f.score.countDestroyed(chain.type, chain.cells.length)
             chain.cells.forEach(cell => {
-                //cell.sprite.onDestroyEffect
-                cell.sprite = {} as Sprite // "destroyed". Also points should be applied. But there is no player yet
+                f.destroySprite(cell.sprite.id)
                 cell.markedForDelete = false
                 money++
             });
@@ -122,8 +143,7 @@ export default class Field {
         let generated: number = 0
         field.cells[0].forEach(cell => {
             if (cell.isAvailableForPlace()){
-                cell.sprite = field.getRandomSprite()
-                cell.dropped = 0
+                field.addSprite(field.getRandomSprite(), cell.pos)
                 generated++
             }
         });
@@ -131,7 +151,7 @@ export default class Field {
         return generated
     }
 
-    static Fall(old: Field): [field:Field, changes: number] {
+    static Fall(old: Field, strict: boolean = true): [field:Field, changes: number] {
         let f : Field = old
         let changes: number = 0
 
@@ -146,16 +166,19 @@ export default class Field {
                         f.cells[row][x].drop(f.cells[row + 1][x])
                         changes++
                     }
-                        //if there is no empty cell below, check sides
-                    else if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForPlace()){
-                        console.debug(`${f.cells[row + 1][x - 1].pos.toString()} is empty`)
-                        f.cells[row][x].drop(f.cells[row + 1][x - 1])
-                        changes++
+                    
+                    if (!strict){
+                            //if there is no empty cell below, check sides
+                        if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForPlace()){
+                            console.debug(`${f.cells[row + 1][x - 1].pos.toString()} is empty`)
+                            f.cells[row][x].drop(f.cells[row + 1][x - 1])
+                            changes++
 
-                    } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForPlace()){
-                        console.debug(`${f.cells[row + 1][x + 1].pos.toString()} is empty`)
-                        f.cells[row][x].drop(f.cells[row + 1][x + 1])
-                        changes++
+                        } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForPlace()){
+                            console.debug(`${f.cells[row + 1][x + 1].pos.toString()} is empty`)
+                            f.cells[row][x].drop(f.cells[row + 1][x + 1])
+                            changes++
+                        }
                     }
                 }
             }
@@ -166,7 +189,7 @@ export default class Field {
         return [f, changes]
     }
 
-    private static StringField(f: Field){
+    private static StringRows(f: Field): string[]{
         let s : string[] = []
         f.cells.forEach(row => {
             let r: string = ""
@@ -174,6 +197,39 @@ export default class Field {
             s.push(r)
         });
 
-        console.log(s);
+        return s
+    }
+
+    private static StringCols(f: Field): string[]{
+        let c: string[] = []
+        for (let ix = 0; ix < f.cells[0].length; ix++){
+            let column: string = ""
+            f.cells.forEach(row => {
+                column += row[ix].sprite.name? row[ix].sprite.name[0] : "-"
+            })
+
+            c.push(column)
+        }
+
+        return c
+    }
+
+    private static StringField(f: Field){
+        const rows = Field.StringRows(f)
+        const cols = Field.StringCols(f)       
+
+        console.debug(`rows, columns: `, rows, cols);
+    }
+
+    static EnsureNoMatchWithRegex(f : Field): boolean{
+        const reg : RegExp = new RegExp(`/(.)(?:.*\\1){3,}`)
+        const rows = Field.StringRows(f)
+        let isMatch : boolean = false
+        rows.forEach(r => {if (reg.test(r)) isMatch = true})
+        if (isMatch) return isMatch
+        
+        const cols = Field.StringCols(f)
+        cols.forEach(c => {if (reg.test(c)) isMatch = true})
+        return isMatch
     }
 }

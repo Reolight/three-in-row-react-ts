@@ -1,7 +1,7 @@
 import retrieveSprite from "../sources/data/Sprites";
 import Effect from "./interfaces/Effect";
 import Position from "./interfaces/Position";
-import Sprite from "./interfaces/Sprite";
+import Sprite from "./Sprite";
 import Tile from "./interfaces/Tile";
 
 export default class Cell implements Tile {
@@ -13,11 +13,9 @@ export default class Cell implements Tile {
     isBlocked : boolean = false //items can not be placed here
     isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
-    dropped: number
 
     constructor(exist: boolean, position: Position, initialEffects: Effect[]){
         this.pos = position
-        this.dropped = 2 // not dropped
         this.isExist = exist;
         if (!this.isExist) return
         this.effects = initialEffects
@@ -42,7 +40,8 @@ export default class Cell implements Tile {
     }
 
     static getSpriteByName(name: string): string {
-        return Cell.getSprite(retrieveSprite(name))
+        const file = name? require(`../sources/sprites/${name}.png`): ""
+        return file
     }
 
     isEmpty(): boolean{
@@ -58,12 +57,14 @@ export default class Cell implements Tile {
         const sprite: Sprite = this.sprite
         this.sprite = cell.sprite
         cell.sprite = sprite
-        
+
+        cell.sprite.position = Position.positionChange(cell.pos)
+        this.sprite.position = Position.positionChange(this.pos)
         return true
     }
     
     drop(cell: Cell){
-        this.dropped = cell.pos.x - this.pos.x
+        //now it is alias of swap
         return this.swap(cell, false)
     }
 }

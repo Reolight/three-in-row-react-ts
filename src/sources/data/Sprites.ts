@@ -1,4 +1,4 @@
-import Sprite from "../../logic/interfaces/Sprite"
+import Sprite from "../../logic/interfaces/SpriteInt"
 
 const sprites: Sprite[] = [
     
@@ -11,7 +11,6 @@ export default function retrieveSprite(t: string): Sprite {
         sprite = {
             sprite: `${t}.png`,
             name: t,
-            onDestroyEffect: undefined
         }
     }
 

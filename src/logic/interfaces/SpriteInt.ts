@@ -1,7 +1,6 @@
 import Effect from "./Effect";
 
-export default interface Sprite{
+export default interface SpriteInt{
     name: string
-    onDestroyEffect?: Effect[]
     sprite: string //path to img
 }

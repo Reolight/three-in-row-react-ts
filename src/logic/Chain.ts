@@ -31,7 +31,7 @@ export default class Chain{
         let m = Chain.activeChain!
         Chain.activeChain = base
         m.cells.forEach(cell => {
-            if (!Chain.activeChain!.cells.find(c => c === cell)) Chain.add(cell)
+            if (!Chain.activeChain!.cells.find(c => c.sprite.id === cell.sprite.id)) Chain.add(cell)
         })
     }
 
@@ -59,8 +59,8 @@ export default class Chain{
         if (!Chain.isOpened) { console.warn(`Can't add while chain is closed!`); return}
         if (cell.sprite.name !== Chain.activeChain!.type)
             {console.warn(`Sprite ${cell.pos.y}:${cell.pos.x} has another type`); return}
-        if (Chain.activeChain!.cells.find(c => cell.pos === c.pos )){
-            console.warn(`Sprite ${cell.pos.y}:${cell.pos.x} is already in chain`); return
+        if (Chain.activeChain!.cells.find(c => cell.sprite.id === c.sprite.id )){
+            console.warn(`Sprite ID ${cell.sprite.id} - ${cell.pos.y}:${cell.pos.x} is already in chain`); return
         }
 
         console.log(`added: ${cell.pos.y}:${cell.pos.x}`)
