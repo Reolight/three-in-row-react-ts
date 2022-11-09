@@ -53,6 +53,7 @@ export default function Table(props : gameInfoProps){
         setPlayer(player)
         setField(f)
         setState(FALL)
+        console.debug(field?.sprites)
     }
 
     async function Fall(){
