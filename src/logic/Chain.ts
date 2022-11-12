@@ -1,4 +1,11 @@
+import getEffect from "../sources/data/Effects";
+import getBomb from "../sources/data/Effects";
+import Animator from "./Animator";
 import Cell from "./Cell";
+import Effector from "./Effector";
+import Field from "./Field";
+import Bomb from "./interfaces/Bomb";
+import Effect from "./interfaces/Effect";
 
 interface ChainCascade{
     direction: Cell[]
@@ -7,6 +14,7 @@ interface ChainCascade{
 
 export default class Chain{
     cells: Cell[] = []
+    orientation?: 'h' | 'v' | 'n' 
     type: string = ""
     id: number = 0
 
@@ -17,7 +25,7 @@ export default class Chain{
     static isOpened: boolean = false;
 
     static activeChain? : Chain
-
+    
     static sizePrepare(rows: number){
         Chain.mapped = []
         for (let i = 0; i < rows; i++){
@@ -30,6 +38,8 @@ export default class Chain{
         Chain.unic = false
         let m = Chain.activeChain!
         Chain.activeChain = base
+        if (m.orientation !== Chain.activeChain.orientation)
+            Chain.activeChain.orientation = "n"
         m.cells.forEach(cell => {
             if (!Chain.activeChain!.cells.find(c => c.sprite.id === cell.sprite.id)) Chain.add(cell)
         })
@@ -46,10 +56,15 @@ export default class Chain{
         }
     }
 
-    static open(cells: Cell[]){
+    static open(cells: Cell[], orientation: 'v' | 'h' | 'n'){
         if (Chain.isOpened) { console.warn(`Can't open new chain while old one is opened!`); return}
         console.debug(`opened at ${cells[0].pos.y}:${cells[0].pos.x}`)
-        Chain.activeChain = {cells: cells, type: cells[0].sprite.name, id: Chain.count++}
+        Chain.activeChain = {
+            cells: cells, type: cells[0].sprite.name,
+            id: Chain.count++,
+            orientation: orientation
+        }
+        
         Chain.isOpened = true
         Chain.unic = true;
         Chain.checkIdentity(cells)
@@ -81,13 +96,29 @@ export default class Chain{
         Chain.isOpened = false
     }
 
-    static releaseRecollection(): Chain[]{
-        const recollection : Chain[] = Chain.chains
-        Chain.chains = []
-        Chain.mapped = []
+    /**
+     *  Marks cells to destroy content later. Includes effect raise
+     */
+    static releaseRecollection(f: Field) {
+        console.debug(`this chains will be destroyed: `, Chain.chains)
+        
+        while (Chain.chains.length > 0){
+            const chain: Chain = Chain.chains.pop()!
+            
+            chain.cells.forEach(cell => { 
+                cell.markedForDelete = true
+            })
+
+                    ///shoud be change later to CONDITION object
+            if (chain.cells.length == 4 && chain.orientation! != 'n'){
+                const effect: Effect = getEffect("sprite")!
+                effect.orientation = chain.orientation
+                Effector.spawn(f, effect, chain.cells[0])
+                chain.cells[0].sprite.effect = effect
+                chain.cells[0].markedForDelete = false
+            }
+        }
+
         Chain.count = 0;
-        Chain.chains.forEach(chain => chain.cells.forEach(cell => cell.markedForDelete = true))
-        console.debug(recollection)
-        return recollection
     }
 }

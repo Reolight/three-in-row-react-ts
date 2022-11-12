@@ -17,14 +17,16 @@ function App() {
   const [player, setPlayer] = React.useState<Player>()
 
   return(
-    <PlayerContext.Provider value={{player, setPlayer}}>
-      <Routes>
-        {AppRoutes.map((route, index) => {
-          const {element, ...rest} = route
-          return <Route key={index} {...rest} element={element} />
-        })}
-      </Routes>
-    </PlayerContext.Provider>
+    <React.StrictMode>
+      <PlayerContext.Provider value={{player, setPlayer}}>
+        <Routes>
+          {AppRoutes.map((route, index) => {
+            const {element, ...rest} = route
+            return <Route key={index} {...rest} element={element} />
+          })}
+        </Routes>
+      </PlayerContext.Provider>
+    </React.StrictMode>
   )
 
   //return (

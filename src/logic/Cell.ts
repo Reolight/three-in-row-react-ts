@@ -10,7 +10,7 @@ export default class Cell implements Tile {
 
     pos: Position
     isExist : boolean
-    isBlocked : boolean = false //items can not be placed here
+    isBlocked : boolean = false //items can not be placed here, it is like an obstacle
     isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
 
@@ -66,5 +66,10 @@ export default class Cell implements Tile {
     drop(cell: Cell){
         //now it is alias of swap
         return this.swap(cell, false)
+    }
+
+    markForDelete(){
+        if (this.isExist && !this.isBlocked)
+            this.markedForDelete = true
     }
 }

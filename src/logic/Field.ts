@@ -8,14 +8,16 @@ import Sprite from "./Sprite"
 import randomInt from "./RandomInt"
 import Score from "./Score"
 import SpriteInt from "./interfaces/SpriteInt"
+import Effector from "./Effector"
 
 export default class Field {
+    static Cell_size : number = 64 
+
     size: Position
     cells: Cell[][] = []
     name: string
     allowedSprites: SpriteInt[] = []
     goal: Goal
-    chains: Chain[] = []
 
     sprites: Sprite[] = []
 
@@ -50,6 +52,7 @@ export default class Field {
 
         console.debug(`trying delete with id ${id}: index - ${index}`, this.sprites[index])
         this.cells[this.sprites[index].position.y][this.sprites[index].position.x].sprite = {} as Sprite
+        this.cells[this.sprites[index].position.y][this.sprites[index].position.x].markedForDelete = false
         this.sprites.splice(index, 1)
     }
 
@@ -81,14 +84,14 @@ export default class Field {
 
     //===========================[LOGIC]===================================
 
-    private static MatchRow(cells: Cell[]){
+    private static MatchRow(cells: Cell[], or: 'v' | 'h' | 'n'){
         for (let x = cells.length - 2; x > 0; x--){
             if (!Chain.isOpened) {
                     if (cells[x].sprite.name){
                         if (cells[x-1].sprite.name === cells[x].sprite.name
                             && cells[x].sprite.name === cells[x+1].sprite.name)
                         {
-                            Chain.open([ cells[x-1], cells[x], cells[x+1] ])
+                            Chain.open([ cells[x-1], cells[x], cells[x+1] ], or)
                         }
                 }
             }
@@ -103,7 +106,7 @@ export default class Field {
         Chain.sizePrepare(f.cells.length)
         Field.StringField(f)
         for (let iy = f.cells.length - 1; iy >= 0; iy--){
-            Field.MatchRow(f.cells[iy])
+            Field.MatchRow(f.cells[iy], 'h')
         }
 
         for (let ix = 0; ix < f.cells[0].length; ix++){
@@ -111,35 +114,33 @@ export default class Field {
             f.cells.forEach(row => {
                 column.push(row[ix])
             })
-            Field.MatchRow(column)
+            Field.MatchRow(column, 'v')
         }
-
-        f.chains = Chain.releaseRecollection()
-        f.chains.forEach(chain => chain.cells.forEach(cell => 
-            f.cells[cell.pos.y][cell.pos.x].markedForDelete = true
-        ))
-
+        
         return f
     }
 
-    static DestroyChains(old: Field): [field: Field, money: number]{
+    static Destroy(old: Field): number {
         let f : Field = old
-        let money : number = 0
-        f.chains.forEach(chain => {
-            f.score.countDestroyed(chain.type, chain.cells.length)
-            chain.cells.forEach(cell => {
-                f.destroySprite(cell.sprite.id)
-                cell.markedForDelete = false
-                money++
-            });
-        })
+        Chain.releaseRecollection(f)
 
-        f.chains = []
+        let points : number = 0
+        f.cells.forEach(row => 
+            row.forEach(cell => {
+                if (cell.markedForDelete) {
+                    if (cell.sprite.effect)
+                        Effector.destroy(f, cell.pos, cell.sprite.effect!.id!)
 
-        return [f, money]
+                    f.destroySprite(cell.sprite.id)
+                    points++
+                }
+            })
+        )
+
+        return points
     }
 
-    private static Generate(field : Field): number{
+    private static Generate(field : Field): number {
         let generated: number = 0
         field.cells[0].forEach(cell => {
             if (cell.isAvailableForPlace()){
@@ -156,13 +157,11 @@ export default class Field {
         let changes: number = 0
 
         for (let row = f.cells.length - 2; row >= 0; row--){
-            console.debug(`Checking row ${row}`)
             for (let x = 0; x < f.cells[row].length ; x++){
 
                 if (!f.cells[row][x].isFrozen && f.cells[row][x].sprite.sprite){ //current is NOT empty and not blocked
 
                     if (f.cells[row + 1][x].isAvailableForPlace()) { //cell in row below is empty, not blocked and not frozen
-                        console.debug(`${f.cells[row + 1][x].pos.toString()} is empty`)
                         f.cells[row][x].drop(f.cells[row + 1][x])
                         changes++
                     }
@@ -170,12 +169,10 @@ export default class Field {
                     if (!strict){
                             //if there is no empty cell below, check sides
                         if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForPlace()){
-                            console.debug(`${f.cells[row + 1][x - 1].pos.toString()} is empty`)
                             f.cells[row][x].drop(f.cells[row + 1][x - 1])
                             changes++
 
                         } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForPlace()){
-                            console.debug(`${f.cells[row + 1][x + 1].pos.toString()} is empty`)
                             f.cells[row][x].drop(f.cells[row + 1][x + 1])
                             changes++
                         }

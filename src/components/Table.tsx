@@ -1,8 +1,13 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { PlayerContext } from "../App";
+import Animator from "../logic/Animator";
+import Chain from "../logic/Chain";
+import Effector from "../logic/Effector";
 import Field from "../logic/Field";
+import Motion from "../logic/interfaces/Motion";
 import Position from "../logic/interfaces/Position";
 import CellView from "./CellView";
+import Effect from "./Effect";
 import UITable from "./UITable";
 
 interface gameInfoProps{
@@ -28,10 +33,15 @@ export default function Table(props : gameInfoProps){
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
     const [swapped, setSwapped] = useState<Position[]>([])
-    //const [completed, setCompleted] = useState(false)
+    const [motion, setMotion] = useState<Motion[]>()
 
     useEffect(stateHub, [state])
+    useEffect(() => {if (swapped.length == 2) swap()} , [swapped.length == 2])
     useEffect(InitialCycle, [props.stage])
+    useEffect(()=>{
+        setMotion(Animator.Animations)
+        console.debug(`Current animations: `, motion)
+    }, [Animator.Animations.length])
 
     function delay(ms: number){
         return new Promise((res) => setTimeout(res, ms))
@@ -39,7 +49,7 @@ export default function Table(props : gameInfoProps){
 
     function Match(){
         setField(Field.MatchAll(field!))
-        if (field!.chains.length > 0){
+        if (Chain.chains.length > 0){
             console.debug(`state set to DESTROY`)
             setState(DESTROY)
         }
@@ -51,10 +61,10 @@ export default function Table(props : gameInfoProps){
 
     function Destroy() {
         setSwapped([])
-        const [f, points] = Field.DestroyChains(field!)
+        const points = Field.Destroy(field!)
         player!.addScore(points)
         setPlayer(player)
-        setField(f)
+        setField(field)
         setState(FALL)
         console.debug(field?.sprites)
     }
@@ -74,7 +84,10 @@ export default function Table(props : gameInfoProps){
     }
     
     function Free(){
-        console.debug(field?.sprites)
+        console.debug("sprites: ", field?.sprites)
+        console.debug("animations: ", Animator.Animations)
+        console.debug("effects: ", Effector.Effects)
+
         if (swapped.length == 0) player!.score!.step++
         
         if (field!.goal.isAchieved(player!.score!) || field!.goal.isDefeated(player!.score!)){
@@ -89,6 +102,10 @@ export default function Table(props : gameInfoProps){
     
     function InitialCycle(){
         const stage : Field = Field.getStage(props.stage)
+
+        Effector.Effects = []
+        Animator.Animations = []
+
         player!.score = stage!.score //ref to score
         player!.score!.step++
         setField(stage)
@@ -124,30 +141,30 @@ export default function Table(props : gameInfoProps){
             setField(f)
             setState(MATCH)
         } else setSwapped([])
+
+        delay(300)
     }
 
     function onClicked(pos: Position){
         console.debug(`Clicked : ${pos.toString()}`)
-        let s = swapped
-
-        if (swapped.length == 1 &&
-            !Position.isAdjacent(swapped[0], pos) || swapped.length == 0){
-            setSwapped([pos])
+        
+        if (swapped.length == 1 && !Position.isAdjacent(swapped[0], pos) ||
+            swapped.length == 0) {
+                setSwapped([pos]);
+                return
         }
 
-        else setSwapped([...swapped, pos])
-
-        if (swapped.length == 2){
-            swap()
-        }
+        if (swapped.length == 1 && Position.isAdjacent(swapped[0], pos)){
+            setSwapped([...swapped, pos])
+        }        
     }
 
     return(!field? <p>Wait please...</p> :
         <div className="Game-container" ref={GameContainer}>
             <UITable goal={field!.goal}/>
             <div className="container"  style={GameContainer.current ? {
-                marginTop: GameContainer.current!.offsetHeight / 2 - field.cells.length*64 / 2,
-                marginLeft: GameContainer.current!.offsetWidth / 2 - field.cells[0].length*64/2
+                marginTop: GameContainer.current!.offsetHeight / 2 - field.cells.length * Field.Cell_size / 2,
+                marginLeft: GameContainer.current!.offsetWidth / 2 - field.cells[0].length * Field.Cell_size / 2
             } : {margin: 0}}>
                 <>
                 <table className="Game-table" cellSpacing={0} >
@@ -159,8 +176,10 @@ export default function Table(props : gameInfoProps){
                                     cell.markedForDelete? "Cell-marked" : "Cell"} 
                                     key={x + y/100}
                                     style={{
-                                        marginTop: y * 64,
-                                        marginLeft: x * 64,
+                                        marginTop: y * Field.Cell_size,
+                                        marginLeft: x * Field.Cell_size,
+                                        width: Field.Cell_size,
+                                        height: Field.Cell_size,
                                         padding: 0,
                                         border: 'none'}}
                                 >
@@ -171,7 +190,7 @@ export default function Table(props : gameInfoProps){
                     )}
                     </tbody>
                 </table>
-                <div className="items">
+                <div className="items"><>
                 {field.sprites.map((sprite, x) => sprite &&
                             <CellView 
                                 key={sprite.id}
@@ -180,6 +199,12 @@ export default function Table(props : gameInfoProps){
                                 selected={swapped[0]?.x == sprite.position.x && swapped[0]?.y == sprite.position.y}
                             />
                 )}
+                    {motion && motion.map((anim) =>{
+                        <Effect
+                            key={anim.id}
+                            motion={anim}
+                        />
+                    })} </>
                 </div>
                 </>
             </div>

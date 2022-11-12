@@ -1,3 +1,4 @@
+import Effect from "./interfaces/Effect";
 import Position from "./interfaces/Position";
 import SpriteInt from "./interfaces/SpriteInt";
 
@@ -8,7 +9,8 @@ export default class Sprite implements SpriteInt{
     name: string
     sprite: string //path to img
     position : Position
-
+    effect?: Effect
+    
     constructor(sprite: SpriteInt, position: Position){
         this.id = Sprite.count++
         this.name = sprite.name
