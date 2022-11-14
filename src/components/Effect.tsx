@@ -18,9 +18,12 @@ export default function  Effect(props: EffectProps): JSX.Element {
     
     return(
         <motion.div
+            id="AnimationsOverlay"
+            key={"AnimationsOverlay"}
             style={{
                 position: "absolute",
-               
+                marginTop: Field.OffsetY,
+                marginLeft: Field.OffsetX,
                 zIndex: 2000000
             }}
             animate={props.motion.anim.animate}

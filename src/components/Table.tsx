@@ -38,10 +38,10 @@ export default function Table(props : gameInfoProps){
     useEffect(stateHub, [state])
     useEffect(() => {if (swapped.length == 2) swap()} , [swapped.length == 2])
     useEffect(InitialCycle, [props.stage])
-    useEffect(()=>{
-        setMotion(Animator.Animations)
-        console.debug(`Current animations: `, motion)
-    }, [Animator.Animations.length])
+    useEffect(() => {(GameContainer.current && field) && Field.setOffset(
+            GameContainer.current.offsetWidth, GameContainer.current.offsetHeight, 
+            field?.size.x, field?.size.y)},
+        [GameContainer.current?.offsetHeight, GameContainer.current?.offsetLeft])
 
     function delay(ms: number){
         return new Promise((res) => setTimeout(res, ms))
@@ -85,7 +85,6 @@ export default function Table(props : gameInfoProps){
     
     function Free(){
         console.debug("sprites: ", field?.sprites)
-        console.debug("animations: ", Animator.Animations)
         console.debug("effects: ", Effector.Effects)
 
         if (swapped.length == 0) player!.score!.step++
@@ -163,8 +162,8 @@ export default function Table(props : gameInfoProps){
         <div className="Game-container" ref={GameContainer}>
             <UITable goal={field!.goal}/>
             <div className="container"  style={GameContainer.current ? {
-                marginTop: GameContainer.current!.offsetHeight / 2 - field.cells.length * Field.Cell_size / 2,
-                marginLeft: GameContainer.current!.offsetWidth / 2 - field.cells[0].length * Field.Cell_size / 2
+                marginTop: Field.OffsetY,
+                marginLeft: Field.OffsetX
             } : {margin: 0}}>
                 <>
                 <table className="Game-table" cellSpacing={0} >
@@ -199,14 +198,10 @@ export default function Table(props : gameInfoProps){
                                 selected={swapped[0]?.x == sprite.position.x && swapped[0]?.y == sprite.position.y}
                             />
                 )}
-                    {motion && motion.map((anim) =>{
-                        <Effect
-                            key={anim.id}
-                            motion={anim}
-                        />
-                    })} </>
+                     </>
                 </div>
                 </>
             </div>
-        </div>)
+        </div>
+        )
 }

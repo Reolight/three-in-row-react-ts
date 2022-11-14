@@ -20,6 +20,7 @@ export default function Home() {
     }
 
     useEffect(init, [])
+    useEffect(()=> player && navigate(`Menu/${player!.name}`), [player])
 
     function navigateTo(){
         if (name.length<4){
@@ -30,8 +31,6 @@ export default function Home() {
         if (!names.find(n => n === name))
             localStorage.setItem("players", JSON.stringify([...names, name]))
         setPlayer(Player.load(name))
-        console.log(player as PlayerData)
-        navigate(`Menu/${player!.name}`)
     }
 
     function onChangeInputValidation(e: React.ChangeEvent<HTMLInputElement>){

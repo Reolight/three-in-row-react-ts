@@ -10,8 +10,20 @@ import Score from "./Score"
 import SpriteInt from "./interfaces/SpriteInt"
 import Effector from "./Effector"
 
+    /**
+     * This class contains a lot of field-logic. It is a collector of all three-in-row logic and can be called 
+     * a 'controller'. Here are settings of a screen, matching logic (some of which is performed by executioner 
+     * named as Chain), deletion logic and more
+     * Maybe, it should be separated in several files, like Engine, Field and some more, but due to 
+     * some unexplainable reasons it remains as is. (The one major reason: a lot of code refactoring. 
+     * Somebody said: if it works, don't touch. So, I decided to not touch it now)
+     * [This non tech comment was leaved here because this code is my property and I can do whatever I want and write 
+     * tales whenever I want]
+     */
 export default class Field {
     static Cell_size : number = 64 
+    static OffsetX: number
+    static OffsetY: number
 
     size: Position
     cells: Cell[][] = []
@@ -80,6 +92,19 @@ export default class Field {
 
             this.cells.push(row)
         }
+    }
+
+    /**
+     * Set's up new offset values to render field in the center of screen.
+     * @param screen_width - screen width (width in px of div which contains field)
+     * @param screen_height - screen height
+     * @param width - width of field in cells count
+     * @param height - height of field in cells count
+     */
+    static setOffset(screen_width: number, screen_height: number, width: number, height: number){
+        console.error(screen_width, screen_height)
+        Field.OffsetX = (screen_width - width * Field.Cell_size) / 2
+        Field.OffsetY = (screen_height - height * Field.Cell_size) / 2
     }
 
     //===========================[LOGIC]===================================

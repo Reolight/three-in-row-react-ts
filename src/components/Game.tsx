@@ -1,8 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { redirect, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { PlayerContext } from "../App";
+import Animator from "../logic/Animator";
+import Motion from "../logic/interfaces/Motion";
 import Player from "../logic/Player";
 import Score from "../logic/Score";
+import Effect from "./Effect";
 import ResultScreen from "./ResultScreen";
 import Table from "./Table"
 
@@ -19,6 +22,9 @@ export default function Game(props : gameInfoProps){
     const {player, setPlayer } = useContext(PlayerContext)
     const [isCompleted, setCompleted] = useState<"WON" | "LOST" | "PLAY">("PLAY")
 
+    const [motions, setMotions] = useState<Motion[]>()
+    useEffect(() => {if (Animator.Animations) setMotions(Animator.Animations)},
+        [Animator.Animations])
 
     useEffect(() => {
         const parameters = params.stage;
@@ -65,10 +71,18 @@ export default function Game(props : gameInfoProps){
 
     return(!stage? <p>Loading...</p>:
     <div>
-        <Table 
-            stage={stage}
-            stage_complete_callback={Completed}
-        />
+        <>
+            <Table 
+                stage={stage}
+                stage_complete_callback={Completed}
+            />
+            {motions && motions.map((anim) =>{
+                        <Effect
+                            key={anim.id}
+                            motion={anim}
+                        />
+                    })}
+        </>
         {isCompleted !== "PLAY" && 
             <ResultScreen 
                 isWon={isCompleted === "WON"} 
