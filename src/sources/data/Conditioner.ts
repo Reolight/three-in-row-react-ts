@@ -49,5 +49,12 @@ const conditions: effect_conditions[] = [
         priority: 10,
         exact_number_in_chain: 4,
         orientation: ['h', 'v']
+    },
+
+    {
+        effect_name: "bomb",
+        priority: 11,
+        min_number_in_chain: 5,
+        orientation: ["n"]
     }
 ]

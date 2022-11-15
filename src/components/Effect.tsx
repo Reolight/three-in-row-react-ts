@@ -16,7 +16,6 @@ export default function  Effect(props: EffectProps): JSX.Element {
     const [mot] = useState(props.motion)
 
     return(<>
-        <p id={`${mot.id}`}></p>
         <motion.img
             variants={mot.anim}
             animate={"animate"}
@@ -31,6 +30,7 @@ export default function  Effect(props: EffectProps): JSX.Element {
             src={mot.image}
             style={{
                 position: 'absolute',
+                margin: 0,
                 width: mot.width,
                 height: mot.height,
             }}

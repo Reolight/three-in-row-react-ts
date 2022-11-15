@@ -176,12 +176,13 @@ export default function Table(props : gameInfoProps){
                 <table className="Game-table" cellSpacing={0} >
                     <tbody>
                     {field.cells.map((row, y) =>
-                        <tr key={y}>
+                        <tr key={y} style={{position: 'absolute', width: 0, height: 0}}>
                             {row.map((cell, x) => cell.isExist?
                                 <td className={
                                     cell.markedForDelete? "Cell-marked" : "Cell"} 
                                     key={x + y/100}
                                     style={{
+                                        position: 'absolute',
                                         marginTop: y * Field.Cell_size,
                                         marginLeft: x * Field.Cell_size,
                                         width: Field.Cell_size,

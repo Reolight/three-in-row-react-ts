@@ -119,8 +119,7 @@ export default class Chain{
             effect.orientation = chain.orientation
             Effector.spawn(f, effect, chain.cells[0])
             chain.cells[0].sprite.effect = effect
-            chain.cells[0].markedForDelete = false
-            
+            chain.cells[0].markedForDelete = false            
         }
 
         Chain.count = 0;

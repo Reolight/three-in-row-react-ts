@@ -23,17 +23,10 @@ export default function getEffect(name: string): Effect | undefined {
 
 const effects: Effect[] = [
     {
-        orientation: 'n',
         name : "sprite",
         duration: -1,
         active: true,
-        animation : [{
-            image: "sprite.png",
-            width: 84,
-            height: 64,
-            anim: {}
-        }],
-
+        
         image: "row.png",        
         onDestroy(field: Field, position: Position) {
             let row : Cell[] = []
@@ -55,7 +48,7 @@ const effects: Effect[] = [
                     anim: {
                         animate: {
                             x: this.orientation === 'h'? 0 : position.x * Field.Cell_size,
-                            y: this.orientation === 'h' ? position.y * Field.Cell_size : 0
+                            y: this.orientation === 'h'? position.y * Field.Cell_size : 0
                         },
                         initial: {
                             rotate: this.orientation === 'v'? 90: 0,
@@ -90,6 +83,41 @@ const effects: Effect[] = [
                     } as Variants
                 }
             ]
+        }
+    } as Effect,
+
+    {
+        name: "bomb",
+        image: "block.png",
+        active: true,
+        duration: -1,
+        
+        onDestroy(field: Field, position: Position) {
+            for (let i = -1; i <= 1; i++){
+                for (let j = -1; j <= 1; j++){
+                    if (field.cells[position.y + i][position.x + j])
+                        field.cells[position.y + i][position.x + j].markForDelete()
+                }
+            }
+
+            return [{
+                image: "bomb.png",
+                width: 256,
+                height: 256,
+                anim: {
+                    animate: {
+                        opacity: 0.25,
+                        scale: 1.25
+                    },
+                    initial:{
+                        x: position.x * Field.Cell_size - 128,
+                        y: position.y * Field.Cell_size - 128,
+                        opacity: 1.0,
+                        scale: 0.01
+                    },
+                    transition:{duration: 0.4}
+                }
+            } as Motion]
         }
     } as Effect
 ]
