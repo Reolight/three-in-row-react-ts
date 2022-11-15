@@ -1,10 +1,10 @@
-import getEffect from "../sources/data/Effects";
-import getBomb from "../sources/data/Effects";
+import resolveConditions from "../sources/data/Conditioner";
 import Animator from "./Animator";
 import Cell from "./Cell";
 import Effector from "./Effector";
 import Field from "./Field";
 import Bomb from "./interfaces/Bomb";
+import { Orientation } from "./interfaces/Conditions";
 import Effect from "./interfaces/Effect";
 
 interface ChainCascade{
@@ -14,7 +14,7 @@ interface ChainCascade{
 
 export default class Chain{
     cells: Cell[] = []
-    orientation?: 'h' | 'v' | 'n' 
+    orientation?: Orientation
     type: string = ""
     id: number = 0
 
@@ -56,7 +56,7 @@ export default class Chain{
         }
     }
 
-    static open(cells: Cell[], orientation: 'v' | 'h' | 'n'){
+    static open(cells: Cell[], orientation: Orientation){
         if (Chain.isOpened) { console.warn(`Can't open new chain while old one is opened!`); return}
         console.debug(`opened at ${cells[0].pos.y}:${cells[0].pos.x}`)
         Chain.activeChain = {
@@ -108,15 +108,19 @@ export default class Chain{
             chain.cells.forEach(cell => { 
                 cell.markedForDelete = true
             })
-
-                    ///shoud be change later to CONDITION object
-            if (chain.cells.length == 4 && chain.orientation! != 'n'){
-                const effect: Effect = getEffect("sprite")!
-                effect.orientation = chain.orientation
-                Effector.spawn(f, effect, chain.cells[0])
-                chain.cells[0].sprite.effect = effect
-                chain.cells[0].markedForDelete = false
-            }
+            
+            let effect: Effect | undefined = resolveConditions({
+                chain_type: chain.type,
+                number_in_chain: chain.cells.length,
+                orientation: chain.orientation!
+            })
+            
+            if (!effect) continue
+            effect.orientation = chain.orientation
+            Effector.spawn(f, effect, chain.cells[0])
+            chain.cells[0].sprite.effect = effect
+            chain.cells[0].markedForDelete = false
+            
         }
 
         Chain.count = 0;

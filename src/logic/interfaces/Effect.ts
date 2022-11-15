@@ -1,5 +1,6 @@
 import { AnimationProps } from "framer-motion"
 import Field from "../Field"
+import { Orientation } from "./Conditions"
 import Motion from "./Motion"
 import Position from "./Position"
 
@@ -24,7 +25,7 @@ export default class Effect {
     image: string
     position?: Position
 
-    orientation?: 'h' | 'v' | 'n'
+    orientation?: Orientation
     
     constructor(e : Effect){
         this.name = e.name

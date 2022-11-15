@@ -26,6 +26,10 @@ export default class Field {
     static OffsetX: number
     static OffsetY: number
 
+    tile_background: string
+    tile_background_selected: string
+    wallpaper?: string
+
     size: Position
     cells: Cell[][] = []
     name: string
@@ -45,6 +49,9 @@ export default class Field {
             sprite && this.allowedSprites.push(sprite)
         })
 
+        this.tile_background = require(`../sources/backs/def.png`)
+        this.tile_background_selected = require(`../sources/backs/sel.png`)
+        
         this.allowedSprites.forEach(sprite => console.debug(`[${sprite.name}: ${sprite.sprite}]`))
         this.goal = goal
         this.initialGeneration()

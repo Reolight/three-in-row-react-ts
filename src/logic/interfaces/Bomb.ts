@@ -1,6 +1,7 @@
 import { AnimationProps } from "framer-motion"
 import Cell from "../Cell"
 import Field from "../Field"
+import { Orientation } from "./Conditions"
 import Motion from "./Motion"
 import Position from "./Position"
 
@@ -10,7 +11,7 @@ import Position from "./Position"
 
 export default abstract class Bomb{
     name: string = ""
-    orientation?: 'h' | 'v' | 'n'
+    orientation?: Orientation
     animation: Motion[] = []
     image?: string
 

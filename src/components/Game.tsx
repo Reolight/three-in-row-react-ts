@@ -78,18 +78,6 @@ export default function Game(props : gameInfoProps){
                 stage={stage}
                 stage_complete_callback={Completed}
             />
-
-            {/* {motions && 
-                <div className="overlay">
-                    <div style={{marginTop: Field.OffsetY, marginLeft: Field.OffsetX}}>
-                        {motions.map((anim) => {
-                            return <Effect
-                                key={anim.id}
-                                motion={anim}
-                            />})}
-                    </div>
-                </div>
-            }          */}   
         </>
         {isCompleted !== "PLAY" && 
             <ResultScreen 

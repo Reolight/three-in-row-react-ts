@@ -1,10 +1,18 @@
-import { AnimationProps } from "framer-motion";
+import { AnimationProps, Variants } from "framer-motion";
 import Cell from "../../logic/Cell";
 import Field from "../../logic/Field";
 import Bomb from "../../logic/interfaces/Bomb";
 import Effect from "../../logic/interfaces/Effect";
 import Motion from "../../logic/interfaces/Motion";
 import Position from "../../logic/interfaces/Position";
+import { effect_conditions } from "../../logic/interfaces/Conditions";
+
+/**
+ * DO NOT USE THIS FUNCTION DIRECTLY! Instead of direct use, conditions should be specified.
+ * Retrieves effect from "storage" by deep cloning the template.
+ * @param name - name of raised effect
+ * @returns 
+ */
 
 export default function getEffect(name: string): Effect | undefined {
     const eff = effects.find(b => b.name === name)
@@ -55,7 +63,7 @@ const effects: Effect[] = [
                             y: position.y * Field.Cell_size
                         },
                         transition: {
-                            duration: 1
+                            duration: 0.3
                         }
                     }
                 },
@@ -77,9 +85,9 @@ const effects: Effect[] = [
                             y: position.y * Field.Cell_size
                         },
                         transition: {
-                            duration: 1
+                            duration: 0.3
                         }
-                    } as AnimationProps
+                    } as Variants
                 }
             ]
         }

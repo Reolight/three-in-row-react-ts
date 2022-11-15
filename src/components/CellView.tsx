@@ -32,7 +32,7 @@ export default function CellView(props: CellProps){
                         <img
                             className={props.selected? "Item-selected" : "Item"} 
                             
-                            src={Cell.getSprite(sprite)}
+                            src={sprite.sprite}
                             alt={sprite.name}
                         />
                         {sprite.effect && 
