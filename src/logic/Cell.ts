@@ -29,11 +29,6 @@ export default class Cell implements Tile {
         return (this.isExist && !this.isBlocked && !this.sprite.sprite)
     }
 
-    getBackground(isSelected: boolean): string {
-        const file = require(`../sources/backs/${isSelected?"sel.png":"def.png"}`)
-        return file
-    }
-
     static getSprite(sprite: Sprite): string {
         const file = sprite.sprite? require(`../sources/sprites/${sprite.sprite}`): ""
         return file
