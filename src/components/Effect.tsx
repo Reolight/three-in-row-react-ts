@@ -1,9 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { motion, useAnimation, useAnimationControls } from "framer-motion"
 import Motion, { retrieveMotionImage } from "../logic/interfaces/Motion";
-import Position from "../logic/interfaces/Position";
-import Field from "../logic/Field";
-import Animator from "../logic/Animator";
 
 interface EffectProps{
     motion: Motion

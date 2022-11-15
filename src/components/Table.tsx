@@ -204,22 +204,21 @@ export default function Table(props : gameInfoProps){
                                 clicked={onClicked}
                                 selected={swapped[0]?.x == sprite.position.x && swapped[0]?.y == sprite.position.y}
                             />
-                )}
+                            )}
+                            </>
+                        </div>   
                     <div style={{
                         position: 'relative',
-                        marginTop: Field.OffsetY,
-                        marginLeft: Field.OffsetX,
                         width: 0,
                         height: 0
                     }}>
                         {field.animations.map((anim) => {
                             return <Effect
-                                key={anim.id}
-                                motion={anim}
-                                removeAnim={removeAnimation}
+                            key={anim.id}
+                            motion={anim}
+                            removeAnim={removeAnimation}
                             />})}
-                    </div>   </>
-                </div>
+                    </div>
                 </>
             </div>
         </div>
