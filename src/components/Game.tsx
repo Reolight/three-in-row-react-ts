@@ -2,12 +2,14 @@ import React, { useContext, useEffect, useState } from "react";
 import { redirect, useNavigate, useParams, useSearchParams } from "react-router-dom";
 import { PlayerContext } from "../App";
 import Animator from "../logic/Animator";
+import Field from "../logic/Field";
 import Motion from "../logic/interfaces/Motion";
 import Player from "../logic/Player";
 import Score from "../logic/Score";
-import Effect from "./Effect";
 import ResultScreen from "./ResultScreen";
 import Table from "./Table"
+import "./styles/anims.css"
+import Effect from "./Effect";
 
 interface gameInfoProps{
     stage: string
@@ -76,12 +78,18 @@ export default function Game(props : gameInfoProps){
                 stage={stage}
                 stage_complete_callback={Completed}
             />
-            {motions && motions.map((anim) =>{
-                        <Effect
-                            key={anim.id}
-                            motion={anim}
-                        />
-                    })}
+
+            {/* {motions && 
+                <div className="overlay">
+                    <div style={{marginTop: Field.OffsetY, marginLeft: Field.OffsetX}}>
+                        {motions.map((anim) => {
+                            return <Effect
+                                key={anim.id}
+                                motion={anim}
+                            />})}
+                    </div>
+                </div>
+            }          */}   
         </>
         {isCompleted !== "PLAY" && 
             <ResultScreen 

@@ -1,4 +1,4 @@
-import { AnimationProps } from "framer-motion"
+import { AnimationProps, Variants } from "framer-motion"
 import Position from "./Position"
 
 export default interface Motion{
@@ -7,7 +7,7 @@ export default interface Motion{
     width: number
     height: number
     position?: Position
-    anim: AnimationProps
+    anim: Variants
 }
 
 export function cloneMotion(motion: Motion) : Motion {

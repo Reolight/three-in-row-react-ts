@@ -1,3 +1,4 @@
+import Field from "./Field";
 import Motion, { retrieveMotionImage } from "./interfaces/Motion";
 import Position from "./interfaces/Position";
 
@@ -8,20 +9,22 @@ export default class Animator{
      * Puts an animation in the performing list
      * @param animation
      */
-    static perform(animation: Motion, pos: Position){
+    static perform(field: Field, animation: Motion, pos: Position){
         const a : Motion = animation
         a.id = Animator.count++
         a.image = retrieveMotionImage(a.image)
         a.position = {x: pos.x, y: pos.y}
 
         console.debug(`Animation to be performed: `, a)
-        Animator.Animations.push(a)
+        //Animator.Animations.push(a)
+        field.animations.push(a)
     }
 
-    static remove(id: number){
+    static remove(field: Field, id: number){
         const anim_i = Animator.Animations.findIndex(a => a.id === id)
         if (anim_i >= 0){
-            Animator.Animations.splice(anim_i, 1)
+            //Animator.Animations.splice(anim_i, 1)
+            field.animations.splice(anim_i, 1)
         } else console.warn(`Animation with id ${id} have been already removed`)
     }
 }

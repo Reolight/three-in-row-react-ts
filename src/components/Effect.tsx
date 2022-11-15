@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, useAnimation, useAnimationControls } from "framer-motion"
 import Motion, { retrieveMotionImage } from "../logic/interfaces/Motion";
 import Position from "../logic/interfaces/Position";
@@ -7,6 +7,7 @@ import Animator from "../logic/Animator";
 
 interface EffectProps{
     motion: Motion
+    removeAnim: Function
 }
 
     /**
@@ -15,33 +16,28 @@ interface EffectProps{
      * @returns JSX.Element with animation
      */
 export default function  Effect(props: EffectProps): JSX.Element {
-    
-    return(
-        <motion.div
-            id="AnimationsOverlay"
-            key={"AnimationsOverlay"}
-            style={{
-                position: "absolute",
-                marginTop: Field.OffsetY,
-                marginLeft: Field.OffsetX,
-                zIndex: 2000000
+    const [mot] = useState(props.motion)
+
+    return(<>
+        <p id={`${mot.id}`}></p>
+        <motion.img
+            variants={mot.anim}
+            animate={"animate"}
+            initial={"initial"}
+            transition={mot.anim.transition}
+            onAnimationStart={()=>{ console.warn(`animation with Id ${mot.id} has started`)}}
+            onAnimationComplete={() => { 
+                console.warn(`animation with Id ${mot.id} finished`); 
+                props.removeAnim(mot.id)
             }}
-            animate={props.motion.anim.animate}
-            initial={props.motion.anim.initial}
-            transition={props.motion.anim.transition}
-            onAnimationStart={()=>{ console.warn(`animation with Id ${props.motion.id} has started`)}}
-            onAnimationComplete={() => { console.warn(`animation with Id ${props.motion.id} finished`); Animator.remove(props.motion.id!)}}
-        >
-            <img
-                src={retrieveMotionImage(props.motion.image)}
-                style={{
-                    position: 'absolute',
-                    width: props.motion.width,
-                    height: props.motion.height
-                }}
-                alt={props.motion.image}
-            >
-            </img>
-        </motion.div>
-    )
+        
+            src={mot.image}
+            style={{
+                position: 'absolute',
+                width: mot.width,
+                height: mot.height,
+            }}
+            alt={mot.image}
+        />
+    </>)
 }

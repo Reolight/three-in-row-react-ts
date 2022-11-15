@@ -9,6 +9,7 @@ import randomInt from "./RandomInt"
 import Score from "./Score"
 import SpriteInt from "./interfaces/SpriteInt"
 import Effector from "./Effector"
+import Motion from "./interfaces/Motion"
 
     /**
      * This class contains a lot of field-logic. It is a collector of all three-in-row logic and can be called 
@@ -32,6 +33,7 @@ export default class Field {
     goal: Goal
 
     sprites: Sprite[] = []
+    animations: Motion[] = []
 
     score: Score = {} as Score
 

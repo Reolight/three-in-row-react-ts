@@ -10,9 +10,9 @@ export default class Effector{
     static Effects: Effect[] = []
     static count: number = 0
 
-    private static raiseMotion(motion: Motion | undefined, pos: Position){
+    private static raiseMotion(field: Field, motion: Motion | undefined, pos: Position){
         if (motion){
-            Animator.perform(motion, pos)
+            Animator.perform(field, motion, pos)
         }
     }
 
@@ -22,7 +22,7 @@ export default class Effector{
         console.warn(e)
         try{
             const motions = e.onSpawn(field)
-            motions?.forEach(motions => Effector.raiseMotion(motions, cell.pos))
+            motions?.forEach(motions => Effector.raiseMotion(field, motions, cell.pos))
         } catch{}
 
         console.debug(`../../sources/effect/${e.image}`)
@@ -34,7 +34,7 @@ export default class Effector{
         Effector.Effects.forEach(eff => {
             try{
                 const motions = eff.onFree(f)
-                motions?.forEach(motion => Effector.raiseMotion(motion, p))
+                motions?.forEach(motion => Effector.raiseMotion(f, motion, p))
             } catch{}
         })
     }
@@ -44,7 +44,7 @@ export default class Effector{
         if (index > -1 ){
             try{
                 const motions = Effector.Effects[index].onDestroy(f, p)
-                motions?.forEach(motion => Effector.raiseMotion(motion, p))
+                motions?.forEach(motion => Effector.raiseMotion(f, motion, p))
             } catch{}
 
             Effector.Effects.splice(index, 1)

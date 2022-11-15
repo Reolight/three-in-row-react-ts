@@ -1,3 +1,4 @@
+import { relative } from "path";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { PlayerContext } from "../App";
 import Animator from "../logic/Animator";
@@ -85,6 +86,7 @@ export default function Table(props : gameInfoProps){
     
     function Free(){
         console.debug("sprites: ", field?.sprites)
+        console.debug("animations: ", Animator.Animations)
         console.debug("effects: ", Effector.Effects)
 
         if (swapped.length == 0) player!.score!.step++
@@ -103,7 +105,6 @@ export default function Table(props : gameInfoProps){
         const stage : Field = Field.getStage(props.stage)
 
         Effector.Effects = []
-        Animator.Animations = []
 
         player!.score = stage!.score //ref to score
         player!.score!.step++
@@ -158,6 +159,12 @@ export default function Table(props : gameInfoProps){
         }        
     }
 
+    function removeAnimation(id: number): void {
+        let f = field
+        f?.animations.splice(f.animations.findIndex(m => m.id === id), 1)
+        setField(f)
+    }
+
     return(!field? <p>Wait please...</p> :
         <div className="Game-container" ref={GameContainer}>
             <UITable goal={field!.goal}/>
@@ -198,7 +205,20 @@ export default function Table(props : gameInfoProps){
                                 selected={swapped[0]?.x == sprite.position.x && swapped[0]?.y == sprite.position.y}
                             />
                 )}
-                     </>
+                    <div style={{
+                        position: 'relative',
+                        marginTop: Field.OffsetY,
+                        marginLeft: Field.OffsetX,
+                        width: 0,
+                        height: 0
+                    }}>
+                        {field.animations.map((anim) => {
+                            return <Effect
+                                key={anim.id}
+                                motion={anim}
+                                removeAnim={removeAnimation}
+                            />})}
+                    </div>   </>
                 </div>
                 </>
             </div>
