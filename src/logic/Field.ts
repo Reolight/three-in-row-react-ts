@@ -1,4 +1,8 @@
-import retrieveStage from "../sources/data/Scenes"
+import retrieveStage, { FieldParams } from "../sources/data/Scenes"
+import Score from "./Score"
+import SpriteInt from "./interfaces/SpriteInt"
+import Effector from "./Effector"
+import LevelReader from "./auxillary/LevelReader"
 import retrieveSprite from "../sources/data/Sprites"
 import Cell from "./Cell"
 import Chain from "./Chain"
@@ -6,9 +10,6 @@ import Goal from "./interfaces/Goal"
 import Position from "./interfaces/Position"
 import Sprite from "./Sprite"
 import randomInt from "./RandomInt"
-import Score from "./Score"
-import SpriteInt from "./interfaces/SpriteInt"
-import Effector from "./Effector"
 import Motion from "./interfaces/Motion"
 
     /**
@@ -41,21 +42,21 @@ export default class Field {
 
     score: Score = {} as Score
 
-    constructor(name: string, x: number, y: number, allowedSprites: string[], goal: Goal){
-        this.name = name;
-        this.size = {x, y}
-        allowedSprites.forEach(name => {
+    constructor(field_params: FieldParams){
+        this.name = field_params.name;
+        this.size = {x: field_params.x, y: field_params.y}
+        field_params.allowedSpites.forEach(name => {
             const sprite = retrieveSprite(name)
             sprite && this.allowedSprites.push(sprite)
         })
-
+            // this part should be reworked
         this.tile_background = require(`../sources/backs/def.png`)
         this.tile_background_selected = require(`../sources/backs/sel.png`)
-        
+            //
         this.allowedSprites.forEach(sprite => console.debug(`[${sprite.name}: ${sprite.sprite}]`))
-        this.goal = goal
-        this.initialGeneration()
-        this.score = new Score(allowedSprites)
+        this.goal = field_params.goal
+        this.initialGeneration(field_params)
+        this.score = new Score(field_params.allowedSpites)
     }
 
     addSprite(sprite: SpriteInt, pos: Position) {
@@ -80,27 +81,31 @@ export default class Field {
     static getStage(name: string): Field{
         const stage = retrieveStage(name)
         if (!stage) console.error(`Stage ${name} doesn't exist`);
-        return new Field(stage!.name, stage!.x, stage!.y, stage!.allowedSpites, stage!.goal);        
+        return new Field(stage!);
     }
 
     private getRandomSprite(): SpriteInt {
         return this.allowedSprites[randomInt(this.allowedSprites.length)]
     }
 
-    private initialGeneration(){
+    private initialGeneration(params: FieldParams){
         console.debug(`generation of ${this.size.x}x${this.size.y}`)
-        for (let igrek = 0; igrek < this.size.y; igrek++){
-            let row: Cell[] = []
-            for (let ix = 0; ix < this.size.x; ix++){
-                let c = new Cell(true, {x: ix, y: igrek}, [])
-                const s : Sprite = new Sprite(this.getRandomSprite(), c.pos)
-                this.sprites.push(s)
-                c.sprite = s
-                row.push(c)
-            }
+        this.cells = LevelReader({x: params.x, y: params.y}, params.stringified_field, params.definitions)
 
-            this.cells.push(row)
-        }
+        let x = 0; let y = 0;
+        this.cells.forEach(row => {
+            row.forEach(cell => {
+                if (cell.isExist && !cell.isBlocked){
+                    const sprite: Sprite = new Sprite(this.getRandomSprite(), {x, y})
+                    cell.sprite = sprite
+                    this.sprites.push(sprite)
+                }
+
+                x++
+            })
+            x=0
+            y++
+        })
     }
 
     /**
@@ -111,7 +116,6 @@ export default class Field {
      * @param height - height of field in cells count
      */
     static setOffset(screen_width: number, screen_height: number, width: number, height: number){
-        console.error(screen_width, screen_height)
         Field.OffsetX = (screen_width - width * Field.Cell_size) / 2
         Field.OffsetY = (screen_height - height * Field.Cell_size) / 2
     }
@@ -120,18 +124,20 @@ export default class Field {
 
     private static MatchRow(cells: Cell[], or: 'v' | 'h' | 'n'){
         for (let x = cells.length - 2; x > 0; x--){
-            if (!Chain.isOpened) {
-                    if (cells[x].sprite.name){
-                        if (cells[x-1].sprite.name === cells[x].sprite.name
-                            && cells[x].sprite.name === cells[x+1].sprite.name)
-                        {
-                            Chain.open([ cells[x-1], cells[x], cells[x+1] ], or)
-                        }
+            if (!cells[x-1].isEmpty() || !cells[x].isEmpty() || !cells[x+1].isEmpty()){
+                if (!Chain.isOpened) {
+                        if (cells[x].sprite.name){
+                            if (cells[x-1].sprite.name === cells[x].sprite.name
+                                && cells[x].sprite.name === cells[x+1].sprite.name)
+                            {
+                                Chain.open([ cells[x-1], cells[x], cells[x+1] ], or)
+                            }
+                    }
                 }
+                else if (cells[x].sprite.name === cells[x-1].sprite.name){
+                    Chain.add(cells[x-1])
+                } else Chain.isOpened && Chain.close()
             }
-            else if (cells[x].sprite.name === cells[x-1].sprite.name){
-                Chain.add(cells[x-1])
-            } else Chain.isOpened && Chain.close()
         }
     }
 
@@ -177,7 +183,7 @@ export default class Field {
     private static Generate(field : Field): number {
         let generated: number = 0
         field.cells[0].forEach(cell => {
-            if (cell.isAvailableForPlace()){
+            if (cell.isPlaceable() && cell.isEmpty()){
                 field.addSprite(field.getRandomSprite(), cell.pos)
                 generated++
             }
@@ -186,27 +192,29 @@ export default class Field {
         return generated
     }
 
-    static Fall(old: Field, strict: boolean = true): [field:Field, changes: number] {
-        let f : Field = old
+    //this variable for fall-management
+    strict: boolean = false
+    static Fall(f: Field): [field:Field, changes: number] {
         let changes: number = 0
 
         for (let row = f.cells.length - 2; row >= 0; row--){
             for (let x = 0; x < f.cells[row].length ; x++){
+                console.debug(`${row}:${x}: empty? ${f.cells[row][x].isEmpty()}, movable ${f.cells[row][x].isMovable()}`,
+                    `. ${row+1}:${x}: available for drop: ${f.cells[row + 1][x].isAvailableForDrop()}`)
+                if (!f.cells[row][x].isEmpty() && f.cells[row][x].isMovable()){ //current is NOT empty and not blocked
 
-                if (!f.cells[row][x].isFrozen && f.cells[row][x].sprite.sprite){ //current is NOT empty and not blocked
-
-                    if (f.cells[row + 1][x].isAvailableForPlace()) { //cell in row below is empty, not blocked and not frozen
+                    if (f.cells[row + 1][x].isAvailableForDrop()) { //cell in row below is empty, not blocked and not frozen
                         f.cells[row][x].drop(f.cells[row + 1][x])
                         changes++
                     }
                     
-                    if (!strict){
+                    if (!f.strict){
                             //if there is no empty cell below, check sides
-                        if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForPlace()){
+                        if (f.cells[row + 1][x - 1] && f.cells[row + 1][x - 1].isAvailableForDrop()){
                             f.cells[row][x].drop(f.cells[row + 1][x - 1])
                             changes++
 
-                        } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForPlace()){
+                        } else if (f.cells[row + 1][x + 1] && f.cells[row + 1][x + 1].isAvailableForDrop()){
                             f.cells[row][x].drop(f.cells[row + 1][x + 1])
                             changes++
                         }
@@ -216,6 +224,13 @@ export default class Field {
         }
 
         changes += Field.Generate(f)
+        if (f.strict && changes === 0) {
+            f.strict = false
+            changes++
+        }
+
+        if (!f.strict && changes === 0) f.strict = true
+
         Field.StringField(f)
         return [f, changes]
     }
@@ -224,7 +239,10 @@ export default class Field {
         let s : string[] = []
         f.cells.forEach(row => {
             let r: string = ""
-            row.forEach(cell => r += cell.sprite.name ? cell.sprite.name[0]: "-")
+            row.forEach(cell => {
+                if (!cell.sprite) r += " "
+                else r += cell.sprite.name ? cell.sprite.name[0]: "-"
+            })
             s.push(r)
         });
 
@@ -236,7 +254,8 @@ export default class Field {
         for (let ix = 0; ix < f.cells[0].length; ix++){
             let column: string = ""
             f.cells.forEach(row => {
-                column += row[ix].sprite.name? row[ix].sprite.name[0] : "-"
+                if (!row[ix].sprite) column += " "
+                else column += row[ix].sprite.name? row[ix].sprite.name[0] : "-"
             })
 
             c.push(column)

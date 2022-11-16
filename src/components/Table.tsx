@@ -191,7 +191,7 @@ export default function Table(props : gameInfoProps){
                                         border: 'none'}}
                                 >
                                     
-                                </td> : <td key={x + y/100} ></td>
+                                </td> : <td key={x + y/100} style={{position:'absolute',width:0,height:0}} ></td>
                             )}
                         </tr>
                     )}

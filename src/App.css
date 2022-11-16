@@ -97,7 +97,6 @@
 .Game-container .container{
   position: relative;
   flex-direction: block;
-  margin: auto;
   text-align: center;
 }
 
@@ -124,7 +123,6 @@
 .Game-table{
   position: absolute;
   display: flex;
-  margin: 0;
   width: 0;
   height: 0;
 }

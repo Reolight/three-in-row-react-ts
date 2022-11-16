@@ -1,3 +1,5 @@
+import { cell_definition } from "../../logic/auxillary/LevelReader";
+import { level_unlock_conditions } from "../../logic/interfaces/Conditions";
 import Goal from "../../logic/interfaces/Goal";
 
 export interface FieldParams{
@@ -7,6 +9,11 @@ export interface FieldParams{
     x: number
     y: number
     allowedSpites: string[]
+
+    definitions?: cell_definition[]
+    stringified_field?: string[]
+
+    level_conditions?: level_unlock_conditions
     goal: Goal
 }
 
@@ -42,6 +49,29 @@ const scenes : FieldParams[] =
             y:4,
             allowedSpites:["diamond", "gold", "iron"], 
             goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
+        },
+        
+        {
+            title: "My custom stage",
+            name: "custom",
+            x: 8,
+            y: 8,
+            allowedSpites: ["square", "circle", "rumb", "triangle"],
+            goal: {
+                isAchieved(score): boolean{ return score!.score > 2000 },
+                isDefeated(score): boolean{ return score!.step > 25},
+                toString():string {return "score more than 2000 and less than 25 steps"},
+            },
+
+            definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false}}],
+            stringified_field: ["--dddd--",
+                                "-dddddd-",
+                                "dddddddd",
+                                "ddd--ddd",
+                                "ddd--ddd",
+                                "dddddddd",
+                                "-dddddd-",
+                                "--dddd--"]
         }
     ]
 

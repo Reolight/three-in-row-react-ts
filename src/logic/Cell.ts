@@ -14,19 +14,41 @@ export default class Cell implements Tile {
     isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
 
-    constructor(exist: boolean, position: Position, initialEffects: Effect[]){
-        this.pos = position
-        this.isExist = exist;
+    constructor(tile: Tile, pos: Position){
+        this.pos = pos
+        this.isExist = tile.isExist  //true - draws on field
+        this.isBlocked = tile.isBlocked // draws as boulder, sprite can be placed here
+        this.isFrozen = tile.isFrozen  //sprite can be placed but can't be moved from here
         if (!this.isExist) return
-        this.effects = initialEffects
+        this.effects = tile.effects ?? []
     }
 
-    isAvailableForPlace(){
-        return (this.isExist && !this.isBlocked && !this.isFrozen && !this.sprite.sprite)
+    /**
+     * is cell empty
+     * @returns 
+     */
+    isEmpty(): boolean{
+        return this.sprite.id ? false: true
     }
 
-    isAvailableForInitialPlace(){
-        return (this.isExist && !this.isBlocked && !this.sprite.sprite)
+    /**
+     * is able to move
+     * @returns 
+     */
+    isMovable(){
+        return (this.isExist && !this.isBlocked && !this.isFrozen)
+    }
+
+    isAvailableForDrop(){
+        return (this.isMovable() && this.isEmpty())
+    }
+
+    /**
+     * is can be placed at this cell (empty by default) by generator
+     * @returns 
+     */
+    isPlaceable(){
+        return (this.isExist && !this.isBlocked)
     }
 
     static getSprite(sprite: Sprite): string {
@@ -37,10 +59,6 @@ export default class Cell implements Tile {
     static getSpriteByName(name: string): string {
         const file = name? require(`../sources/sprites/${name}.png`): ""
         return file
-    }
-
-    isEmpty(): boolean{
-        return this.sprite? false: true
     }
 
     swap(cell: Cell, isAdjacentOnly: boolean = true): boolean {

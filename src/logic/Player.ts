@@ -18,8 +18,7 @@ export default class Player implements PlayerData {
         player.records = data.records
         return player
     }
-        //score is money and score simultaneously.
-        //But in future (maybe) it will be calculated separatly based on skills
+
     addScore(score: number): void{
         this.score!.score += score
     }
@@ -34,7 +33,7 @@ export default class Player implements PlayerData {
             record.score = record.score < score? score : record.score
         }
         
-        this.money += Math.round(score /2)
+        this.money += Math.round(score / 4)
         this.save()
     }
 
