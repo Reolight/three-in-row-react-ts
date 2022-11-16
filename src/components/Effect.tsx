@@ -30,6 +30,7 @@ export default function  Effect(props: EffectProps): JSX.Element {
             src={mot.image}
             style={{
                 position: 'absolute',
+                pointerEvents: 'none',
                 margin: 0,
                 width: mot.width,
                 height: mot.height,

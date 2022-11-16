@@ -19,6 +19,7 @@ export default class Effector{
     static spawn(field: Field, effect: Effect, cell: Cell){
         let e = effect
         e.id = Effector.count++
+        if (cell.sprite.effect) Effector.destroy(field, cell.pos, cell.sprite.id)
         console.warn(e)
         try{
             const motions = e.onSpawn(field)
@@ -27,6 +28,9 @@ export default class Effector{
 
         console.debug(`../../sources/effect/${e.image}`)
         e.image = e.image? require(`../sources/effect/` + e.image) : ""
+
+        cell.sprite.effect = effect
+        cell.markedForDelete = false
         Effector.Effects.push(e)
     }
 
@@ -48,6 +52,7 @@ export default class Effector{
             } catch{}
 
             Effector.Effects.splice(index, 1)
+            f.cells[p.y][p.x].sprite.effect = {} as Effect //empty effect after destroy to make sure it won't be called twice+!
         }
     }
 }

@@ -1,9 +1,7 @@
 import resolveConditions from "../sources/data/Conditioner";
-import Animator from "./Animator";
 import Cell from "./Cell";
 import Effector from "./Effector";
 import Field from "./Field";
-import Bomb from "./interfaces/Bomb";
 import { Orientation } from "./interfaces/Conditions";
 import Effect from "./interfaces/Effect";
 
@@ -117,9 +115,7 @@ export default class Chain{
             
             if (!effect) continue
             effect.orientation = chain.orientation
-            Effector.spawn(f, effect, chain.cells[0])
-            chain.cells[0].sprite.effect = effect
-            chain.cells[0].markedForDelete = false            
+            Effector.spawn(f, effect, chain.cells[0])         
         }
 
         Chain.count = 0;

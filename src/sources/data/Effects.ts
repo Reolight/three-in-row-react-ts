@@ -26,8 +26,8 @@ const effects: Effect[] = [
         name : "sprite",
         duration: -1,
         active: true,
-        
-        image: "row.png",        
+        image: "row.png",
+                
         onDestroy(field: Field, position: Position) {
             let row : Cell[] = []
             if (this.orientation === 'v'){

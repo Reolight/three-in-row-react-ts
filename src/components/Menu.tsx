@@ -2,7 +2,7 @@ import React, { useContext, useEffect, useState } from "react";
 import { redirect, useLocation, useNavigate, useParams } from "react-router-dom";
 import { PlayerContext } from "../App";
 import Player from "../logic/Player";
-import { getStageTitles } from "../sources/data/Scenes";
+import { FieldParams, getStageTitles } from "../sources/data/Scenes";
 import StageInfo from "./StageInfo";
 import "./styles/panel.css"
 
@@ -10,7 +10,7 @@ export default function Menu(){
     const params = useParams()
     const {player, setPlayer} = useContext(PlayerContext)
 
-    const stages: string[] = getStageTitles()
+    const stages: FieldParams[] = getStageTitles()
     const [chosen, setChosen] = useState<number>(-1)
     const navigate = useNavigate()
 
@@ -28,6 +28,8 @@ export default function Menu(){
 
             setPlayer(Player.load(player_name))
         }
+
+        console.debug(player)
     }, [params])
 
     return(!player? <p>Loading</p>:
@@ -50,17 +52,17 @@ export default function Menu(){
                             key={index}
                             onClick={() => chosen == index? setChosen(-1): setChosen(index)}
                         >
-                            <p>{index + 1}: {stage}</p>
+                            <p><>{index + 1}: {stage.title}</></p>
                         </button>
                     )})}
                 </div>
             </div>
             <div className="flex">
-                <StageInfo 
-                    name={stages[chosen]}
+                {stages[chosen] && <StageInfo 
+                    name={stages[chosen].title}
                     callback={launchGame}
-                    record={player!.getRecord(stages[chosen])}
-                />
+                    record={player!.getRecord(stages[chosen].name)}
+                />}
             </div>
         </div>
         </>

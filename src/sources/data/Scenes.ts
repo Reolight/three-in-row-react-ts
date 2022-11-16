@@ -1,6 +1,6 @@
 import Goal from "../../logic/interfaces/Goal";
 
-interface FieldParams{
+export interface FieldParams{
     title: string
     name: string
     description?: string
@@ -59,8 +59,8 @@ export function getStageNames(): string[]{
     return stages
 }
 
-export function getStageTitles(): string[]{
-    let stages : string[] = []
-    scenes.forEach(scene => stages.push(scene.title))
+export function getStageTitles(): FieldParams[]{
+    let stages : FieldParams[] = []
+    scenes.forEach(scene => stages.push(scene))
     return stages
 }

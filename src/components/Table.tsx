@@ -43,7 +43,7 @@ export default function Table(props : gameInfoProps){
             GameContainer.current.offsetWidth, GameContainer.current.offsetHeight, 
             field?.size.x, field?.size.y)},
         [GameContainer.current?.offsetHeight, GameContainer.current?.offsetLeft])
-
+    
     function delay(ms: number){
         return new Promise((res) => setTimeout(res, ms))
     }
