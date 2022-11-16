@@ -2,7 +2,7 @@ import retrieveStage, { FieldParams } from "../sources/data/Scenes"
 import Score from "./Score"
 import SpriteInt from "./interfaces/SpriteInt"
 import Effector from "./Effector"
-import LevelReader from "./auxillary/LevelReader"
+import LevelReader, { cell_definition } from "./auxillary/LevelReader"
 import retrieveSprite from "../sources/data/Sprites"
 import Cell from "./Cell"
 import Chain from "./Chain"
@@ -27,11 +27,11 @@ export default class Field {
     static OffsetX: number
     static OffsetY: number
 
-    tile_background: string
-    tile_background_selected: string
+    base_background: string = require(`../sources/backs/def.png`)
     wallpaper?: string
 
     size: Position
+    cell_definitions: cell_definition[] = []
     cells: Cell[][] = []
     name: string
     allowedSprites: SpriteInt[] = []
@@ -49,14 +49,28 @@ export default class Field {
             const sprite = retrieveSprite(name)
             sprite && this.allowedSprites.push(sprite)
         })
-            // this part should be reworked
-        this.tile_background = require(`../sources/backs/def.png`)
-        this.tile_background_selected = require(`../sources/backs/sel.png`)
-            //
+
+        if (field_params.definitions) {
+            const clone = require("rfdc/default")
+            this.cell_definitions = clone(field_params.definitions) as cell_definition[]
+            for (let i = 0; i < this.cell_definitions.length; i++){
+                this.cell_definitions[i].tile.image = field_params.definitions[i].tile.image? 
+                    require(`../sources/backs/${field_params.definitions[i].tile.image}`) :
+                    this.base_background
+            }
+        }
+        
         this.allowedSprites.forEach(sprite => console.debug(`[${sprite.name}: ${sprite.sprite}]`))
         this.goal = field_params.goal
         this.initialGeneration(field_params)
         this.score = new Score(field_params.allowedSpites)
+    }
+
+    getBackground(cell: Cell){
+        if (this.cell_definitions.length > 0){
+            return this.cell_definitions.find(def => def.key === cell.key)?.tile.image
+        }
+        else return this.base_background
     }
 
     addSprite(sprite: SpriteInt, pos: Position) {
@@ -199,8 +213,6 @@ export default class Field {
 
         for (let row = f.cells.length - 2; row >= 0; row--){
             for (let x = 0; x < f.cells[row].length ; x++){
-                console.debug(`${row}:${x}: empty? ${f.cells[row][x].isEmpty()}, movable ${f.cells[row][x].isMovable()}`,
-                    `. ${row+1}:${x}: available for drop: ${f.cells[row + 1][x].isAvailableForDrop()}`)
                 if (!f.cells[row][x].isEmpty() && f.cells[row][x].isMovable()){ //current is NOT empty and not blocked
 
                     if (f.cells[row + 1][x].isAvailableForDrop()) { //cell in row below is empty, not blocked and not frozen

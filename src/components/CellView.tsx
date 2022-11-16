@@ -22,11 +22,13 @@ export default function CellView(props: CellProps){
                         onClick={() => props.clicked(sprite.position)}
                         animate={{
                             x: sprite.position.x * Field.Cell_size,
-                            y: sprite.position.y * Field.Cell_size
+                            y: sprite.position.y * Field.Cell_size,
+                            opacity: 1
                         }}
                         initial={{
                             x: sprite.position.x * Field.Cell_size,
-                            y: sprite.position.y * Field.Cell_size
+                            y: sprite.position.y * Field.Cell_size,
+                            opacity: 0
                         }}
                     >
                         <img
@@ -36,7 +38,10 @@ export default function CellView(props: CellProps){
                             alt={sprite.name}
                         />
                         {sprite.effect && 
-                                <img
+                                <motion.img
+                                    key={sprite.effect.id}
+                                    animate={{scale: 1}}
+                                    initial={{scale: 0}}
                                     src={sprite.effect.image}
                                     alt={sprite.effect.name}
                                     style={{

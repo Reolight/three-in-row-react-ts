@@ -28,7 +28,7 @@ export default function LevelReader(size?: Position, stringified_field?: string[
             for (let x : number = 0; x < stringified_field[0].length; x++){
                 const tile = definitions.find(def => def.key === stringified_field[y][x])?.tile ??
                     {effects: [], isBlocked: false, isExist: false, isFrozen: false} as Tile
-                row.push(new Cell(tile, {x,y}))
+                row.push(new Cell(tile, {x,y}, stringified_field[y][x]))
             }
             
             cells.push(row)

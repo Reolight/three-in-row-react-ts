@@ -8,13 +8,15 @@ export default class Cell implements Tile {
     sprite: Sprite = {} as Sprite
     markedForDelete : boolean = false
 
+    key?: string
     pos: Position
     isExist : boolean
     isBlocked : boolean = false //items can not be placed here, it is like an obstacle
     isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
 
-    constructor(tile: Tile, pos: Position){
+    constructor(tile: Tile, pos: Position, key?: string){
+        if (key) this.key = key
         this.pos = pos
         this.isExist = tile.isExist  //true - draws on field
         this.isBlocked = tile.isBlocked // draws as boulder, sprite can be placed here

@@ -85,7 +85,7 @@ export default function Table(props : gameInfoProps){
     }
     
     function Free(){
-        console.debug("sprites: ", field?.sprites)
+        console.debug("field: ", field)
         console.debug("animations: ", Animator.Animations)
         console.debug("effects: ", Effector.Effects)
 
@@ -178,9 +178,7 @@ export default function Table(props : gameInfoProps){
                     {field.cells.map((row, y) =>
                         <tr key={y} style={{position: 'absolute', width: 0, height: 0}}>
                             {row.map((cell, x) => cell.isExist?
-                                <td className={
-                                    cell.markedForDelete? "Cell-marked" : "Cell"} 
-                                    key={x + y/100}
+                                <td key={x + y/100}
                                     style={{
                                         position: 'absolute',
                                         marginTop: y * Field.Cell_size,
@@ -190,7 +188,7 @@ export default function Table(props : gameInfoProps){
                                         padding: 0,
                                         border: 'none'}}
                                 >
-                                    
+                                    <img src={field.getBackground(cell)}/>
                                 </td> : <td key={x + y/100} style={{position:'absolute',width:0,height:0}} ></td>
                             )}
                         </tr>

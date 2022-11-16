@@ -63,12 +63,13 @@ const scenes : FieldParams[] =
                 toString():string {return "score more than 2000 and less than 25 steps"},
             },
 
-            definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false}}],
+            definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false, image: "grey_tile.png"}},
+                          {key: "b", tile: {isBlocked: true, isExist: true, isFrozen: false, image: "grey_blocked.png"}}],
             stringified_field: ["--dddd--",
                                 "-dddddd-",
                                 "dddddddd",
-                                "ddd--ddd",
-                                "ddd--ddd",
+                                "dddbbddd",
+                                "dddbbddd",
                                 "dddddddd",
                                 "-dddddd-",
                                 "--dddd--"]
