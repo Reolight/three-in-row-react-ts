@@ -15,9 +15,6 @@ interface gameInfoProps{
     stage: string
     stage_complete_callback: (won: boolean) => void
 }
-//Просто куча пометок для меня на русском, потому что я разраб и мне можно
-//Цикл должен строится на следующем: совпадения > разрушение > падение
-//повторяется каждый раз после клика или  генерации новой карты. Делай. Досвидания.
 
 export default function Table(props : gameInfoProps){
     const GameContainer = useRef<HTMLDivElement>(null)
@@ -34,7 +31,6 @@ export default function Table(props : gameInfoProps){
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
     const [swapped, setSwapped] = useState<Position[]>([])
-    const [motion, setMotion] = useState<Motion[]>()
 
     useEffect(stateHub, [state])
     useEffect(() => {if (swapped.length == 2) swap()} , [swapped.length == 2])

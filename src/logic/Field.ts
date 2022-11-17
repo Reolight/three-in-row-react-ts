@@ -11,6 +11,7 @@ import Position from "./interfaces/Position"
 import Sprite from "./Sprite"
 import randomInt from "./RandomInt"
 import Motion from "./interfaces/Motion"
+import Generator from "./Generator"
 
     /**
      * This class contains a lot of field-logic. It is a collector of all three-in-row logic and can be called 
@@ -42,7 +43,7 @@ export default class Field {
 
     score: Score = {} as Score
 
-    constructor(field_params: FieldParams){
+    constructor(field_params: FieldParams) {
         this.name = field_params.name;
         this.size = {x: field_params.x, y: field_params.y}
         field_params.allowedSpites.forEach(name => {
@@ -50,6 +51,7 @@ export default class Field {
             sprite && this.allowedSprites.push(sprite)
         })
 
+        Generator.init(this.allowedSprites)
         if (field_params.definitions) {
             const clone = require("rfdc/default")
             this.cell_definitions = clone(field_params.definitions) as cell_definition[]
@@ -98,10 +100,6 @@ export default class Field {
         return new Field(stage!);
     }
 
-    private getRandomSprite(): SpriteInt {
-        return this.allowedSprites[randomInt(this.allowedSprites.length)]
-    }
-
     private initialGeneration(params: FieldParams){
         console.debug(`generation of ${this.size.x}x${this.size.y}`)
         this.cells = LevelReader({x: params.x, y: params.y}, params.stringified_field, params.definitions)
@@ -110,7 +108,7 @@ export default class Field {
         this.cells.forEach(row => {
             row.forEach(cell => {
                 if (cell.isExist && !cell.isBlocked){
-                    const sprite: Sprite = new Sprite(this.getRandomSprite(), {x, y})
+                    const sprite: Sprite = new Sprite(Generator.GetRandomCalculated(), {x, y})
                     cell.sprite = sprite
                     this.sprites.push(sprite)
                 }
@@ -198,7 +196,7 @@ export default class Field {
         let generated: number = 0
         field.cells[0].forEach(cell => {
             if (cell.isPlaceable() && cell.isEmpty()){
-                field.addSprite(field.getRandomSprite(), cell.pos)
+                field.addSprite(Generator.GetRandomCalculated(), cell.pos)
                 generated++
             }
         });
