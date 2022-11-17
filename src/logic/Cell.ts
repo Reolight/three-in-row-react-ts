@@ -1,4 +1,3 @@
-import retrieveSprite from "../sources/data/Sprites";
 import Effect from "./interfaces/Effect";
 import Position from "./interfaces/Position";
 import Sprite from "./Sprite";
@@ -6,7 +5,7 @@ import Tile from "./interfaces/Tile";
 
 export default class Cell implements Tile {
     sprite: Sprite = {} as Sprite
-    markedForDelete : boolean = false
+    private markedForDelete : boolean = false
 
     key?: string
     pos: Position
@@ -30,7 +29,7 @@ export default class Cell implements Tile {
      * @returns 
      */
     isEmpty(): boolean{
-        return this.sprite.id ? false: true
+        return this.sprite.id ? false : true
     }
 
     /**
@@ -58,11 +57,6 @@ export default class Cell implements Tile {
         return file
     }
 
-    static getSpriteByName(name: string): string {
-        const file = name? require(`../sources/sprites/${name}.png`): ""
-        return file
-    }
-
     swap(cell: Cell, isAdjacentOnly: boolean = true): boolean {
         if (!Position.isAdjacent(this.pos, cell.pos) && isAdjacentOnly){
             console.warn(`${this.pos.toString()} and ${cell.pos.toString()} not adjacent`)
@@ -84,7 +78,20 @@ export default class Cell implements Tile {
     }
 
     markForDelete(){
-        if (this.isExist && !this.isBlocked)
+        if (this.isPlaceable() && !this.isEmpty() && !this.sprite.isImmortal)
             this.markedForDelete = true
+    }
+
+    collect(){
+        if (this.isPlaceable() && !this.isEmpty() && this.sprite.isCollectable)
+            this.markedForDelete = true
+    }
+
+    unmarkFromDelete(){
+        this.markedForDelete = false;
+    }
+
+    isDeathmarked(): boolean{
+        return this.markedForDelete
     }
 }

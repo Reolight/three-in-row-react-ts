@@ -30,7 +30,7 @@ export default class Effector{
         e.image = e.image? require(`../sources/effect/` + e.image) : ""
 
         cell.sprite.effect = effect
-        cell.markedForDelete = false
+        cell.unmarkFromDelete()
         Effector.Effects.push(e)
     }
 

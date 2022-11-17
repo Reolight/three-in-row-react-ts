@@ -1,7 +1,7 @@
 import React from "react";
-import Cell from "../logic/Cell";
 import PlayRecord from "../logic/interfaces/PlayRecord";
 import { retrieveStageByTitle } from "../sources/data/Scenes";
+import { getSpriteByName } from "../sources/data/Sprites";
 
 interface StageInfoProps{
     name?: string
@@ -21,7 +21,7 @@ export default function StageInfo(props: StageInfoProps){
             <em>
                 field size: {stage.x}x{stage.y}. 
                 Tiles: {stage.allowedSpites.map((sprite, index) => 
-                    <img key={index} className="Icon" src={Cell.getSpriteByName(sprite)} />
+                    <img key={index} className="Icon" src={getSpriteByName(sprite)} alt={sprite} />
                 )}
             </em>
             <button

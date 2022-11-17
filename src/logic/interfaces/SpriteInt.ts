@@ -5,4 +5,6 @@ export default interface SpriteInt{
     sprite: string //path to img
     probability?: number
     max_count?: number
+    isCollectable: boolean
+    isImmortal: boolean
 }

@@ -1,11 +1,9 @@
-import { relative } from "path";
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { PlayerContext } from "../App";
 import Animator from "../logic/Animator";
 import Chain from "../logic/Chain";
 import Effector from "../logic/Effector";
 import Field from "../logic/Field";
-import Motion from "../logic/interfaces/Motion";
 import Position from "../logic/interfaces/Position";
 import CellView from "./CellView";
 import Effect from "./Effect";
@@ -33,7 +31,7 @@ export default function Table(props : gameInfoProps){
     const [swapped, setSwapped] = useState<Position[]>([])
 
     useEffect(stateHub, [state])
-    useEffect(() => {if (swapped.length == 2) swap()} , [swapped.length == 2])
+    useEffect(() => {if (swapped.length === 2) swap()} , [swapped.length])
     useEffect(InitialCycle, [props.stage])
     useEffect(() => {(GameContainer.current && field) && Field.setOffset(
             GameContainer.current.offsetWidth, GameContainer.current.offsetHeight, 
@@ -85,14 +83,14 @@ export default function Table(props : gameInfoProps){
         console.debug("animations: ", Animator.Animations)
         console.debug("effects: ", Effector.Effects)
 
-        if (swapped.length == 0) player!.score!.step++
+        if (swapped.length === 0) player!.score!.step++
         
         if (field!.goal.isAchieved(player!.score!) || field!.goal.isDefeated(player!.score!)){
             setState(COMPLETED)
             props.stage_complete_callback(field!.goal.isAchieved(player!.score!))
         }
         
-        if (swapped.length == 2) {
+        if (swapped.length === 2) {
             swap(true)
         }
     }
@@ -144,13 +142,13 @@ export default function Table(props : gameInfoProps){
     function onClicked(pos: Position){
         console.debug(`Clicked : ${pos.toString()}`)
         
-        if (swapped.length == 1 && !Position.isAdjacent(swapped[0], pos) ||
-            swapped.length == 0) {
+        if ((swapped.length === 1 && !Position.isAdjacent(swapped[0], pos)) ||
+            swapped.length === 0) {
                 setSwapped([pos]);
                 return
         }
 
-        if (swapped.length == 1 && Position.isAdjacent(swapped[0], pos)){
+        if (swapped.length === 1 && Position.isAdjacent(swapped[0], pos)){
             setSwapped([...swapped, pos])
         }        
     }
@@ -184,7 +182,7 @@ export default function Table(props : gameInfoProps){
                                         padding: 0,
                                         border: 'none'}}
                                 >
-                                    <img src={field.getBackground(cell)}/>
+                                    <img src={field.getBackground(cell)} alt={`${cell.sprite.id}`}/>
                                 </td> : <td key={x + y/100} style={{position:'absolute',width:0,height:0}} ></td>
                             )}
                         </tr>
@@ -197,7 +195,7 @@ export default function Table(props : gameInfoProps){
                                 key={sprite.id}
                                 sprite={sprite}
                                 clicked={onClicked}
-                                selected={swapped[0]?.x == sprite.position.x && swapped[0]?.y == sprite.position.y}
+                                selected={swapped[0]?.x === sprite.position.x && swapped[0]?.y === sprite.position.y}
                             />
                             )}
                             </>

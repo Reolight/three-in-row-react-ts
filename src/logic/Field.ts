@@ -89,8 +89,10 @@ export default class Field {
         }
 
         console.debug(`trying delete with id ${id}: index - ${index}`, this.sprites[index])
+        this.score.destroyed.find(d => d.name 
+            === this.cells[this.sprites[index].position.y][this.sprites[index].position.x].sprite.name)!.value++
         this.cells[this.sprites[index].position.y][this.sprites[index].position.x].sprite = {} as Sprite
-        this.cells[this.sprites[index].position.y][this.sprites[index].position.x].markedForDelete = false
+        this.cells[this.sprites[index].position.y][this.sprites[index].position.x].unmarkFromDelete()
         this.sprites.splice(index, 1)
     }
 
@@ -108,7 +110,7 @@ export default class Field {
         this.cells.forEach(row => {
             row.forEach(cell => {
                 if (cell.isExist && !cell.isBlocked){
-                    const sprite: Sprite = new Sprite(Generator.GetRandomCalculated(), {x, y})
+                    const sprite: Sprite = new Sprite(Generator.GetRandomCalculated(true), {x, y})
                     cell.sprite = sprite
                     this.sprites.push(sprite)
                 }
@@ -136,7 +138,7 @@ export default class Field {
 
     private static MatchRow(cells: Cell[], or: 'v' | 'h' | 'n'){
         for (let x = cells.length - 2; x > 0; x--){
-            if (!cells[x-1].isEmpty() || !cells[x].isEmpty() || !cells[x+1].isEmpty()){
+            if ((!cells[x-1].isEmpty() || !cells[x].isEmpty() || !cells[x+1].isEmpty()) && !cells[x].sprite.isCollectable){
                 if (!Chain.isOpened) {
                         if (cells[x].sprite.name){
                             if (cells[x-1].sprite.name === cells[x].sprite.name
@@ -179,10 +181,7 @@ export default class Field {
         let points : number = 0
         f.cells.forEach(row => 
             row.forEach(cell => {
-                if (cell.markedForDelete) {
-                    if (cell.sprite.effect)
-                        Effector.destroy(f, cell.pos, cell.sprite.effect!.id!)
-
+                if (cell.isDeathmarked()) {
                     f.destroySprite(cell.sprite.id)
                     points++
                 }
@@ -208,6 +207,13 @@ export default class Field {
     strict: boolean = false
     static Fall(f: Field): [field:Field, changes: number] {
         let changes: number = 0
+
+        for (let i = 0; i < f.cells[0].length; i++){
+            if (f.cells[f.cells.length - 1][i].sprite && f.cells[f.cells.length - 1][i].sprite.isCollectable){
+                f.destroySprite(f.cells[f.cells.length - 1][i].sprite.id)
+                changes++
+            }
+        }
 
         for (let row = f.cells.length - 2; row >= 0; row--){
             for (let x = 0; x < f.cells[row].length ; x++){

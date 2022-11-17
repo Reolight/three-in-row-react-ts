@@ -73,6 +73,28 @@ const scenes : FieldParams[] =
                                 "dddddddd",
                                 "-dddddd-",
                                 "--dddd--"]
+        },
+        {
+            title: "Collectables",
+            name: "collect",
+            x: 8,
+            y: 8,
+            allowedSpites: ["square", "circle", "rumb", "triangle", "diamond_c"],
+            goal: {
+                isAchieved(score): boolean{ return score!.score > 2000 },
+                isDefeated(score): boolean{ return score!.step > 25},
+                toString():string {return "score more than 2000 and less than 25 steps"},
+            },
+
+            definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false, image: "grey_tile.png"}}],
+            stringified_field: ["--dddd--",
+                                "-dddddd-",
+                                "dddddddd",
+                                "dd-dd-dd",
+                                "dd-dd-dd",
+                                "dddddddd",
+                                "-dddddd-",
+                                "--dddd--"]
         }
     ]
 

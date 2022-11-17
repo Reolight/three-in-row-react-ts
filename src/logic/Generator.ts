@@ -32,11 +32,24 @@ export default class Generator{
         Generator.sprite_palette.forEach(sprite => {if (!sprite.probability) sprite.probability = Generator.calculated_chance})
     }
 
+    private static async reduce_count(index: number){
+        
+        if (Generator.sprite_palette[index].max_count){
+            Generator.sprite_palette[index].max_count!--
+            if (Generator.sprite_palette[index].max_count === 0){
+                const spliced : SpriteInt = Generator.sprite_palette.splice(index, 1)[0]
+                Generator.max_rounded_chance -= spliced.probability!
+            }
+        }
+    }
+
     /**
      * Returns sprite template for making sprite based on
-     * spawn probabilities
+     * spawn probabilities.
+     * @param isInitial indicates is it initial generation. Upon this condition collectables doesn't spawn.
+     * If dice rolled at collectable, item with [index = 0] will be returned
      */
-    static GetRandomCalculated(): SpriteInt {
+    static GetRandomCalculated(isInitial: boolean = false): SpriteInt {
         const dice_dropped = randomInt(Generator.max_rounded_chance)
         if (Generator.threshold_specified_probs > dice_dropped)
             return Generator.sprite_palette[Math.floor(dice_dropped / Generator.calculated_chance)]
@@ -46,8 +59,10 @@ export default class Generator{
             while (rest_chance >= Generator.sprite_palette[index].probability!) {
                 rest_chance -= Generator.sprite_palette[index++].probability!
             }
-
-            return (Generator.sprite_palette[index])
+            
+            const sprite : SpriteInt = Generator.sprite_palette[!isInitial? index: 0]
+            if (!isInitial) Generator.reduce_count(index)
+            return (sprite)
         }
     }
 }

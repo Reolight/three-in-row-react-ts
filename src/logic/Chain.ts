@@ -104,7 +104,8 @@ export default class Chain{
             const chain: Chain = Chain.chains.pop()!
             
             chain.cells.forEach(cell => { 
-                cell.markedForDelete = true
+                cell.markForDelete()
+                if (cell.sprite.effect) Effector.destroy(f, cell.pos, cell.sprite.effect!.id!)
             })
             
             let effect: Effect | undefined = resolveConditions({
