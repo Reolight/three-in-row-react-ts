@@ -81,9 +81,9 @@ const scenes : FieldParams[] =
             y: 8,
             allowedSpites: ["square", "circle", "rumb", "triangle", "diamond_c"],
             goal: {
-                isAchieved(score): boolean{ return score!.score > 2000 },
+                isAchieved(score): boolean{ return score!.destroyed.find(d => d.name === "diamond_c")!.value === 5 },
                 isDefeated(score): boolean{ return score!.step > 25},
-                toString():string {return "score more than 2000 and less than 25 steps"},
+                toString():string {return "collect 5 diamonds for less than 25 steps"},
             },
 
             definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false, image: "grey_tile.png"}}],

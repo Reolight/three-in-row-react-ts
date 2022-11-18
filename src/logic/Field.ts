@@ -1,7 +1,6 @@
 import retrieveStage, { FieldParams } from "../sources/data/Scenes"
 import Score from "./Score"
 import SpriteInt from "./interfaces/SpriteInt"
-import Effector from "./Effector"
 import LevelReader, { cell_definition } from "./auxillary/LevelReader"
 import retrieveSprite from "../sources/data/Sprites"
 import Cell from "./Cell"
@@ -9,7 +8,6 @@ import Chain from "./Chain"
 import Goal from "./interfaces/Goal"
 import Position from "./interfaces/Position"
 import Sprite from "./Sprite"
-import randomInt from "./RandomInt"
 import Motion from "./interfaces/Motion"
 import Generator from "./Generator"
 
@@ -51,6 +49,7 @@ export default class Field {
             sprite && this.allowedSprites.push(sprite)
         })
 
+        Cell.field = this
         Generator.init(this.allowedSprites)
         if (field_params.definitions) {
             const clone = require("rfdc/default")
@@ -246,8 +245,6 @@ export default class Field {
         }
 
         if (!f.strict && changes === 0) f.strict = true
-
-        Field.StringField(f)
         return [f, changes]
     }
 

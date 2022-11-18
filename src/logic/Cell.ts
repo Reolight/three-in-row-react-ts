@@ -2,8 +2,11 @@ import Effect from "./interfaces/Effect";
 import Position from "./interfaces/Position";
 import Sprite from "./Sprite";
 import Tile from "./interfaces/Tile";
+import Effector from "./Effector";
+import Field from "./Field";
 
 export default class Cell implements Tile {
+    static field: Field
     sprite: Sprite = {} as Sprite
     private markedForDelete : boolean = false
 
@@ -78,8 +81,10 @@ export default class Cell implements Tile {
     }
 
     markForDelete(){
-        if (this.isPlaceable() && !this.isEmpty() && !this.sprite.isImmortal)
-            this.markedForDelete = true
+        if (this.isPlaceable() && !this.isEmpty() && !this.sprite.isImmortal && !this.markedForDelete){
+            this.markedForDelete = true            
+            if (this.sprite.effect) Effector.destroy(Cell.field, this.pos, this.sprite.effect!.id!)
+        }
     }
 
     collect(){

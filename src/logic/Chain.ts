@@ -105,7 +105,6 @@ export default class Chain{
             
             chain.cells.forEach(cell => { 
                 cell.markForDelete()
-                if (cell.sprite.effect) Effector.destroy(f, cell.pos, cell.sprite.effect!.id!)
             })
             
             let effect: Effect | undefined = resolveConditions({
