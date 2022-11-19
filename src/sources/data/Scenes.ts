@@ -82,8 +82,8 @@ const scenes : FieldParams[] =
             allowedSpites: ["square", "circle", "rumb", "triangle", "diamond_c"],
             goal: {
                 isAchieved(score): boolean{ return score!.destroyed.find(d => d.name === "diamond_c")!.value === 5 },
-                isDefeated(score): boolean{ return score!.step > 25},
-                toString():string {return "collect 5 diamonds for less than 25 steps"},
+                isDefeated(score): boolean{ return score!.step > 30},
+                toString():string {return "collect 5 diamonds for less than 30 steps"},
             },
 
             definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false, image: "grey_tile.png"}}],
@@ -94,7 +94,7 @@ const scenes : FieldParams[] =
                                 "dd-dd-dd",
                                 "dddddddd",
                                 "-dddddd-",
-                                "--dddd--"]
+                                "dddddddd"]
         }
     ]
 

@@ -43,7 +43,7 @@ export default function Table(props : gameInfoProps){
     }
 
     function Match(){
-        setField(Field.MatchAll(field!))
+        setField(Field.Match(field!, swapped))
         if (Chain.chains.length > 0){
             console.debug(`state set to DESTROY`)
             setState(DESTROY)
@@ -82,6 +82,12 @@ export default function Table(props : gameInfoProps){
         console.debug("field: ", field)
         console.debug("animations: ", Animator.Animations)
         console.debug("effects: ", Effector.Effects)
+
+        if (!field?.CheckAvailableCombinations()) {
+            setField(Field.Shuffle(field!))
+            delay(2500)
+            setState(MATCH)
+        }
 
         if (swapped.length === 0) player!.score!.step++
         

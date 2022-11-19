@@ -39,11 +39,11 @@ export default class Cell implements Tile {
      * is able to move
      * @returns 
      */
-    isMovable(){
+    isMovable(): boolean{
         return (this.isExist && !this.isBlocked && !this.isFrozen)
     }
 
-    isAvailableForDrop(){
+    isAvailableForDrop(): boolean{
         return (this.isMovable() && this.isEmpty())
     }
 
@@ -51,7 +51,7 @@ export default class Cell implements Tile {
      * is can be placed at this cell (empty by default) by generator
      * @returns 
      */
-    isPlaceable(){
+    isPlaceable(): boolean{
         return (this.isExist && !this.isBlocked)
     }
 

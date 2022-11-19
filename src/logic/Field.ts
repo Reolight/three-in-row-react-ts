@@ -10,6 +10,7 @@ import Position from "./interfaces/Position"
 import Sprite from "./Sprite"
 import Motion from "./interfaces/Motion"
 import Generator from "./Generator"
+import randomInt from "./RandomInt"
 
     /**
      * This class contains a lot of field-logic. It is a collector of all three-in-row logic and can be called 
@@ -135,7 +136,7 @@ export default class Field {
 
     //===========================[LOGIC]===================================
 
-    private static MatchRow(cells: Cell[], or: 'v' | 'h' | 'n'){
+    private static MatchRow(cells: Cell[], or: 'v' | 'h' | 'n', center?: Position){
         for (let x = cells.length - 2; x > 0; x--){
             if ((!cells[x-1].isEmpty() || !cells[x].isEmpty() || !cells[x+1].isEmpty()) && !cells[x].sprite.isCollectable){
                 if (!Chain.isOpened) {
@@ -144,6 +145,7 @@ export default class Field {
                                 && cells[x].sprite.name === cells[x+1].sprite.name)
                             {
                                 Chain.open([ cells[x-1], cells[x], cells[x+1] ], or)
+                                if (center) Chain.makeCenter(center)
                             }
                     }
                 }
@@ -154,22 +156,95 @@ export default class Field {
         }
     }
 
-    static MatchAll(old: Field): Field{         
-        let f: Field = old
+    private getColumn(x: number): Cell[]{
+        let column: Cell[] = []
+            this.cells.forEach(row => {
+                column.push(row[x])
+            })
+
+        return column
+    }
+
+    /**
+     * This funciton is designed for matching search. Here are two modes of search now:
+     * mode ALL - searches all matches in a field
+     * mode CENTER - makes search in rows and colums where swapped tiles are situated to get rid of 
+     * unneccessary checks and speed up the function. Also it helps define exact position, where effect
+     * should be situated
+     * Mode switches by having or not [pos1, pos2] array
+     * @param f - reference to a field
+     * @param positions - it is a [pos1, pos2] array of swapped sprites.
+     * @returns back reference to the gotten field to make setState inline
+     */
+    static Match(f: Field, [pos1, pos2]: Position[] = []): Field{         
         Chain.sizePrepare(f.cells.length)
-        Field.StringField(f)
+        if (pos1 && pos2){
+            Field.MatchRow(f.cells[pos1.y], 'h', pos1)
+            Field.MatchRow(f.getColumn(pos1.x), 'v', pos1)
+            if (pos1.x === pos2.x) Field.MatchRow(f.cells[pos2.y], 'h', pos2)
+                else Field.MatchRow(f.getColumn(pos2.x), 'v', pos2)
+            return f;
+        }
+
         for (let iy = f.cells.length - 1; iy >= 0; iy--){
             Field.MatchRow(f.cells[iy], 'h')
         }
 
         for (let ix = 0; ix < f.cells[0].length; ix++){
-            let column: Cell[] = []
-            f.cells.forEach(row => {
-                column.push(row[ix])
-            })
-            Field.MatchRow(column, 'v')
+            Field.MatchRow(f.getColumn(ix), 'v')
         }
         
+        return f
+    }
+
+    /**
+     * returns true, if there is at least one possible combination
+     */
+    CheckAvailableCombinations(): boolean{
+            for (let row = 0; row < this.cells.length; row++){
+                for (let ind = 0; ind < this.cells[row].length; ind++){
+                    if ((ind > 0 && ind < this.cells[row].length - 1) && //checking starts only if IND within this interval
+                        (!this.cells[row][ind-1].isEmpty() && !this.cells[row][ind+1].isEmpty()) && //prev & next are not empty
+                        (this.cells[row][ind-1].sprite.name === this.cells[row][ind+1].sprite.name //they are equal
+                            && !this.cells[row][ind-1].sprite.isCollectable) &&  //and not collectable
+                        ((this.cells.length > row + 1 &&
+                            (!this.cells[row+1][ind].isEmpty() && this.cells[row+1][ind].sprite.name === this.cells[row][ind-1].sprite.name))
+                    ||  (row > 0 
+                            && (!this.cells[row - 1][ind].isEmpty() && this.cells[row - 1][ind].sprite.name === this.cells[row][ind-1].sprite.name))
+                    )) return true //then there is still minimum one available combination
+                    
+                        //check for Y (colums)
+                    if ((row > 0 && row < this.cells.length - 1) &&
+                        (!this.cells[row - 1][ind].isEmpty() && !this.cells[row + 1][ind].isEmpty()) &&
+
+                        (this.cells[row - 1][ind].sprite.name === this.cells[row + 1][ind].sprite.name && !this.cells[row - 1][ind].isEmpty() 
+                            && !this.cells[row + 1][ind].sprite.isCollectable) &&
+                        ((ind > 0 && (!this.cells[row][ind - 1].isEmpty() 
+                            && this.cells[row][ind - 1].sprite.name === this.cells[row + 1][ind].sprite.name)) ||
+                        ( ind + 1 < this.cells[row].length && (!this.cells[row][ind + 1].isEmpty()
+                            && this.cells[row][ind + 1].sprite.name === this.cells[row + 1][ind].sprite.name)))
+                    ) return true
+                }
+            }            
+
+        return false
+    }
+
+        /** It shuffles field if there are no combinations */
+    static Shuffle(f: Field): Field{
+        let deployable : Sprite[] = [...f.sprites] //shallow copy: need to store refs to sprites, but not a ref to array itseld
+        f.cells.forEach(row => {
+            row.forEach(cell =>{
+                if (cell.isPlaceable() && deployable.length > 0){
+                    const index = randomInt(deployable.length - 1)
+                    const sprite = deployable[index]
+                    cell.sprite = sprite
+                    sprite.position = new Position(cell.pos.x, cell.pos.y)
+                    deployable.splice(index, 1)
+                }
+            })
+        })
+
         return f
     }
 

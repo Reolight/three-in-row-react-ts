@@ -4,6 +4,7 @@ import Effector from "./Effector";
 import Field from "./Field";
 import { Orientation } from "./interfaces/Conditions";
 import Effect from "./interfaces/Effect";
+import Position from "./interfaces/Position";
 
 interface ChainCascade{
     direction: Cell[]
@@ -12,10 +13,12 @@ interface ChainCascade{
 
 export default class Chain{
     cells: Cell[] = []
+    center?: Cell
     orientation?: Orientation
     type: string = ""
     id: number = 0
 
+    static chain_center?: Position
     static count: number = 0
     static chains: Chain[] = []
     static mapped: Chain[][] = []
@@ -29,6 +32,13 @@ export default class Chain{
         for (let i = 0; i < rows; i++){
             Chain.mapped[i] = []
         }
+    }
+
+    static makeCenter(pos: Position){
+        if (Chain.isOpened && Chain.activeChain){
+            Chain.chain_center = pos
+        }
+        else console.error(`Attempt to set center when chain is not opened`)
     }
 
     private static merge(base: Chain){
@@ -88,9 +98,16 @@ export default class Chain{
     static close() {
         if (!Chain.isOpened) {console.warn(`attempt to close not opened chain!`); return}
         if (Chain.unic) {Chain.chains.push(Chain.activeChain!)}
+        if (Chain.chain_center){
+            const center = Chain.activeChain!.cells.find(cell => cell.pos === Chain.chain_center)
+            if (!center) console.warn(`There is no cell at position marked as chain center!`)
+                else Chain.activeChain!.center = center
+        }
+
         Chain.mapChain()
         console.debug(`Active chain closed, count of chains now: ${Chain.chains.length}`)
         Chain.activeChain = {} as Chain
+        Chain.chain_center = {} as Position
         Chain.isOpened = false
     }
 
@@ -115,7 +132,7 @@ export default class Chain{
             
             if (!effect) continue
             effect.orientation = chain.orientation
-            Effector.spawn(f, effect, chain.cells[0])         
+            Effector.spawn(f, effect, chain.center ?? chain.cells[0])         
         }
 
         Chain.count = 0;
