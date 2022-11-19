@@ -1,8 +1,9 @@
 import { AnimationProps } from "framer-motion"
+import Cell from "../Cell"
 import Field from "../Field"
 import { Orientation } from "./Conditions"
 import Motion from "./Motion"
-import Position from "./Position"
+import {Position} from "./Position"
 
 /**
  * Used as template for creating custom effects
@@ -45,6 +46,10 @@ export default class Effect {
     }
 
     onDestroy(field: Field, position: Position): Motion[] | undefined{
+        return
+    }
+
+    onSwapped(field: Field, swapped_with: Cell): Motion | undefined{
         return
     }
 }

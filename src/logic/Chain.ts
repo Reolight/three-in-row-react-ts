@@ -4,7 +4,7 @@ import Effector from "./Effector";
 import Field from "./Field";
 import { Orientation } from "./interfaces/Conditions";
 import Effect from "./interfaces/Effect";
-import Position from "./interfaces/Position";
+import {Position} from "./interfaces/Position";
 
 interface ChainCascade{
     direction: Cell[]

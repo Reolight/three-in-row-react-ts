@@ -1,9 +1,10 @@
 import Effect from "./interfaces/Effect";
-import Position from "./interfaces/Position";
+import { isAdjacent, Position } from "./interfaces/Position";
 import Sprite from "./Sprite";
 import Tile from "./interfaces/Tile";
 import Effector from "./Effector";
 import Field from "./Field";
+import Motion from "./interfaces/Motion";
 
 export default class Cell implements Tile {
     static field: Field
@@ -60,29 +61,45 @@ export default class Cell implements Tile {
         return file
     }
 
-    swap(cell: Cell, isAdjacentOnly: boolean = true): boolean {
-        if (!Position.isAdjacent(this.pos, cell.pos) && isAdjacentOnly){
-            console.warn(`${this.pos.toString()} and ${cell.pos.toString()} not adjacent`)
-            return false
-        }
-
+    private swap_core(cell: Cell)
+    {       
         const sprite: Sprite = this.sprite
         this.sprite = cell.sprite
         cell.sprite = sprite
 
-        cell.sprite.position = Position.positionChange(cell.pos)
-        this.sprite.position = Position.positionChange(this.pos)
+        cell.sprite.position = cell.pos
+        this.sprite.position = this.pos
+    }
+
+    swap(cell: Cell): boolean {
+        if (!isAdjacent(this.pos, cell.pos)){
+            console.warn(`${this.pos.toString()} and ${cell.pos.toString()} not adjacent`)
+            return false
+        }
+
+        this.swap_core(cell)
+
+        if (this.sprite.effect && this.sprite.effect.active) {try{
+                Effector.raiseMotion(Cell.field, this.sprite.effect.onSwapped(Cell.field, cell), this.pos)
+            } catch {/* no effect on swap requires no action*/}
+        }
+
+        if (cell.sprite.effect && cell.sprite.effect.active) { try{
+                Effector.raiseMotion(Cell.field, cell.sprite.effect.onSwapped(Cell.field, this), cell.pos)
+            } catch {}
+        }
+
         return true
     }
     
     drop(cell: Cell){
-        //now it is alias of swap
-        return this.swap(cell, false)
+        return this.swap_core(cell)
     }
 
     markForDelete(){
         if (this.isPlaceable() && !this.isEmpty() && !this.sprite.isImmortal && !this.markedForDelete){
-            this.markedForDelete = true            
+            this.markedForDelete = true
+            if (Cell.field.force_destroy === false) Cell.field.force_destroy = true //destroys even if cur cell is not in chain
             if (this.sprite.effect) Effector.destroy(Cell.field, this.pos, this.sprite.effect!.id!)
         }
     }

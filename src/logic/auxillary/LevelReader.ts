@@ -3,7 +3,7 @@
  */
 
  import Cell from "../Cell";
- import Position from "../interfaces/Position";
+ import {Position} from "../interfaces/Position";
  import Tile from "../interfaces/Tile";
 
 export interface cell_definition{

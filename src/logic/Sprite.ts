@@ -1,5 +1,5 @@
 import Effect from "./interfaces/Effect";
-import Position from "./interfaces/Position";
+import {Position} from "./interfaces/Position";
 import SpriteInt from "./interfaces/SpriteInt";
 
 export default class Sprite implements SpriteInt{
@@ -18,7 +18,7 @@ export default class Sprite implements SpriteInt{
         this.name = sprite.name
         this.sprite = sprite.sprite
         this.isImmortal = sprite.isImmortal
-        this.position = new Position(position.x, position.y)
+        this.position = {x: position.x, y: position.y}
         this.isCollectable = sprite.isCollectable
     }
 }

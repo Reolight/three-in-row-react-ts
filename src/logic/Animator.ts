@@ -1,6 +1,6 @@
 import Field from "./Field";
 import Motion, { retrieveMotionImage } from "./interfaces/Motion";
-import Position from "./interfaces/Position";
+import {Position} from "./interfaces/Position";
 
 export default class Animator{
     static Animations: Motion[] = []

@@ -3,7 +3,7 @@ import Cell from "../Cell"
 import Field from "../Field"
 import { Orientation } from "./Conditions"
 import Motion from "./Motion"
-import Position from "./Position"
+import {Position} from "./Position"
 
 /**
  * Presents at the field until it is destroyed. When destroyed, releases action as field-modifying function and motion as animation

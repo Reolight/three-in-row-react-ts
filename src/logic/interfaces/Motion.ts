@@ -1,5 +1,5 @@
 import { AnimationProps, Variants } from "framer-motion"
-import Position from "./Position"
+import {Position} from "./Position"
 
 export default interface Motion{
     id? : number

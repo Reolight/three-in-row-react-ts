@@ -1,11 +1,9 @@
 import { AnimationProps, Variants } from "framer-motion";
 import Cell from "../../logic/Cell";
 import Field from "../../logic/Field";
-import Bomb from "../../logic/interfaces/Bomb";
 import Effect from "../../logic/interfaces/Effect";
 import Motion from "../../logic/interfaces/Motion";
-import Position from "../../logic/interfaces/Position";
-import { effect_conditions } from "../../logic/interfaces/Conditions";
+import {Position} from "../../logic/interfaces/Position";
 
 /**
  * DO NOT USE THIS FUNCTION DIRECTLY! Instead of direct use, conditions should be specified.
@@ -118,6 +116,37 @@ const effects: Effect[] = [
                     transition:{duration: 0.4}
                 }
             } as Motion]
+        }
+    } as Effect,
+
+    {
+        name: "unicolor",
+        active: true,
+        duration: -1,
+        image: "unicolor.png",
+
+        onDestroy(field, position) {
+            const t = field.cells[position.y][position.x].sprite.name
+            field.cells.forEach(row =>
+                row.forEach(cell => {
+                    if (!cell.isEmpty() && cell.sprite.name === t)
+                        
+                        cell.markForDelete()
+                }))
+        },
+
+        onSwapped(field, swapped_with) {
+            if (swapped_with.sprite.isImmortal) return
+            field.cells.forEach(row =>
+                row.forEach(cell => {
+                    if (!cell.isEmpty() && !swapped_with.sprite.isImmortal
+                        && cell.sprite.name === swapped_with.sprite.name)
+                        cell.markForDelete()
+                    if (cell.sprite.effect && cell.sprite.effect.id === this.id){
+                        this.active = false //inactivation
+                        cell.markForDelete() //self destroy
+                    }
+                }))
         }
     } as Effect
 ]

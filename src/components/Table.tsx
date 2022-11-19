@@ -4,7 +4,7 @@ import Animator from "../logic/Animator";
 import Chain from "../logic/Chain";
 import Effector from "../logic/Effector";
 import Field from "../logic/Field";
-import Position from "../logic/interfaces/Position";
+import {isAdjacent, Position} from "../logic/interfaces/Position";
 import CellView from "./CellView";
 import Effect from "./Effect";
 import UITable from "./UITable";
@@ -43,8 +43,8 @@ export default function Table(props : gameInfoProps){
     }
 
     function Match(){
-        setField(Field.Match(field!, swapped))
-        if (Chain.chains.length > 0){
+        Field.Match(field!, swapped)
+        if (Chain.chains.length > 0 || field?.force_destroy){
             console.debug(`state set to DESTROY`)
             setState(DESTROY)
         }
@@ -56,7 +56,7 @@ export default function Table(props : gameInfoProps){
 
     function Destroy() {
         setSwapped([])
-        const points = Field.Destroy(field!)
+        const points = field!.Destroy()
         player!.addScore(points)
         setPlayer(player)
         setField(field)
@@ -148,13 +148,13 @@ export default function Table(props : gameInfoProps){
     function onClicked(pos: Position){
         console.debug(`Clicked : ${pos.toString()}`)
         
-        if ((swapped.length === 1 && !Position.isAdjacent(swapped[0], pos)) ||
+        if ((swapped.length === 1 && !isAdjacent(swapped[0], pos)) ||
             swapped.length === 0) {
                 setSwapped([pos]);
                 return
         }
 
-        if (swapped.length === 1 && Position.isAdjacent(swapped[0], pos)){
+        if (swapped.length === 1 && isAdjacent(swapped[0], pos)){
             setSwapped([...swapped, pos])
         }        
     }

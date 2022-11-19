@@ -56,5 +56,12 @@ const conditions: effect_conditions[] = [
         priority: 11,
         min_number_in_chain: 5,
         orientation: ["n"]
+    },
+
+    {
+        effect_name: "unicolor",
+        priority: 12,
+        min_number_in_chain: 5,
+        orientation: ['h', 'v']
     }
 ]

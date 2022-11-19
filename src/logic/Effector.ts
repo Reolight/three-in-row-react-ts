@@ -4,13 +4,13 @@ import Cell from "./Cell";
 import Field from "./Field";
 import Effect from "./interfaces/Effect";
 import Motion from "./interfaces/Motion";
-import Position from "./interfaces/Position";
+import {Position} from "./interfaces/Position";
 
 export default class Effector{
     static Effects: Effect[] = []
     static count: number = 0
 
-    private static raiseMotion(field: Field, motion: Motion | undefined, pos: Position){
+    static raiseMotion(field: Field, motion: Motion | undefined, pos: Position){
         if (motion){
             Animator.perform(field, motion, pos)
         }
@@ -19,7 +19,7 @@ export default class Effector{
     static spawn(field: Field, effect: Effect, cell: Cell){
         let e = effect
         e.id = Effector.count++
-        if (cell.sprite.effect) Effector.destroy(field, cell.pos, cell.sprite.id)
+        if (cell.sprite.effect && cell.sprite.effect.active) Effector.destroy(field, cell.pos, cell.sprite.id)
         console.warn(e)
         try{
             const motions = e.onSpawn(field)
@@ -36,16 +36,18 @@ export default class Effector{
 
     static onFree(f: Field, p: Position){
         Effector.Effects.forEach(eff => {
-            try{
-                const motions = eff.onFree(f)
-                motions?.forEach(motion => Effector.raiseMotion(f, motion, p))
-            } catch{}
+            if (eff.active) {
+                try{
+                    const motions = eff.onFree(f)
+                    motions?.forEach(motion => Effector.raiseMotion(f, motion, p))
+                } catch{}
+            }
         })
     }
 
     static destroy(f: Field, p: Position, id: number){
         const index = Effector.Effects.findIndex(e => e.id === id)
-        if (index > -1 ){
+        if (index > -1 && Effector.Effects[index].active) {
             try{
                 const motions = Effector.Effects[index].onDestroy(f, p)
                 motions?.forEach(motion => Effector.raiseMotion(f, motion, p))

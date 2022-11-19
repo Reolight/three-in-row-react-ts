@@ -6,7 +6,7 @@ import retrieveSprite from "../sources/data/Sprites"
 import Cell from "./Cell"
 import Chain from "./Chain"
 import Goal from "./interfaces/Goal"
-import Position from "./interfaces/Position"
+import {Position} from "./interfaces/Position"
 import Sprite from "./Sprite"
 import Motion from "./interfaces/Motion"
 import Generator from "./Generator"
@@ -36,6 +36,7 @@ export default class Field {
     name: string
     allowedSprites: SpriteInt[] = []
     goal: Goal
+    force_destroy: boolean = false //force destroy for narked without matched
 
     sprites: Sprite[] = []
     animations: Motion[] = []
@@ -176,14 +177,14 @@ export default class Field {
      * @param positions - it is a [pos1, pos2] array of swapped sprites.
      * @returns back reference to the gotten field to make setState inline
      */
-    static Match(f: Field, [pos1, pos2]: Position[] = []): Field{         
+    static Match(f: Field, [pos1, pos2]: Position[] = []) {         
         Chain.sizePrepare(f.cells.length)
         if (pos1 && pos2){
             Field.MatchRow(f.cells[pos1.y], 'h', pos1)
             Field.MatchRow(f.getColumn(pos1.x), 'v', pos1)
             if (pos1.x === pos2.x) Field.MatchRow(f.cells[pos2.y], 'h', pos2)
                 else Field.MatchRow(f.getColumn(pos2.x), 'v', pos2)
-            return f;
+            return;
         }
 
         for (let iy = f.cells.length - 1; iy >= 0; iy--){
@@ -193,8 +194,6 @@ export default class Field {
         for (let ix = 0; ix < f.cells[0].length; ix++){
             Field.MatchRow(f.getColumn(ix), 'v')
         }
-        
-        return f
     }
 
     /**
@@ -239,7 +238,7 @@ export default class Field {
                     const index = randomInt(deployable.length - 1)
                     const sprite = deployable[index]
                     cell.sprite = sprite
-                    sprite.position = new Position(cell.pos.x, cell.pos.y)
+                    sprite.position = {x: cell.pos.x, y: cell.pos.y}
                     deployable.splice(index, 1)
                 }
             })
@@ -248,20 +247,20 @@ export default class Field {
         return f
     }
 
-    static Destroy(old: Field): number {
-        let f : Field = old
-        Chain.releaseRecollection(f)
+    Destroy(): number {
+        Chain.releaseRecollection(this)
 
         let points : number = 0
-        f.cells.forEach(row => 
+        this.cells.forEach(row => 
             row.forEach(cell => {
                 if (cell.isDeathmarked()) {
-                    f.destroySprite(cell.sprite.id)
+                    this.destroySprite(cell.sprite.id)
                     points++
                 }
             })
         )
 
+        this.force_destroy = false
         return points
     }
 
