@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from "react";
-import { motion, useAnimation, useAnimationControls } from "framer-motion"
-import Motion, { retrieveMotionImage } from "../logic/interfaces/Motion";
+import React, { useState } from "react";
+import { motion } from "framer-motion"
+import Motion from "../logic/interfaces/Motion";
 
 interface EffectProps{
     motion: Motion

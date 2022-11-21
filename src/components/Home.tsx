@@ -1,7 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { PlayerContext } from "../App";
-import PlayerData from "../logic/interfaces/PlayerData";
 import Player from "../logic/Player";
 import DropDown from "./auxillary/DropDown";
 import "./styles/panel.css"

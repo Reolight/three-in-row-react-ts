@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React  from "react";
 import PlayRecord from "../logic/interfaces/PlayRecord";
 import { retrieveStageByTitle } from "../sources/data/Scenes";
 import { getSpriteByName } from "../sources/data/Sprites";

@@ -1,5 +1,5 @@
-import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from "react";
-import { redirect, useLocation, useNavigate, useParams } from "react-router-dom";
+import React, { useContext, useEffect, useState } from "react";
+import { redirect, useNavigate, useParams } from "react-router-dom";
 import { PlayerContext } from "../App";
 import Player from "../logic/Player";
 import { FieldParams, getStageTitles } from "../sources/data/Scenes";

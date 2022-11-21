@@ -1,6 +1,5 @@
 import React, { useContext, useEffect } from "react";
 import { PlayerContext } from "../App";
-import Cell from "../logic/Cell";
 import Goal from "../logic/interfaces/Goal";
 import { getSpriteByName } from "../sources/data/Sprites";
 import "./styles/panel.css"

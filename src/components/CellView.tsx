@@ -1,5 +1,4 @@
 import React, { useEffect, useRef, useState } from "react";
-import Cell from "../logic/Cell";
 import {Position} from "../logic/interfaces/Position";
 import "./styles/anims.css"
 import { motion } from "framer-motion"
