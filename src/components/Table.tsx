@@ -155,7 +155,7 @@ export default function Table(props : gameInfoProps){
             swapped.length === 0) {
                 setSwapped([pos]);
                 return
-        }
+        } 
 
         if (swapped.length === 1 && isAdjacent(swapped[0], pos)){
             setSwapped([...swapped, pos])

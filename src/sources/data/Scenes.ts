@@ -21,49 +21,38 @@ export interface FieldParams{
 }
 
 const scenes : FieldParams[] =
-    [
+    [        
         {
-            title: "Test stage",
-            name: "test_stage",
-            description: "This stage is designed for testing game capabilities",
-            x: 8,
-            y: 8, 
-            allowedSprites: ["diamond", "gold", "iron"], 
-            goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
-        },
-        {
-            title: "Test stage 2",
-            name: "test2",
-            x:16,
-            y:12,
-            allowedSprites: ["square", "circle", "rumb", "triangle"],
-            goal: {
-                isAchieved(score): boolean{ return score!.score > 1000 },
-                isDefeated(score): boolean{ return score!.step > 20},
-                toString(): string {
-                    return "score more than 1000 less then 20 steps"
-                },
-        } as Goal
-        },
-        {
-            title: "Tiny",
-            name: "tiny",
-            x:4,
-            y:4,
-            allowedSprites:["diamond", "gold", "iron"], 
-            goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
-        },
-        
-        {
-            title: "My custom stage",
-            name: "custom",
+            title: "Square",
+            name: "square",
             x: 8,
             y: 8,
             allowedSprites: ["square", "circle", "rumb", "triangle"],
             goal: {
-                isAchieved(score): boolean{ return score!.score > 2000 },
-                isDefeated(score): boolean{ return score!.step > 25},
-                toString():string {return "score more than 2000 and less than 25 steps"},
+                isAchieved(score) {
+                    return score.score > 350
+                },
+                isDefeated(score) {
+                    return score.step > 30
+                },
+                toString() {
+                    return "This stage demonstrates default background of tiles, simple test tiles. Field has simple " +
+                        "square shape. Try to get 350 score for less then 30 steps"
+                },
+            }
+
+        },
+        {
+            title: "Wheel",
+            name: "wheel",
+            x: 8,
+            y: 8,
+            allowedSprites: ['pyro', 'hydro', 'cryo', 'anime', 'electro'],
+            goal: {
+                isAchieved(score): boolean{ return score!.score > 250 },
+                isDefeated(score): boolean{ return score!.step > 33},
+                toString():string {return "This stage has custom shape with demonstration of advanced falling rules."+
+                    ". There are also custom tile backgrounds and fancy items. Score more than 250 for less than 33 steps"},
             },
 
             definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false, image: "grey_tile.png"}},
@@ -86,7 +75,8 @@ const scenes : FieldParams[] =
             goal: {
                 isAchieved(score): boolean{ return score!.destroyed.find(d => d.name === "diamond_c")!.value === 5 },
                 isDefeated(score): boolean{ return score!.step > 30},
-                toString():string {return "collect 5 diamonds for less than 30 steps"},
+                toString():string {return "This stage shows implemented collection feature. There is also field "+
+                 "with custom shape. Collect 5 diamonds for less than 30 steps by moving diamonds to the last row"},
             },
 
             definitions: [{key: "d", tile: {isBlocked: false, isExist: true, isFrozen: false, image: "grey_tile.png"}}],

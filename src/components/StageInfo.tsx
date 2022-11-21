@@ -14,7 +14,7 @@ export default function StageInfo(props: StageInfoProps){
     const stage = retrieveStageByTitle(props.name!) ?? undefined
 
     return( !stage ? <div className="Panel-inactive"></div> :
-        <div className="Panel Menu-column">
+        <div className="Panel Menu-column" style={{maxWidth: 400}}>
             <h1>{stage.title}</h1>
             <p>{stage.description}</p>
             <p><b>Goal:</b> {stage.goal.toString()}</p>
