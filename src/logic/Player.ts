@@ -24,7 +24,7 @@ export default class Player implements PlayerData {
     }
 
     recordPlay(stage: string, score: number){
-        let record: PlayRecord | undefined = this.records?.find(rec => rec.stage == stage)
+        let record: PlayRecord | undefined = this.records?.find(rec => rec.stage === stage)
         if (!record){
             record = {stage: stage, score: score}
             if (!this.records) this.records = []

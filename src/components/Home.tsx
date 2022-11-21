@@ -19,7 +19,7 @@ export default function Home() {
     }
 
     useEffect(init, [])
-    useEffect(()=> player && navigate(`Menu/${player!.name}`), [player])
+    useEffect(() => player && navigate(`Menu/${player!.name}`), [player, navigate])
 
     function navigateTo(){
         if (name.length<4){

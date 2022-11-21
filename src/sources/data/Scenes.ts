@@ -1,7 +1,6 @@
 import { cell_definition } from "../../logic/auxillary/LevelReader";
 import { level_unlock_conditions } from "../../logic/interfaces/Conditions";
 import Goal from "../../logic/interfaces/Goal";
-import gensh from "./levels/gensh/gensh";
 
 export interface FieldParams{
     title: string
@@ -103,11 +102,11 @@ const scenes : FieldParams[] =
     ]
 
 export default function retrieveStage(name: string): FieldParams | undefined {
-    return scenes.find(sc => sc.name == name)
+    return scenes.find(sc => sc.name === name)
 }
 
 export function retrieveStageByTitle(title: string): FieldParams | undefined {
-    return scenes.find(sc => sc.title == title)
+    return scenes.find(sc => sc.title === title)
 }
 
 export function getStageNames(): string[]{

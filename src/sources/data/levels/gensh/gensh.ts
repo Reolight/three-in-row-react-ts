@@ -1,4 +1,3 @@
-import { title } from "process";
 import Goal from "../../../../logic/interfaces/Goal";
 import { FieldParams } from "../../Scenes";
 
@@ -15,6 +14,4 @@ export default class gensh implements FieldParams{
             return "score more than 5000 less then 40 steps"
         },
     } as Goal
-
-    constructor () {}
 }

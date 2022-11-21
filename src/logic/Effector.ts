@@ -1,4 +1,3 @@
-import { motion } from "framer-motion";
 import Animator from "./Animator";
 import Cell from "./Cell";
 import Field from "./Field";

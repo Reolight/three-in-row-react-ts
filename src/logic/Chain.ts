@@ -6,11 +6,6 @@ import { Orientation } from "./interfaces/Conditions";
 import Effect from "./interfaces/Effect";
 import {Position} from "./interfaces/Position";
 
-interface ChainCascade{
-    direction: Cell[]
-    pos: number
-}
-
 export default class Chain{
     cells: Cell[] = []
     center?: Cell
@@ -56,7 +51,7 @@ export default class Chain{
     private static checkIdentity(part: Cell[]){
         for (let i = 0; i < part.length; i++){
             const chain = Chain.mapped[part[i].pos.y][part[i].pos.x]
-            if (chain && chain.type === Chain.activeChain!.type && chain.id != Chain.activeChain!.id)
+            if (chain && chain.type === Chain.activeChain!.type && chain.id !== Chain.activeChain!.id)
             {
                 Chain.merge(chain)
                 break

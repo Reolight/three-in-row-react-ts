@@ -4,7 +4,7 @@ export type Position = {
 }
 
 export function isAdjacent(pos1: Position, pos2: Position ): boolean {
-    return (Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y)) == 1
+    return (Math.abs(pos1.x - pos2.x) + Math.abs(pos1.y - pos2.y)) === 1
 }
 
     /**

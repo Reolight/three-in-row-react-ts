@@ -15,7 +15,7 @@ export default function UITable(props: UITableProps){
         setPlayer(player)
     }
 
-    useEffect(onChanged, [player!])
+    useEffect(() => player && onChanged, [player, setPlayer])
 
     return(
         <div className="Panel-dark sidebar">
@@ -26,7 +26,12 @@ export default function UITable(props: UITableProps){
             {player!.score!.destroyed.map(kv => 
                 <p key={kv.name} style={{marginTop: 4, marginBottom: 4}}>
                     <em>
-                        <img key={kv.name} className="Icon" src={getSpriteByName(kv.name)}/>
+                        <img 
+                            key={kv.name} 
+                            className="Icon" 
+                            src={getSpriteByName(kv.name)}
+                            alt={kv.name}
+                        />
                         {kv.value}
                     </em>
                 </p>

@@ -1,4 +1,4 @@
-import { AnimationProps, Variants } from "framer-motion";
+import { Variants } from "framer-motion";
 import Cell from "../../logic/Cell";
 import Field from "../../logic/Field";
 import Effect from "../../logic/interfaces/Effect";

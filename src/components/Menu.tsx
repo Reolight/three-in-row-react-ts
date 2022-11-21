@@ -12,8 +12,7 @@ export default function Menu(){
 
     const stages: FieldParams[] = getStageTitles()
     const [chosen, setChosen] = useState<number>(-1)
-    const [width, setWidth] = useState<number>(500)
-    const [stageH, setStageH] = useState<number>(0)
+    const [width] = useState<number>(500)
     const navigate = useNavigate()
 
     function launchGame(stage: string){
@@ -32,7 +31,7 @@ export default function Menu(){
         }
 
         console.debug(player)
-    }, [params])
+    }, [params, player, setPlayer])
 
     return(!player? <p>Loading</p>:
         <div style={{position: 'relative'}}>
@@ -52,7 +51,7 @@ export default function Menu(){
                             <button
                                 className="w-100"
                                 key={index}
-                                onClick={() => chosen == index? setChosen(-1): setChosen(index)}
+                                onClick={() => chosen === index? setChosen(-1): setChosen(index)}
                             >
                                 <p><>{index + 1}: {stage.title}</></p>
                             </button>

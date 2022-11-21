@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {Position} from "../logic/interfaces/Position";
 import "./styles/anims.css"
 import { motion } from "framer-motion"
@@ -12,7 +12,7 @@ interface CellProps{
 }
 
 export default function CellView(props: CellProps){
-    const [sprite, setSprite] = useState(props.sprite)
+    const [sprite] = useState(props.sprite)
     
     return(
         <>

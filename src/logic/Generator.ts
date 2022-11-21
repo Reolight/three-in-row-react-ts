@@ -2,7 +2,6 @@
 
 import SpriteInt from "./interfaces/SpriteInt";
 import randomInt from "./RandomInt";
-import Sprite from "./Sprite";
 
 export default class Generator{
     private static sprite_palette: SpriteInt[] = []

@@ -13,6 +13,6 @@ export default class Score{
     }
 
     countDestroyed(sprite: string, add: number){
-        this.destroyed.find(i => i.name == sprite)!.value += add
+        this.destroyed.find(i => i.name === sprite)!.value += add
     }
 }

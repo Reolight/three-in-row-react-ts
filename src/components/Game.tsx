@@ -1,8 +1,6 @@
 import React, { useContext, useEffect, useState } from "react";
 import { redirect, useNavigate, useParams } from "react-router-dom";
 import { PlayerContext } from "../App";
-import Animator from "../logic/Animator";
-import Motion from "../logic/interfaces/Motion";
 import Player from "../logic/Player";
 import Score from "../logic/Score";
 import ResultScreen from "./ResultScreen";
@@ -22,10 +20,6 @@ export default function Game(props : gameInfoProps){
     const {player, setPlayer } = useContext(PlayerContext)
     const [isCompleted, setCompleted] = useState<"WON" | "LOST" | "PLAY">("PLAY")
 
-    const [motions, setMotions] = useState<Motion[]>()
-    useEffect(() => {if (Animator.Animations) setMotions(Animator.Animations)},
-        [Animator.Animations])
-
     useEffect(() => {
         const parameters = params.stage;
         if (!parameters) {
@@ -44,7 +38,7 @@ export default function Game(props : gameInfoProps){
 
             setPlayer(Player.load(p[1]))
         }
-    }, [params])
+    }, [params, player, setPlayer])
     
     function Won(){
         player!.recordPlay(stage!, player!.score!.score)

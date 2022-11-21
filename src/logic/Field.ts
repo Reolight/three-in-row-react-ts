@@ -83,8 +83,8 @@ export default class Field {
     }
 
     destroySprite(id: number){
-        const index = this.sprites.findIndex(s => s.id == id)
-        if (index == -1){
+        const index = this.sprites.findIndex(s => s.id === id)
+        if (index === -1){
             console.warn(`Sprite with id ${id} seems already have been deleted`)
             return
         }

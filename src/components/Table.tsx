@@ -30,13 +30,15 @@ export default function Table(props : gameInfoProps){
     const [state, setState] = useState<number>()
     const [swapped, setSwapped] = useState<Position[]>([])
 
+    /* eslint-disable */
     useEffect(stateHub, [state])
     useEffect(() => {if (swapped.length === 2) swap()} , [swapped.length])
-    useEffect(InitialCycle, [props.stage])
+    /* eslint-enable */
+    useEffect(InitialCycle, [props.stage, player])
     useEffect(() => {(GameContainer.current && field) && Field.setOffset(
             GameContainer.current.offsetWidth, GameContainer.current.offsetHeight, 
             field?.size.x, field?.size.y)},
-        [GameContainer.current?.offsetHeight, GameContainer.current?.offsetLeft])
+        [GameContainer.current?.offsetHeight, GameContainer.current?.offsetLeft, field])
     
     function delay(ms: number){
         return new Promise((res) => setTimeout(res, ms))

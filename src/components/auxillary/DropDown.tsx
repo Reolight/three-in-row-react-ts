@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
 
 interface DropDownProps{
     values: string[]
@@ -6,7 +6,7 @@ interface DropDownProps{
     valueSelection: Function
 }
 
-export default function(props: DropDownProps): JSX.Element{
+export default function DropDown(props: DropDownProps): JSX.Element{
 
     function arrayDislay(): string[] {
         if (!props.filter) return props.values
