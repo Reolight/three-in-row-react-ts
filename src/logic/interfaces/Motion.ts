@@ -1,4 +1,5 @@
 import { AnimationProps, Variants } from "framer-motion"
+import Cell from "../Cell"
 import {Position} from "./Position"
 
 export default interface Motion{
@@ -20,6 +21,8 @@ export function cloneMotion(motion: Motion) : Motion {
 }
 
 export function retrieveMotionImage(file_name: string): string {
-    const file = require(`../../sources/motions/${file_name}`)
+    let file : string
+    try { file = require(`../../sources/data/levels/${Cell.field.name}/${file_name}`)}
+    catch { file = require(`../../sources/motions/${file_name}`) }
     return file
 }

@@ -33,7 +33,10 @@ export default function CellView(props: CellProps){
                     >
                         <img
                             className={props.selected? "Item-selected" : "Item"} 
-                            
+                            style={{
+                                width: Field.Cell_size,
+                                height: Field.Cell_size
+                            }}
                             src={sprite.sprite}
                             alt={sprite.name}
                         />

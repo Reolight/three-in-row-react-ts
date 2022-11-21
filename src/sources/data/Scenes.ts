@@ -1,6 +1,7 @@
 import { cell_definition } from "../../logic/auxillary/LevelReader";
 import { level_unlock_conditions } from "../../logic/interfaces/Conditions";
 import Goal from "../../logic/interfaces/Goal";
+import gensh from "./levels/gensh/gensh";
 
 export interface FieldParams{
     title: string
@@ -8,10 +9,13 @@ export interface FieldParams{
     description?: string
     x: number
     y: number
-    allowedSpites: string[]
+    allowedSprites: string[]
 
     definitions?: cell_definition[]
     stringified_field?: string[]
+
+    music?: string
+    wallpaper?: string
 
     level_conditions?: level_unlock_conditions
     goal: Goal
@@ -25,7 +29,7 @@ const scenes : FieldParams[] =
             description: "This stage is designed for testing game capabilities",
             x: 8,
             y: 8, 
-            allowedSpites: ["diamond", "gold", "iron"], 
+            allowedSprites: ["diamond", "gold", "iron"], 
             goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
         },
         {
@@ -33,7 +37,7 @@ const scenes : FieldParams[] =
             name: "test2",
             x:16,
             y:12,
-            allowedSpites: ["square", "circle", "rumb", "triangle"],
+            allowedSprites: ["square", "circle", "rumb", "triangle"],
             goal: {
                 isAchieved(score): boolean{ return score!.score > 1000 },
                 isDefeated(score): boolean{ return score!.step > 20},
@@ -47,7 +51,7 @@ const scenes : FieldParams[] =
             name: "tiny",
             x:4,
             y:4,
-            allowedSpites:["diamond", "gold", "iron"], 
+            allowedSprites:["diamond", "gold", "iron"], 
             goal: { toString(): string {return "no goals"}, isAchieved: () => false, isDefeated: () => false }
         },
         
@@ -56,7 +60,7 @@ const scenes : FieldParams[] =
             name: "custom",
             x: 8,
             y: 8,
-            allowedSpites: ["square", "circle", "rumb", "triangle"],
+            allowedSprites: ["square", "circle", "rumb", "triangle"],
             goal: {
                 isAchieved(score): boolean{ return score!.score > 2000 },
                 isDefeated(score): boolean{ return score!.step > 25},
@@ -79,7 +83,7 @@ const scenes : FieldParams[] =
             name: "collect",
             x: 8,
             y: 8,
-            allowedSpites: ["square", "circle", "rumb", "triangle", "diamond_c"],
+            allowedSprites: ["square", "circle", "rumb", "triangle", "diamond_c"],
             goal: {
                 isAchieved(score): boolean{ return score!.destroyed.find(d => d.name === "diamond_c")!.value === 5 },
                 isDefeated(score): boolean{ return score!.step > 30},

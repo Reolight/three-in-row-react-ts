@@ -26,8 +26,12 @@ export default class Effector{
             motions?.forEach(motions => Effector.raiseMotion(field, motions, cell.pos))
         } catch{}
 
-        console.debug(`../../sources/effect/${e.image}`)
-        e.image = e.image? require(`../sources/effect/` + e.image) : ""
+        if (e.image){
+            let img
+            try {img = require(`../sources/data/levels/${field.name}/${e.image}`)}
+            catch {img = require(`../sources/effect/` + e.image) }
+            finally {e.image = img}
+        }
 
         cell.sprite.effect = effect
         cell.unmarkFromDelete()

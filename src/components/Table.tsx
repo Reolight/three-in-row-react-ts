@@ -146,6 +146,7 @@ export default function Table(props : gameInfoProps){
     }
 
     function onClicked(pos: Position){
+        if (state !== FREE) return
         console.debug(`Clicked : ${pos.toString()}`)
         
         if ((swapped.length === 1 && !isAdjacent(swapped[0], pos)) ||

@@ -46,7 +46,7 @@ export default class Field {
     constructor(field_params: FieldParams) {
         this.name = field_params.name;
         this.size = {x: field_params.x, y: field_params.y}
-        field_params.allowedSpites.forEach(name => {
+        field_params.allowedSprites.forEach(name => {
             const sprite = retrieveSprite(name)
             sprite && this.allowedSprites.push(sprite)
         })
@@ -66,7 +66,7 @@ export default class Field {
         this.allowedSprites.forEach(sprite => console.debug(`[${sprite.name}: ${sprite.sprite}]`))
         this.goal = field_params.goal
         this.initialGeneration(field_params)
-        this.score = new Score(field_params.allowedSpites)
+        this.score = new Score(field_params.allowedSprites)
     }
 
     getBackground(cell: Cell){

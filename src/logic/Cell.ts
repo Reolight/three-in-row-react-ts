@@ -4,7 +4,6 @@ import Sprite from "./Sprite";
 import Tile from "./interfaces/Tile";
 import Effector from "./Effector";
 import Field from "./Field";
-import Motion from "./interfaces/Motion";
 
 export default class Cell implements Tile {
     static field: Field
