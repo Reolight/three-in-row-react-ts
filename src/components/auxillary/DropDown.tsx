@@ -14,7 +14,7 @@ export default function DropDown(props: DropDownProps): JSX.Element{
         return props.values.filter(value => regex.test(value))
     }
 
-    return(
+    return(<> {props.values.length > 0 &&
         <div className={"dropdown"}>
             {arrayDislay().map(
                 (value, index): JSX.Element => {
@@ -29,5 +29,5 @@ export default function DropDown(props: DropDownProps): JSX.Element{
                 }
             )}
         </div>
-    )
+    }</>)
 }

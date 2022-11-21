@@ -9,12 +9,12 @@ export default function Home() {
     const {player, setPlayer} = useContext(PlayerContext)
     const [showDropdown, setShowDropdown] = useState(false)
     const [name, setName] = useState("")
-    const [names, setNames] = useState<string[]>([""])
+    const [names, setNames] = useState<string[]>([])
     const navigate = useNavigate()
 
     function init(){
         const namesJson = localStorage.getItem("players")
-        let n = namesJson? JSON.parse(namesJson) : [""]
+        let n = namesJson? JSON.parse(namesJson) : []
         setNames(n)
     }
 
@@ -22,8 +22,8 @@ export default function Home() {
     useEffect(() => player && navigate(`Menu/${player!.name}`), [player, navigate])
 
     function navigateTo(){
-        if (name.length<4){
-            alert('Too short name! Must be more than 4 symbols')
+        if (name.length < 3){
+            alert('Name is too short! Must be more than 2 symbols')
             return
         }
 
