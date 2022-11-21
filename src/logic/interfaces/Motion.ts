@@ -1,4 +1,4 @@
-import { AnimationProps, Variants } from "framer-motion"
+import { Variants } from "framer-motion"
 import Cell from "../Cell"
 import {Position} from "./Position"
 

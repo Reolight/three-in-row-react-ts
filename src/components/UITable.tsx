@@ -15,8 +15,10 @@ export default function UITable(props: UITableProps){
         setPlayer(player)
     }
 
+    /*eslint-disable */
     useEffect(() => player && onChanged, [player, setPlayer])
-
+    /*eslint-enable */
+    
     return(
         <div className="Panel-dark sidebar">
             <p>Name: {player!.name} Money: {player!.money}.</p>
