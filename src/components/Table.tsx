@@ -1,20 +1,24 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import { PlayerContext } from "../App";
+import Animator from "../logic/Animator";
+import Chain from "../logic/Chain";
+import Effector from "../logic/Effector";
 import Field from "../logic/Field";
-import Position from "../logic/interfaces/Position";
+import {isAdjacent, Position} from "../logic/interfaces/Position";
 import CellView from "./CellView";
+import Effect from "./Effect";
 import UITable from "./UITable";
 
 interface gameInfoProps{
     stage: string
     stage_complete_callback: (won: boolean) => void
 }
-//Просто куча пометок для меня на русском, потому что я разраб и мне можно
-//Цикл должен строится на следующем: совпадения > разрушение > падение
-//повторяется каждый раз после клика или  генерации новой карты. Делай. Досвидания.
 
 export default function Table(props : gameInfoProps){
+    const GameContainer = useRef<HTMLDivElement>(null)
     const {player, setPlayer} = useContext(PlayerContext)
+
+    const DELAY = 30
 
     const MATCH = 0
     const DESTROY = 1;
@@ -25,14 +29,22 @@ export default function Table(props : gameInfoProps){
     const [field, setField] = useState<Field>()
     const [state, setState] = useState<number>()
     const [swapped, setSwapped] = useState<Position[]>([])
-    //const [completed, setCompleted] = useState(false)
 
     useEffect(stateHub, [state])
+    useEffect(() => {if (swapped.length === 2) swap()} , [swapped.length])
     useEffect(InitialCycle, [props.stage])
+    useEffect(() => {(GameContainer.current && field) && Field.setOffset(
+            GameContainer.current.offsetWidth, GameContainer.current.offsetHeight, 
+            field?.size.x, field?.size.y)},
+        [GameContainer.current?.offsetHeight, GameContainer.current?.offsetLeft])
+    
+    function delay(ms: number){
+        return new Promise((res) => setTimeout(res, ms))
+    }
 
     function Match(){
-        setField(Field.MatchAll(field!))
-        if (field!.chains.length > 0){
+        Field.Match(field!, swapped)
+        if (Chain.chains.length > 0 || field?.force_destroy){
             console.debug(`state set to DESTROY`)
             setState(DESTROY)
         }
@@ -44,15 +56,17 @@ export default function Table(props : gameInfoProps){
 
     function Destroy() {
         setSwapped([])
-        const [f, points] = Field.DestroyChains(field!)
+        const points = field!.Destroy()
         player!.addScore(points)
         setPlayer(player)
-        setField(f)
+        setField(field)
         setState(FALL)
+        console.debug(field?.sprites)
     }
 
-    function Fall(){
+    async function Fall(){
         const [f, c] = Field.Fall(field!)
+        await delay(DELAY)
         setField(f)
         if (c > 0) {
             console.debug(`state continued as FALL`)
@@ -65,20 +79,33 @@ export default function Table(props : gameInfoProps){
     }
     
     function Free(){
-        if (swapped.length == 0) player!.score!.step++
+        console.debug("field: ", field)
+        console.debug("animations: ", Animator.Animations)
+        console.debug("effects: ", Effector.Effects)
+
+        if (!field?.CheckAvailableCombinations()) {
+            setField(Field.Shuffle(field!))
+            delay(2500)
+            setState(MATCH)
+        }
+
+        if (swapped.length === 0) player!.score!.step++
         
         if (field!.goal.isAchieved(player!.score!) || field!.goal.isDefeated(player!.score!)){
             setState(COMPLETED)
             props.stage_complete_callback(field!.goal.isAchieved(player!.score!))
         }
         
-        if (swapped.length == 2) {
+        if (swapped.length === 2) {
             swap(true)
         }
     }
     
     function InitialCycle(){
         const stage : Field = Field.getStage(props.stage)
+
+        Effector.Effects = []
+
         player!.score = stage!.score //ref to score
         player!.score!.step++
         setField(stage)
@@ -114,45 +141,86 @@ export default function Table(props : gameInfoProps){
             setField(f)
             setState(MATCH)
         } else setSwapped([])
+
+        delay(300)
     }
 
     function onClicked(pos: Position){
+        if (state !== FREE) return
         console.debug(`Clicked : ${pos.toString()}`)
-        let s = swapped
-
-        if (swapped.length == 1 &&
-            !Position.isAdjacent(swapped[0], pos) || swapped.length == 0){
-            setSwapped([pos])
+        
+        if ((swapped.length === 1 && !isAdjacent(swapped[0], pos)) ||
+            swapped.length === 0) {
+                setSwapped([pos]);
+                return
         }
 
-        else setSwapped([...swapped, pos])
+        if (swapped.length === 1 && isAdjacent(swapped[0], pos)){
+            setSwapped([...swapped, pos])
+        }        
+    }
 
-        if (swapped.length == 2){
-            swap()
-        }
+    function removeAnimation(id: number): void {
+        let f = field
+        f?.animations.splice(f.animations.findIndex(m => m.id === id), 1)
+        setField(f)
     }
 
     return(!field? <p>Wait please...</p> :
-        <div className="Game-container">
+        <div className="Game-container" ref={GameContainer}>
             <UITable goal={field!.goal}/>
-            <div className="container">
-                <table className="Game-table">
+            <div className="container"  style={GameContainer.current ? {
+                marginTop: Field.OffsetY,
+                marginLeft: Field.OffsetX
+            } : {margin: 0}}>
+                <>
+                <table className="Game-table" cellSpacing={0} >
                     <tbody>
                     {field.cells.map((row, y) =>
-                        <tr key={y}>
+                        <tr key={y} style={{position: 'absolute', width: 0, height: 0}}>
                             {row.map((cell, x) => cell.isExist?
-                                <td className={cell.markedForDelete? "Cell-marked" : "Cell"} key={x + y/100}>
-                                    <CellView 
-                                        cell={cell}
-                                        clicked={onClicked}
-                                        selected={swapped[0]?.x == cell.pos.x && swapped[0]?.y == cell.pos.y}
-                                    />
-                                </td> : <td key={x + y/100} ></td>
+                                <td key={x + y/100}
+                                    style={{
+                                        position: 'absolute',
+                                        marginTop: y * Field.Cell_size,
+                                        marginLeft: x * Field.Cell_size,
+                                        width: Field.Cell_size,
+                                        height: Field.Cell_size,
+                                        padding: 0,
+                                        border: 'none'}}
+                                >
+                                    <img src={field.getBackground(cell)} alt={`${cell.sprite.id}`}/>
+                                </td> : <td key={x + y/100} style={{position:'absolute',width:0,height:0}} ></td>
                             )}
                         </tr>
                     )}
                     </tbody>
                 </table>
+                <div className="items"><>
+                {field.sprites.map((sprite, x) => sprite &&
+                            <CellView 
+                                key={sprite.id}
+                                sprite={sprite}
+                                clicked={onClicked}
+                                selected={swapped[0]?.x === sprite.position.x && swapped[0]?.y === sprite.position.y}
+                            />
+                            )}
+                            </>
+                        </div>   
+                    <div style={{
+                        position: 'relative',
+                        width: 0,
+                        height: 0
+                    }}>
+                        {field.animations.map((anim) => {
+                            return <Effect
+                            key={anim.id}
+                            motion={anim}
+                            removeAnim={removeAnimation}
+                            />})}
+                    </div>
+                </>
             </div>
-        </div>)
+        </div>
+        )
 }

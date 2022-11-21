@@ -82,6 +82,7 @@
 .Game-container{
   display: flex;
   width:100%;
+  height: 100vh;
   margin-left: auto;
   margin-right: auto;
   background: url(./sources/wall/back.bmp);
@@ -94,9 +95,17 @@
 }
 
 .Game-container .container{
+  position: relative;
   flex-direction: block;
-  margin: auto;
   text-align: center;
+}
+
+.Game-container .container > div.items{
+  position: absolute;
+  width: 0;
+  height: 0;
+  padding: 0;
+  margin: 0;
 }
 
 .Game-container .sidebar{
@@ -112,12 +121,15 @@
 }
 
 .Game-table{
+  position: absolute;
   display: flex;
-  margin-left: auto;
-  margin-right: auto;
+  width: 0;
+  height: 0;
 }
 
 .Cell{
+  position: absolute;
+  padding: 0;
   background: url(./sources/backs/def.png);
   background-size: cover;
   background-repeat: no-repeat;
@@ -126,7 +138,10 @@
 }
 
 .Item{
-  transition: all
+  position: absolute;
+  transition: all;
+  padding: 0;
+  z-index: 1000;
 }
 
 @keyframes itm-sel {
@@ -139,8 +154,10 @@
 }
 
 .Item-selected{
+  position: absolute;
   transform: scale(0.8);
   animation: itm-sel 0.25s infinite alternate;
+  z-index: 1000;
 }
 
 .Cell-marked{

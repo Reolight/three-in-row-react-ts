@@ -1,37 +1,58 @@
-import retrieveSprite from "../sources/data/Sprites";
 import Effect from "./interfaces/Effect";
-import Position from "./interfaces/Position";
-import Sprite from "./interfaces/Sprite";
+import { isAdjacent, Position } from "./interfaces/Position";
+import Sprite from "./Sprite";
 import Tile from "./interfaces/Tile";
+import Effector from "./Effector";
+import Field from "./Field";
 
 export default class Cell implements Tile {
+    static field: Field
     sprite: Sprite = {} as Sprite
-    markedForDelete : boolean = false
+    private markedForDelete : boolean = false
 
+    key?: string
     pos: Position
     isExist : boolean
-    isBlocked : boolean = false //items can not be placed here
+    isBlocked : boolean = false //items can not be placed here, it is like an obstacle
     isFrozen : boolean = false //can be here but cant be moved out
     effects: Effect[] = []
 
-    constructor(exist: boolean, position: Position, initialEffects: Effect[]){
-        this.pos = position
-        this.isExist = exist;
+    constructor(tile: Tile, pos: Position, key?: string){
+        if (key) this.key = key
+        this.pos = pos
+        this.isExist = tile.isExist  //true - draws on field
+        this.isBlocked = tile.isBlocked // draws as boulder, sprite can be placed here
+        this.isFrozen = tile.isFrozen  //sprite can be placed but can't be moved from here
         if (!this.isExist) return
-        this.effects = initialEffects
+        this.effects = tile.effects ?? []
     }
 
-    isAvailableForPlace(){
-        return (this.isExist && !this.isBlocked && !this.isFrozen && !this.sprite.sprite)
+    /**
+     * is cell empty
+     * @returns 
+     */
+    isEmpty(): boolean{
+        return this.sprite.id ? false : true
     }
 
-    isAvailableForInitialPlace(){
-        return (this.isExist && !this.isBlocked && !this.sprite.sprite)
+    /**
+     * is able to move
+     * @returns 
+     */
+    isMovable(): boolean{
+        return (this.isExist && !this.isBlocked && !this.isFrozen)
     }
 
-    getBackground(isSelected: boolean): string {
-        const file = require(`../sources/backs/${isSelected?"sel.png":"def.png"}`)
-        return file
+    isAvailableForDrop(): boolean{
+        return (this.isMovable() && this.isEmpty())
+    }
+
+    /**
+     * is can be placed at this cell (empty by default) by generator
+     * @returns 
+     */
+    isPlaceable(): boolean{
+        return (this.isExist && !this.isBlocked)
     }
 
     static getSprite(sprite: Sprite): string {
@@ -39,23 +60,59 @@ export default class Cell implements Tile {
         return file
     }
 
-    static getSpriteByName(name: string): string {
-        return Cell.getSprite(retrieveSprite(name))
+    private swap_core(cell: Cell)
+    {       
+        const sprite: Sprite = this.sprite
+        this.sprite = cell.sprite
+        cell.sprite = sprite
+
+        cell.sprite.position = cell.pos
+        this.sprite.position = this.pos
     }
 
-    isEmpty(): boolean{
-        return this.sprite? false: true
-    }
-
-    swap(cell: Cell, isAdjacentOnly: boolean = true): boolean {
-        if (!Position.isAdjacent(this.pos, cell.pos) && isAdjacentOnly){
+    swap(cell: Cell): boolean {
+        if (!isAdjacent(this.pos, cell.pos)){
             console.warn(`${this.pos.toString()} and ${cell.pos.toString()} not adjacent`)
             return false
         }
 
-        const sprite: Sprite = this.sprite
-        this.sprite = cell.sprite
-        cell.sprite = sprite
+        this.swap_core(cell)
+
+        if (this.sprite.effect && this.sprite.effect.active) {try{
+                Effector.raiseMotion(Cell.field, this.sprite.effect.onSwapped(Cell.field, cell), this.pos)
+            } catch {/* no effect on swap requires no action*/}
+        }
+
+        if (cell.sprite.effect && cell.sprite.effect.active) { try{
+                Effector.raiseMotion(Cell.field, cell.sprite.effect.onSwapped(Cell.field, this), cell.pos)
+            } catch {}
+        }
+
         return true
+    }
+    
+    drop(cell: Cell){
+        return this.swap_core(cell)
+    }
+
+    markForDelete(){
+        if (this.isPlaceable() && !this.isEmpty() && !this.sprite.isImmortal && !this.markedForDelete){
+            this.markedForDelete = true
+            if (Cell.field.force_destroy === false) Cell.field.force_destroy = true //destroys even if cur cell is not in chain
+            if (this.sprite.effect) Effector.destroy(Cell.field, this.pos, this.sprite.effect!.id!)
+        }
+    }
+
+    collect(){
+        if (this.isPlaceable() && !this.isEmpty() && this.sprite.isCollectable)
+            this.markedForDelete = true
+    }
+
+    unmarkFromDelete(){
+        this.markedForDelete = false;
+    }
+
+    isDeathmarked(): boolean{
+        return this.markedForDelete
     }
 }

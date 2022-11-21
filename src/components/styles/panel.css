@@ -1,3 +1,7 @@
+body{
+  background-color:#bbcdf1;
+}
+
 .Panel{
     position: relative;
     z-index: 1;
@@ -14,6 +18,36 @@
     border-radius: 4px;
     box-shadow: #282c34 12px 12px;
     transition: all 1s;
+  }
+
+@keyframes toggleH {
+  from {
+    transform: translateX(-200);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
+}
+
+@keyframes toggleV {
+  from {
+    transform: translateY(-200);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+  .Panel animated-h{
+    animation: toggleH 0.33;
+  }
+
+  .Panel animated-v{
+    animation: toggleV 0.33;
   }
   
   .Panel .margin-inline-end{
