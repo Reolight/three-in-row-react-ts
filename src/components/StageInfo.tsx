@@ -22,7 +22,7 @@ export default function StageInfo(props: StageInfoProps){
             <em>
                 field size: {stage.x}x{stage.y}. 
                 Tiles: {stage.allowedSprites.map((sprite, index) => 
-                    <img key={index} className="Icon" src={getSpriteByName(sprite)} alt={sprite} />
+                    <img key={index} className="Icon" src={getSpriteByName(stage.name, sprite)} alt={sprite} />
                 )}
             </em>
             <button

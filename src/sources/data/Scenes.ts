@@ -25,6 +25,7 @@ const scenes : FieldParams[] =
         {
             title: "Square",
             name: "square",
+            wallpaper: "def.png",
             x: 8,
             y: 8,
             allowedSprites: ["square", "circle", "rumb", "triangle"],

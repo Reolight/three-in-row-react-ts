@@ -19,10 +19,3 @@ export function cloneMotion(motion: Motion) : Motion {
         image: motion.image
     } as Motion
 }
-
-export function retrieveMotionImage(file_name: string): string {
-    let file : string
-    try { file = require(`../../sources/data/levels/${Cell.field.name}/${file_name}`)}
-    catch { file = require(`../../sources/motions/${file_name}`) }
-    return file
-}

@@ -1,5 +1,6 @@
 import SpriteInt from "../../logic/interfaces/SpriteInt"
 import Sprite from "../../logic/interfaces/SpriteInt"
+import Loader from "./Loader"
 
 const sprites: Sprite[] = [
     {
@@ -16,14 +17,12 @@ const sprites: Sprite[] = [
      * @param name - name of sprite
      * @returns strinified image of named sprite or nothing
      */
-export function getSpriteByName(name: string): string | undefined {
+export function getSpriteByName(stage_name: string, name: string): string | undefined {
     const sprite = sprites.find(sprite => sprite.name === name)
-    if (!sprite) {
-        try{
-            return require(`../sprites/${name}.png`)
-        } catch { return }
-    }
-    return require(`../sprites/${sprite.sprite}.png`)
+    if (!sprite)
+        Loader.getSprite(stage_name, name+ `.png`)
+    
+    return Loader.getSprite(stage_name, sprite!.sprite)
 }
 
     ///returns sprite defined in sprites[] or creates new default sprite to get rid of defining defaults
