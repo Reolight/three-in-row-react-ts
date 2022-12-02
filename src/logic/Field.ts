@@ -11,6 +11,7 @@ import Sprite from "./Sprite"
 import Motion from "./interfaces/Motion"
 import Generator from "./Generator"
 import randomInt from "./RandomInt"
+import Loader from "../sources/data/Loader"
 
     /**
      * This class contains a lot of field-logic. It is a collector of all three-in-row logic and can be called 
@@ -27,7 +28,7 @@ export default class Field {
     static OffsetX: number
     static OffsetY: number
 
-    base_background: string = require(`../sources/backs/def.png`)
+    base_background?: string
     wallpaper?: string
 
     size: Position
@@ -46,6 +47,9 @@ export default class Field {
     constructor(field_params: FieldParams) {
         this.name = field_params.name;
         this.size = {x: field_params.x, y: field_params.y}
+        if (field_params.wallpaper) 
+            this.wallpaper = Loader.getWallpaper(this.name, field_params.wallpaper)
+
         field_params.allowedSprites.forEach(name => {
             const sprite = retrieveSprite(name)
             sprite && this.allowedSprites.push(sprite)

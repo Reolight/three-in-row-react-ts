@@ -54,12 +54,7 @@ export default class Cell implements Tile {
     isPlaceable(): boolean{
         return (this.isExist && !this.isBlocked)
     }
-
-    static getSprite(sprite: Sprite): string {
-        const file = sprite.sprite? require(`../sources/sprites/${sprite.sprite}`): ""
-        return file
-    }
-
+    
     private swap_core(cell: Cell)
     {       
         const sprite: Sprite = this.sprite
