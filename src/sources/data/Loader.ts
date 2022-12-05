@@ -14,8 +14,8 @@ export default class Loader{
     }
 
     static getMotion(stage_name: string, motion_name: string): string | undefined{
-        return Loader.get_from_cache(`${stage_name}|${motion_name}|${'motion'}`)
-            ?? Loader.get_image(stage_name, motion_name, 'motion')
+        return Loader.get_from_cache(`${stage_name}|${motion_name}|${'motions'}`)
+            ?? Loader.get_image(stage_name, motion_name, 'motions')
     }
 
     static getSprite(stage_name: string, sprite_name: string): string | undefined{

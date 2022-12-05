@@ -82,7 +82,7 @@ export default function Table(props : gameInfoProps){
     
     function Free(){
         console.debug("field: ", field)
-        console.debug("animations: ", Animator.Animations)
+        console.debug("animations: ", field?.animations)
         console.debug("effects: ", Effector.Effects)
 
         if (!field?.CheckAvailableCombinations()) {

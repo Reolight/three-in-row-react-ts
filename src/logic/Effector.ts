@@ -1,3 +1,4 @@
+import Loader from "../sources/data/Loader";
 import Animator from "./Animator";
 import Cell from "./Cell";
 import Field from "./Field";
@@ -25,12 +26,7 @@ export default class Effector{
             motions?.forEach(motions => Effector.raiseMotion(field, motions, cell.pos))
         } catch{}
 
-        if (e.image){
-            let img
-            try {img = require(`../sources/data/levels/${field.name}/${e.image}`)}
-            catch {img = require(`../sources/effect/` + e.image) }
-            finally {e.image = img}
-        }
+        if (e.image) e.image = Loader.getEffect(field.name, e.image)!
 
         cell.sprite.effect = effect
         cell.unmarkFromDelete()
