@@ -5,6 +5,7 @@ import { getSpriteByName } from "../sources/data/Sprites";
 import "./styles/panel.css"
 
 interface UITableProps {
+    stage: string
     goal: Goal
 }
 
@@ -31,7 +32,7 @@ export default function UITable(props: UITableProps){
                         <img 
                             key={kv.name} 
                             className="Icon" 
-                            src={getSpriteByName(kv.name)}
+                            src={getSpriteByName(props.stage, kv.name)}
                             alt={kv.name}
                         />
                         {kv.value}

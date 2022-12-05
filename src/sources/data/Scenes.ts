@@ -1,6 +1,7 @@
 import { cell_definition } from "../../logic/auxillary/LevelReader";
 import { level_unlock_conditions } from "../../logic/interfaces/Conditions";
 import Goal from "../../logic/interfaces/Goal";
+import gensh from "./levels/gensh/gensh";
 
 export interface FieldParams{
     title: string
@@ -25,7 +26,7 @@ const scenes : FieldParams[] =
         {
             title: "Square",
             name: "square",
-            wallpaper: "def.png",
+            wallpaper: "back.bmp",
             x: 8,
             y: 8,
             allowedSprites: ["square", "circle", "rumb", "triangle"],
@@ -89,7 +90,8 @@ const scenes : FieldParams[] =
                                 "dddddddd",
                                 "-dddddd-",
                                 "dddddddd"]
-        }
+        },
+        new gensh
     ]
 
 export default function retrieveStage(name: string): FieldParams | undefined {

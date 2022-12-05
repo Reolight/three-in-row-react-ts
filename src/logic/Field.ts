@@ -28,7 +28,7 @@ export default class Field {
     static OffsetX: number
     static OffsetY: number
 
-    base_background?: string
+    base_background: string
     wallpaper?: string
 
     size: Position
@@ -47,6 +47,7 @@ export default class Field {
     constructor(field_params: FieldParams) {
         this.name = field_params.name;
         this.size = {x: field_params.x, y: field_params.y}
+        this.base_background = Loader.getBack(this.name, "def.png")!
         if (field_params.wallpaper) 
             this.wallpaper = Loader.getWallpaper(this.name, field_params.wallpaper)
 
@@ -61,9 +62,8 @@ export default class Field {
             const clone = require("rfdc/default")
             this.cell_definitions = clone(field_params.definitions) as cell_definition[]
             for (let i = 0; i < this.cell_definitions.length; i++){
-                this.cell_definitions[i].tile.image = field_params.definitions[i].tile.image? 
-                    require(`../sources/backs/${field_params.definitions[i].tile.image}`) :
-                    this.base_background
+                this.cell_definitions[i].tile.image = field_params.definitions[i].tile.image?
+                    Loader.getBack(this.name, field_params.definitions[i].tile.image!) : this.base_background
             }
         }
         

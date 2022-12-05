@@ -1,7 +1,7 @@
 //I want to get rid of functions list of loader when typing code (like getWallpaper and so on)
 //To do so, I incapsulate all those logic in class
 export default class Loader{
-    private static cache: Map<string, string>
+    private static cache: Map<string, string> = new Map()
 
     static getWallpaper(stage_name: string, sprite_name: string): string | undefined {
         return Loader.get_from_cache(`${stage_name}|${sprite_name}|${'wall'}`)

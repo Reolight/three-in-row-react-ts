@@ -169,8 +169,11 @@ export default function Table(props : gameInfoProps){
     }
 
     return(!field? <p>Wait please...</p> :
-        <div className="Game-container" ref={GameContainer}>
-            <UITable goal={field!.goal}/>
+        <div className="Game-container" ref={GameContainer}
+            style={{backgroundImage: field.wallpaper}}>
+            <UITable
+                goal={field!.goal}
+                stage={field!.name}/>
             <div className="container"  style={GameContainer.current ? {
                 marginTop: Field.OffsetY,
                 marginLeft: Field.OffsetX

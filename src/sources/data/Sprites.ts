@@ -19,10 +19,8 @@ const sprites: Sprite[] = [
      */
 export function getSpriteByName(stage_name: string, name: string): string | undefined {
     const sprite = sprites.find(sprite => sprite.name === name)
-    if (!sprite)
-        Loader.getSprite(stage_name, name+ `.png`)
-    
-    return Loader.getSprite(stage_name, sprite!.sprite)
+    const namae = (sprite?.sprite ?? name) + ".png"
+    return Loader.getSprite(stage_name, namae)
 }
 
     ///returns sprite defined in sprites[] or creates new default sprite to get rid of defining defaults
