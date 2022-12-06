@@ -1,3 +1,4 @@
+import IItem from "../Domain/logic/interfaces/IItem"
 import PlayerData from "./interfaces/PlayerData"
 import PlayRecord from "./interfaces/PlayRecord"
 import Score from "./Score"
@@ -7,6 +8,7 @@ export default class Player implements PlayerData {
     money: number
     score?: Score
     records?: PlayRecord[]
+    inventory: IItem[] = []
 
     constructor(name: string, money: number){
         this.name = name
@@ -50,5 +52,9 @@ export default class Player implements PlayerData {
         const player = playerJson? Player.makePlayer(JSON.parse(playerJson)) : new Player(name, 0)
         player.save()
         return player
+    }
+
+    payMoney(amount: number){
+        this.money -= amount
     }
 }

@@ -1,5 +1,6 @@
 import SpriteInt from "../../logic/interfaces/SpriteInt"
 import Sprite from "../../logic/interfaces/SpriteInt"
+import clone from "../../shared/clone"
 import Loader from "./Loader"
 
 const sprites: Sprite[] = [
@@ -35,8 +36,7 @@ export default function retrieveSprite(t: string): Sprite {
             isImmortal: false
         }
     } else {
-        const clone = require ('rfdc/default')
-        result = clone(sprite) as SpriteInt
+        result = clone<SpriteInt>(sprite)
         result.sprite = require(`../sprites/${sprite.sprite}.png`)
     }
 
