@@ -1,7 +1,8 @@
+import { Domain as PlayerDomain} from  "../Domain/logic/Domain"
 import IItem from "../Domain/logic/interfaces/IItem"
-import PlayerData from "./interfaces/PlayerData"
-import PlayRecord from "./interfaces/PlayRecord"
-import Score from "./Score"
+import PlayerData from "../logic/interfaces/PlayerData"
+import PlayRecord from "../logic/interfaces/PlayRecord"
+import Score from "../logic/Score"
 
 export default class Player implements PlayerData {
     name: string
@@ -9,10 +10,15 @@ export default class Player implements PlayerData {
     score?: Score
     records?: PlayRecord[]
     inventory: IItem[] = []
+    domain?: PlayerDomain
 
     constructor(name: string, money: number){
         this.name = name
         this.money = money
+    }
+
+    setDomain(domain: PlayerDomain){
+        this.domain = domain
     }
 
     static makePlayer(data: PlayerData): Player {

@@ -3,6 +3,8 @@ import { Vector2D } from "./auxillary/vectors"
 import building from "./Building"
 
 export default class Tile{
+    static default_size : number = 256
+    
     name: string = ""
     position?: Vector2D
     image?: string

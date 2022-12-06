@@ -1,7 +1,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { redirect, useNavigate, useParams } from "react-router-dom";
 import { PlayerContext } from "../App";
-import Player from "../logic/Player";
+import Player from "../shared/Player";
 import Score from "../logic/Score";
 import ResultScreen from "./ResultScreen";
 import Table from "./Table"

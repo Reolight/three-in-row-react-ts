@@ -1,4 +1,4 @@
-import Player from "../../logic/Player"
+import Player from "../../shared/Player"
 import IItem from "./interfaces/IItem"
 
 export default class Product{

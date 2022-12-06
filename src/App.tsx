@@ -2,7 +2,7 @@ import React, { createContext, Dispatch, SetStateAction } from 'react';
 import './App.css';
 import AppRoutes from './AppRoutes';
 import { Route, Routes} from 'react-router-dom'
-import Player from './logic/Player';
+import Player from './shared/Player';
 
 type TypeSetState<T> = Dispatch<SetStateAction<T>>
 
