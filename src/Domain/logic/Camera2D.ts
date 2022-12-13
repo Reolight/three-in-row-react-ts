@@ -27,7 +27,7 @@ export default class Camera2D{
         const delta_scale = this.scale - value
         this.position = Scale(this.position, delta_scale)
         this.scale = value
-        this.tile_size = Tile.default_size * this.scale * Math.SQRT2
+        this.tile_size = Tile.default_size * this.scale
         console.debug(`tile size now ${this.tile_size}:${this.tile_size}`)
     }
 
@@ -88,10 +88,10 @@ export default class Camera2D{
     }
 
     getDisplayPositionX(x_index: number, y_index: number): number{
-        return (Math.SQRT2*Tile.default_size*this.scale*(x_index-y_index))/2 + 220//this.position.x
+        return (Math.SQRT2*Tile.default_size* this.scale *(x_index-y_index))/2 + 500//this.position.x
     }
 
     getDisplayPositionY(x_index: number, y_index: number){
-        return (Math.SQRT2*Tile.default_size*this.scale*(x_index+y_index))/4 - this.position.y
+        return (Math.SQRT2*Tile.default_size * this.scale * (x_index+y_index))/4 +80// this.position.y
     }
 }

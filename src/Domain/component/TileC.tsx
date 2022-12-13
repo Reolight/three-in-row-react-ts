@@ -1,6 +1,7 @@
 import React from "react";
 import Camera2D from "../logic/Camera2D";
 import Tile from "../logic/Tile";
+import { motion }from 'framer-motion'
 
 interface TileDrawerProps {
     tile: Tile
@@ -9,10 +10,24 @@ interface TileDrawerProps {
 }
 export default function TileC(props : TileDrawerProps): JSX.Element{
     return(<>
+    <motion.div style={{
+            position:'absolute',
+            width: props.camera.tile_size,
+            height: props.camera.tile_size/2
+        }} 
+        animate={{
+            y: props.camera.getDisplayPositionY(props.tile.position!.x, props.tile.position!.y),
+            x: props.camera.getDisplayPositionX(props.tile.position!.x, props.tile.position!.y)
+        }}
+        initial={{
+            y: props.camera.getDisplayPositionY(props.tile.position!.x, props.tile.position!.y),
+            x: props.camera.getDisplayPositionX(props.tile.position!.x, props.tile.position!.y)
+        }}
+    >
+        
         <div style={{
                 position: 'absolute',
-                top: props.camera.getDisplayPositionY(props.tile.position!.x, props.tile.position!.y),
-                left: props.camera.getDisplayPositionX(props.tile.position!.x, props.tile.position!.y),
+                
                 zIndex:2,
                 transform: "scaleY(0.5)",
                 transformOrigin: "top left"
@@ -32,32 +47,30 @@ export default function TileC(props : TileDrawerProps): JSX.Element{
                { <img
                     src={props.tile.depth_image}
                     style={{
-                        zIndex:1,
+                        //zIndex:1,
                         position: 'absolute',
-                        marginTop: props.camera.getDisplayPositionY(props.tile.position!.x, props.tile.position!.y)
-                            + props.camera.tile_size * Math.SQRT2 / 4,
-                        marginLeft: props.camera.getDisplayPositionX(props.tile.position!.x, props.tile.position!.y),
+                        marginTop: props.camera.tile_size * Math.SQRT2 / 6,
+                        marginLeft: -(props.camera.tile_size * Math.SQRT2 / 7),
                         width: props.camera.tile_size * Math.SQRT2 / 2,
                         height: props.camera.tile_size,
                         transformOrigin: "top left",
-                        transform: `skewY(26deg)`
+                        transform: `skewY(26.565deg)`
                     }}
                 />}
                 <img
                     src={props.tile.depth_image}
                     style={{
                         position: 'absolute',
-                        marginTop: props.camera.getDisplayPositionY(props.tile.position!.x, props.tile.position!.y)
-                            + props.camera.tile_size * Math.SQRT2 / 6,
-                        marginLeft: props.camera.getDisplayPositionX(props.tile.position!.x, props.tile.position!.y) 
-                            + props.camera.tile_size / 2,
+                        marginTop: props.camera.tile_size * Math.SQRT2 / 6,
+                        marginLeft: props.camera.tile_size / 2,
                         width: props.camera.tile_size * Math.SQRT2 / 2,
                         height: props.camera.tile_size,
                         transformOrigin: "top right",
-                        transform: `skewY(-26deg)`
+                        transform: `skewY(-26.565deg)`
                     }} />
                 </>
             }
+        </motion.div>
         </>
     )
 }
