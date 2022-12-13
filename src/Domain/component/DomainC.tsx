@@ -8,14 +8,13 @@ import { Scale, Vector2D } from "../logic/auxillary/vectors";
 import Camera2D from "../logic/Camera2D";
 import { Domain as PlayerDomain}  from "../logic/Domain";
 import Tile from "../logic/Tile";
+import Camera from "./Camera";
 
 export default function DomainC(): JSX.Element {
     const params = useParams()
     const {player, setPlayer} = useContext(PlayerContext)
     const GameContainer = useRef<HTMLDivElement>(null)
     const [domain, setDomain] = useState<PlayerDomain>()
-    const [camera, setCamera] = useState<Camera2D>()
-    const [visible_domain, setVisibleDomain] = useState<Tile[][]>()
 
     useEffect(() => {
         const parameters = params.player;
@@ -44,23 +43,6 @@ export default function DomainC(): JSX.Element {
         console.debug(`Player ${player?.name} has logged to his domain`)
     }, [player])
 
-    useEffect(() => {
-        if (!domain) return
-        setCamera(new Camera2D({x: 0, y: 0} as Vector2D,
-            {x: GameContainer.current?.offsetWidth, y: GameContainer.current?.offsetHeight} as Vector2D,
-            1.0, domain!
-        ))
-    }, [domain])
-
-    useEffect(() => {
-        if (camera) {
-            const visible = camera?.getVisible()
-            console.debug(`Domain: `, domain)
-            console.debug(`Visible: `, visible)
-            setVisibleDomain(visible)
-        }
-    }, [camera, camera?.position])
-
     return(
         <div ref={GameContainer}
             style={{
@@ -70,26 +52,13 @@ export default function DomainC(): JSX.Element {
             }}
         >
             {
-                (camera && visible_domain)?
-                visible_domain.map((row => {
-                    return (<>
-                        {row.map((tile) => {
-                            return (
-                                <img key={`${tile.position!.x}${tile.position!.y}`}
-                                    src={tile.image}
-                                    alt={tile.name}
-                                    style={{
-                                        position: 'absolute',
-                                        marginTop: (tile.position!.y * Tile.default_size * camera.scale) - camera.position.y,
-                                        marginLeft: (tile.position!.x * Tile.default_size * camera.scale) - camera.position.x,
-                                        width: Tile.default_size * camera.scale,
-                                        height: Tile.default_size * camera.scale                                        
-                                    }}
-                                />
-                            )
-                        })}
-                    </>)
-                }))
+                (domain && GameContainer.current)?
+                <Camera
+                    domain={domain}
+                    height={GameContainer.current.offsetHeight}
+                    width={GameContainer.current.offsetWidth}
+                    is_surface={false}
+                />
                 :
                 <p>Loading...</p>
             }

@@ -23,4 +23,15 @@ export class Domain{
 
         return domain
     }
+
+    getTile(x: number, y: number): Tile | undefined {
+        const chunks = this.chunks[Math.floor(y / Chunk.chunk_size)][Math.floor(x / Chunk.chunk_size)]
+        if (chunks) return chunks.tiles[y % Chunk.chunk_size][x % Chunk.chunk_size]
+        return
+    }
+
+    isTileEmplty(x: number, y: number) : boolean{
+        return !this.chunks[Math.floor(y / Chunk.chunk_size)][Math.floor(x / Chunk.chunk_size)]
+            .tiles[y % Chunk.chunk_size][x % Chunk.chunk_size]
+    }
 }

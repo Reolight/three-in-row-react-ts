@@ -3,7 +3,7 @@ import { Vector2D } from "../auxillary/vectors";
 import Tile from "../Tile";
 
 export default class Chunk{
-    static chunk_size : number = 16
+    static chunk_size : number = 4
     chunk_offset: Vector2D = {x: 0, y: 0} //def offset. 
     tiles: Tile[][] = []
 

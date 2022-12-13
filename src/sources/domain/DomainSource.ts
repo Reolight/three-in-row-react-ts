@@ -1,3 +1,6 @@
+import Tile from "../../Domain/logic/Tile"
+import { fabric } from "fabric"
+
 export default class DomainSource{
     private static cache: Map<string, string> = new Map()
 
@@ -6,10 +9,15 @@ export default class DomainSource{
         if (res) DomainSource.cache.set(`${name}|${folder}`, res)
         return res
     }
-
+    
     static LoadTile(sprite_name: string): string{
         return DomainSource.get_from_cache(`${sprite_name}|tiles`) 
-            ?? DomainSource.Load(sprite_name, `tiles`)
+            ?? DomainSource.Load(sprite_name, 'tiles')
+    }
+
+    static LoadTileBack(sprite_name: string): string{
+        return DomainSource.get_from_cache(`${sprite_name}|tiles/b`)
+            ?? DomainSource.Load(sprite_name, 'tiles/b')
     }
 
     static LoadBuilding(sprite_name: string): string{
